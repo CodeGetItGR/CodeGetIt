@@ -1,8 +1,8 @@
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Section } from '@/components/ui/Section';
 import { Card } from '@/components/ui/Card';
 import { useState } from 'react';
-import { HiCode, HiServer } from 'react-icons/hi';
+import { HiCode, HiServer, HiChevronDown, HiChevronUp } from 'react-icons/hi';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import { useLocale } from '@/i18n/UseLocale';
@@ -11,16 +11,24 @@ const ServiceCard = ({
   icon: Icon,
   title,
   description,
+  simpleDescription,
   features,
+  technicalDetails,
   index,
 }: {
   icon: React.ElementType;
   title: string;
   description: string;
+  simpleDescription: string;
   features: string[];
+  technicalDetails: {
+    title: string;
+    items: string[];
+  };
   index: number;
 }) => {
   const [isHovered, setIsHovered] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
   const { t } = useLocale();
 
   return (
@@ -59,16 +67,16 @@ const ServiceCard = ({
             {title}
           </h3>
 
-          {/* Description */}
-          <p className="text-gray-600 leading-relaxed mb-6">
-            {description}
+          {/* Simple Description (always visible) */}
+          <p className="text-gray-700 leading-relaxed mb-4 font-medium">
+            {simpleDescription}
           </p>
 
           {/* Elegant divider */}
-          <div className="h-px bg-linear-to-r from-transparent via-gray-300 to-transparent mb-6 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+          <div className="h-px bg-linear-to-r from-transparent via-gray-300 to-transparent mb-6"></div>
 
-          {/* Features list */}
-          <ul className="space-y-2">
+          {/* Key Features list */}
+          <ul className="space-y-2 mb-6">
             {features.map((feature, idx) => (
               <motion.li
                 key={idx}
@@ -83,24 +91,52 @@ const ServiceCard = ({
             ))}
           </ul>
 
-          {/* Hover arrow */}
-          <motion.div
-            initial={{ opacity: 0, x: -10 }}
-            animate={{ opacity: isHovered ? 1 : 0, x: isHovered ? 0 : -10 }}
-            className="mt-6 flex items-center gap-2 text-gray-900 font-medium text-sm"
+          {/* Expand/Collapse Button */}
+          <motion.button
+            onClick={() => setIsExpanded(!isExpanded)}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            className="w-full mt-4 px-4 py-3 bg-gray-100 hover:bg-gray-900 hover:text-white text-gray-900 rounded-lg transition-all duration-300 flex items-center justify-between font-medium text-sm"
           >
-            <span>{t.services.learnMore}</span>
-            <motion.svg
-              animate={{ x: isHovered ? [0, 5, 0] : 0 }}
-              transition={{ duration: 1, repeat: isHovered ? Infinity : 0 }}
-              className="w-4 h-4"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-            </motion.svg>
-          </motion.div>
+            <span>{isExpanded ? t.services.hideDetails : t.services.viewDetails}</span>
+            {isExpanded ? <HiChevronUp className="w-5 h-5" /> : <HiChevronDown className="w-5 h-5" />}
+          </motion.button>
+
+          {/* Expandable Technical Details */}
+          <AnimatePresence>
+            {isExpanded && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.3 }}
+                className="overflow-hidden"
+              >
+                <div className="mt-6 pt-6 border-t border-gray-200">
+                  <h4 className="text-lg font-bold text-gray-900 mb-4">
+                    {technicalDetails.title}
+                  </h4>
+                  <p className="text-sm text-gray-600 mb-4 italic">
+                    {description}
+                  </p>
+                  <ul className="space-y-3">
+                    {technicalDetails.items.map((item, idx) => (
+                      <motion.li
+                        key={idx}
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: idx * 0.05 }}
+                        className="flex items-start text-sm text-gray-700 leading-relaxed"
+                      >
+                        <span className="w-1.5 h-1.5 bg-gray-600 rounded-full mr-3 mt-1.5 shrink-0"></span>
+                        <span>{item}</span>
+                      </motion.li>
+                    ))}
+                  </ul>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
         {/* Elegant shimmer */}
@@ -125,13 +161,17 @@ export const Services = () => {
       icon: HiCode,
       title: t.services.fullStack.title,
       description: t.services.fullStack.description,
+      simpleDescription: t.services.fullStack.simpleDescription,
       features: t.services.fullStack.features,
+      technicalDetails: t.services.fullStack.technicalDetails,
     },
     {
       icon: HiServer,
       title: t.services.api.title,
       description: t.services.api.description,
+      simpleDescription: t.services.api.simpleDescription,
       features: t.services.api.features,
+      technicalDetails: t.services.api.technicalDetails,
     },
   ];
 
@@ -141,7 +181,7 @@ export const Services = () => {
       <div className="absolute top-0 left-1/4 w-96 h-96 bg-gray-100 rounded-full filter blur-3xl opacity-20 animate-float"></div>
       <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-gray-50 rounded-full filter blur-3xl opacity-30 animate-float" style={{ animationDelay: '2s' }}></div>
 
-      <div className="relative z-10">
+      <div className="max-w-360 mx-auto px-6 sm:px-8 lg:px-12 relative z-10">
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}

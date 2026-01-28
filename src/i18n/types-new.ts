@@ -33,14 +33,26 @@ export interface Translations {
     fullStack: {
       title: string;
       description: string;
+      simpleDescription: string;
       features: string[];
+      technicalDetails: {
+        title: string;
+        items: string[];
+      };
     };
     api: {
       title: string;
       description: string;
+      simpleDescription: string;
       features: string[];
+      technicalDetails: {
+        title: string;
+        items: string[];
+      };
     };
     learnMore: string;
+    viewDetails: string;
+    hideDetails: string;
     customSolutions: string;
     contactCTA: string;
   };

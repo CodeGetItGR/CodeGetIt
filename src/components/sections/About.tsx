@@ -91,7 +91,7 @@ export const About = () => {
         <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-linear-to-r from-gray-200 to-gray-300 rounded-full filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
       </div>
 
-      <div className="relative z-10">
+      <div className="max-w-360 mx-auto px-6 sm:px-8 lg:px-12 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           {/* Left Content */}
           <div className="animate-slide-up">

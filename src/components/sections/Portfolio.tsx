@@ -124,12 +124,16 @@ const ProjectCard = ({ project, index, size = 'normal' }: { project: Project; in
 export const Portfolio = () => {
   const { t } = useLocale();
   const [activeFilter, setActiveFilter] = useState<'all' | Project['category']>('all');
+  const [showAllProjects, setShowAllProjects] = useState(false);
 
   const categories: Array<'all' | Project['category']> = ['all', 'Full-Stack', 'Front-End', 'Back-End'];
 
   const filteredProjects = activeFilter === 'all'
     ? projects
     : projects.filter(p => p.category === activeFilter);
+
+  // Show only first 3 projects in normal view
+  const displayedProjects = showAllProjects ? filteredProjects : filteredProjects.slice(0, 3);
 
   // Define layout pattern - some large, some normal
   const getCardSize = (index: number): 'normal' | 'large' | 'wide' => {
@@ -182,14 +186,7 @@ export const Portfolio = () => {
             {/* View All Link */}
             <motion.button
               whileHover={{ x: 5 }}
-              onClick={() => {
-                // Scroll to bottom of portfolio section
-                const portfolioSection = document.getElementById('portfolio');
-                if (portfolioSection) {
-                  const bottom = portfolioSection.offsetTop + portfolioSection.offsetHeight;
-                  window.scrollTo({ top: bottom - window.innerHeight + 100, behavior: 'smooth' });
-                }
-              }}
+              onClick={() => setShowAllProjects(true)}
               className="inline-flex items-center gap-2 text-body font-semibold text-gray-900 group"
             >
               {t.portfolio.viewAll}
@@ -224,7 +221,7 @@ export const Portfolio = () => {
           ))}
         </motion.div>
 
-        {/* Projects Bento Grid */}
+        {/* Projects Bento Grid - Minimal View */}
         <AnimatePresence mode="wait">
           <motion.div
             key={activeFilter}
@@ -234,7 +231,7 @@ export const Portfolio = () => {
             transition={{ duration: 0.3 }}
             className="grid grid-cols-12 gap-6"
           >
-            {filteredProjects.map((project, index) => (
+            {displayedProjects.map((project, index) => (
               <ProjectCard
                 key={project.id}
                 project={project}
@@ -245,32 +242,52 @@ export const Portfolio = () => {
           </motion.div>
         </AnimatePresence>
 
-        {/* Bottom CTA */}
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          className="mt-24 text-center"
-        >
-          <div className="inline-block max-w-2xl">
-            <h3 className="text-headline-md mb-4">{t.portfolio.projectCTA}</h3>
-            <p className="text-body-lg text-gray-600 mb-8">
-              {t.portfolio.projectCTADesc}
-            </p>
+        {/* Show More / Show Less Button */}
+        {filteredProjects.length > 3 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 20 }}
+            className="flex justify-center mt-12"
+          >
             <motion.button
-              whileHover={{ scale: 1.05, x: 5 }}
+              whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              onClick={() => {
-                document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
-              }}
-              className="px-8 py-4 bg-gray-900 text-white font-semibold rounded-full hover:bg-gray-800 transition-all duration-300 inline-flex items-center gap-2 elegant-shadow-lg"
+              onClick={() => setShowAllProjects(!showAllProjects)}
+              className="px-8 py-3 bg-gray-900 text-white font-semibold rounded-full hover:bg-gray-800 transition-all duration-300"
             >
-              {t.portfolio.startProject}
-              <HiArrowRight className="w-5 h-5" />
+              {showAllProjects ? '← Show Less' : `View All ${filteredProjects.length} Projects →`}
             </motion.button>
-          </div>
-        </motion.div>
+          </motion.div>
+        )}
+
+        {/* Bottom CTA - Only show when not showing all projects */}
+        {!showAllProjects && (
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            className="mt-24 text-center"
+          >
+            <div className="inline-block max-w-2xl">
+              <h3 className="text-headline-md mb-4">{t.portfolio.projectCTA}</h3>
+              <p className="text-body-lg text-gray-600 mb-8">
+                {t.portfolio.projectCTADesc}
+              </p>
+              <motion.button
+                whileHover={{ scale: 1.05, x: 5 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => {
+                  document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="px-8 py-4 bg-gray-900 text-white font-semibold rounded-full hover:bg-gray-800 transition-all duration-300 inline-flex items-center gap-2 elegant-shadow-lg"
+              >
+                {t.portfolio.startProject}
+                <HiArrowRight className="w-5 h-5" />
+              </motion.button>
+            </div>
+          </motion.div>
+        )}
       </div>
     </Section>
   );

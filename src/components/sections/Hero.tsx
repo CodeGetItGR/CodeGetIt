@@ -1,8 +1,7 @@
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { useEffect, useState } from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import { HiArrowRight } from 'react-icons/hi';
 import { useLocale } from '@/i18n/UseLocale';
-import { heroStats } from '@/data/stats';
 import { Badge } from '@/components/ui/badge';
 import { MagneticButton } from '@/components/ui/MagneticButton';
 
@@ -24,9 +23,9 @@ export const Hero = () => {
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
 
-  const scrollToSection = (id: string) => {
+  const scrollToSection = useCallback((id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
-  };
+  },[]);
 
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden bg-white pt-32 pb-20">
@@ -60,7 +59,7 @@ export const Hero = () => {
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="col-span-12 lg:col-span-8"
+            className="col-span-12 lg:col-span-7"
           >
             {/* Label */}
             <motion.div
@@ -138,32 +137,143 @@ export const Hero = () => {
             </motion.div>
           </motion.div>
 
-          {/* Stats Cards - Right Column */}
-          <div className="col-span-12 lg:col-span-4 space-y-4">
-            {heroStats.map((stat, index) => (
+          {/* Stunning Visual Showcase - Right Column */}
+          <div className="col-span-12 lg:col-span-5 relative hidden lg:block">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, rotateX: 10 }}
+              animate={{ opacity: 1, scale: 1, rotateX: 0 }}
+              transition={{ duration: 1, delay: 0.7 }}
+              className="relative h-80 lg:h-100"
+            >
+              {/* Floating Code Window */}
               <motion.div
-                key={index}
-                initial={{ opacity: 0, x: 40 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.6, delay: 0.7 + index * 0.1 }}
-                whileHover={{ y: -4, scale: 1.02 }}
-                className="group relative p-6 bg-linear-to-br from-white to-gray-50 border border-gray-200 rounded-2xl hover:border-gray-900 transition-all duration-300 elegant-shadow texture-noise overflow-hidden"
+                className="absolute inset-0 bg-linear-to-br from-gray-900 via-gray-800 to-black rounded-2xl shadow-2xl overflow-hidden border border-gray-700"
+                animate={{
+                  y: [0, -10, 0],
+                  rotateX: [0, 2, 0],
+                }}
+                transition={{
+                  duration: 6,
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }}
               >
-                {/* Diagonal Accent */}
-                <div className="absolute top-0 right-0 w-20 h-20 bg-linear-to-br from-gray-100 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-
-                <div className="relative z-10">
-                  <div className={`inline-flex p-3 bg-linear-to-br ${stat.color} rounded-xl mb-4`}>
-                    <stat.icon className="w-6 h-6 text-white" />
+                {/* Window Header */}
+                <div className="bg-gray-800 border-b border-gray-700 px-4 py-3 flex items-center gap-2">
+                  <div className="flex gap-2">
+                    <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                    <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+                    <div className="w-3 h-3 rounded-full bg-green-500"></div>
                   </div>
-                  <div className="text-headline-md font-black text-gray-900 mb-1">{stat.value}</div>
-                  <div className="text-body-sm text-gray-600 font-medium">{stat.label}</div>
+                  <div className="flex-1 text-center text-xs text-gray-400 font-mono">
+                    App.tsx
+                  </div>
                 </div>
 
-                {/* Hover Glow */}
-                <div className="absolute inset-0 bg-linear-to-br from-gray-900/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                {/* Code Content with Typing Animation */}
+                <div className="p-6 font-mono text-sm space-y-3 overflow-hidden">
+                  {[
+                    { line: '// Your Idea →', delay: 0, color: 'text-gray-500' },
+                    { line: '', delay: 0.2, color: '' },
+                    { line: '✓ Beautiful Websites', delay: 0.4, color: 'text-green-400' },
+                    { line: '✓ Fast & Responsive', delay: 0.7, color: 'text-green-400' },
+                    { line: '✓ Mobile-First Design', delay: 1, color: 'text-green-400' },
+                    { line: '✓ Full-Stack Apps', delay: 1.3, color: 'text-green-400' },
+                    { line: '✓ Real Databases', delay: 1.6, color: 'text-green-400' },
+                    { line: '', delay: 1.8, color: '' },
+                    { line: '// → Your Reality', delay: 2, color: 'text-gray-500' },
+                  ].map((item, idx) => (
+                    <motion.div
+                      key={idx}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.7 + item.delay, duration: 0.3 }}
+                      className={`${item.color} ${item.line === '' ? 'h-4' : ''}`}
+                    >
+                      {item.line}
+                    </motion.div>
+                  ))}
+                </div>
+
+                {/* Animated Cursor */}
+                <motion.div
+                  className="absolute top-32 left-48 w-2 h-5 bg-green-400 rounded-sm"
+                  animate={{
+                    opacity: [1, 0, 1],
+                  }}
+                  transition={{
+                    duration: 0.8,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
+                />
+
+                {/* Glowing Effect */}
+                <div className="absolute inset-0 bg-linear-to-t from-green-500/10 via-transparent to-transparent pointer-events-none"></div>
               </motion.div>
-            ))}
+
+              {/* Floating Badges */}
+              {[
+                { text: 'React', icon: '⚛️', top: '10%', right: '-15%', delay: 0 },
+                { text: 'TypeScript', icon: '📘', bottom: '30%', right: '-20%', delay: 0.3 },
+                { text: 'Tailwind', icon: '🎨', top: '70%', left: '-15%', delay: 0.6 },
+              ].map((badge, idx) => (
+                <motion.div
+                  key={idx}
+                  initial={{ opacity: 0, scale: 0 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 1.5 + badge.delay, type: "spring" }}
+                  className="absolute"
+                  style={{
+                    top: badge.top,
+                    bottom: badge.bottom,
+                    left: badge.left,
+                    right: badge.right,
+                  }}
+                >
+                  <motion.div
+                    animate={{
+                      y: [0, -10, 0],
+                      rotate: [0, 5, 0, -5, 0],
+                    }}
+                    transition={{
+                      duration: 4,
+                      repeat: Infinity,
+                      delay: idx * 0.5,
+                      ease: "easeInOut"
+                    }}
+                    className="bg-white border-2 border-gray-900 rounded-xl px-4 py-2 shadow-xl flex items-center gap-2"
+                  >
+                    <span className="text-xl">{badge.icon}</span>
+                    <span className="text-sm font-bold text-gray-900">{badge.text}</span>
+                  </motion.div>
+                </motion.div>
+              ))}
+
+              {/* Particle Effect */}
+              {[...Array(8)].map((_, idx) => (
+                <motion.div
+                  key={idx}
+                  className="absolute w-2 h-2 bg-gray-900 rounded-full"
+                  initial={{
+                    x: '50%',
+                    y: '50%',
+                    opacity: 0,
+                  }}
+                  animate={{
+                    x: `${50 + Math.cos((idx / 8) * Math.PI * 2) * 100}%`,
+                    y: `${50 + Math.sin((idx / 8) * Math.PI * 2) * 100}%`,
+                    opacity: [0, 1, 0],
+                  }}
+                  transition={{
+                    duration: 3,
+                    repeat: Infinity,
+                    delay: idx * 0.2,
+                    ease: "easeOut"
+                  }}
+                />
+              ))}
+            </motion.div>
           </div>
         </div>
       </div>
