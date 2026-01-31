@@ -112,15 +112,15 @@ export const Contact = () => {
             className="col-span-12 lg:col-span-7"
           >
             <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Message Textarea */}
+              {/* Name Input */}
               <div className="group">
-                <label className="text-label text-gray-600 mb-2 block">YOUR MESSAGE</label>
-                <textarea
-                  rows={6}
-                  placeholder={t.contact.messagePlaceholder}
-                  value={formData.message}
-                  onChange={handleMessageChange}
-                  className="w-full px-6 py-4 bg-white border-2 border-gray-200 rounded-2xl text-body text-gray-900 placeholder:text-gray-400 focus:border-gray-900 focus:outline-none transition-all duration-300 hover:border-gray-300 resize-none"
+                <label className="text-label text-gray-600 mb-2 block">YOUR NAME</label>
+                <input
+                  type="text"
+                  placeholder={t.contact.namePlaceholder}
+                  value={formData.name}
+                  onChange={handleNameChange}
+                  className="w-full px-6 py-4 bg-white border-2 border-gray-200 rounded-2xl text-body text-gray-900 placeholder:text-gray-400 focus:border-gray-900 focus:outline-none transition-all duration-300 hover:border-gray-300"
                   required
                 />
               </div>
@@ -144,7 +144,7 @@ export const Contact = () => {
                 <textarea
                   placeholder={t.contact.messagePlaceholder}
                   value={formData.message}
-                  onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                  onChange={handleMessageChange}
                   rows={6}
                   className="w-full px-6 py-4 bg-white border-2 border-gray-200 rounded-2xl text-body text-gray-900 placeholder:text-gray-400 focus:border-gray-900 focus:outline-none transition-all duration-300 hover:border-gray-300 resize-none"
                   required
