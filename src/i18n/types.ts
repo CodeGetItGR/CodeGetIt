@@ -35,6 +35,20 @@ export interface Translations {
       modernStack: string;
     };
     availability: string;
+    visual: {
+      fileName: string;
+      engineeringFocus: string;
+      typeSafe: string;
+      scalableBackend: string;
+      relationalData: string;
+      productionReady: string;
+      principles: string;
+      performance: string;
+      maintainable: string;
+      scalable: string;
+      builtToLast: string;
+      reliable: string;
+    };
   };
 
   // Services Section

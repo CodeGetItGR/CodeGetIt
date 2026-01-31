@@ -210,7 +210,7 @@ export const Hero = () => {
                     <div className="w-3 h-3 rounded-full bg-green-500"></div>
                   </div>
                   <div className="flex-1 text-center text-xs text-gray-400 font-mono">
-                    your-project.tsx
+                    {t.hero.visual.fileName}
                   </div>
                 </div>
 
@@ -222,7 +222,7 @@ export const Hero = () => {
                     transition={{ delay: 0.9, duration: 0.4 }}
                     className="text-gray-500"
                   >
-                    // Engineering Focus
+                    // {t.hero.visual.engineeringFocus}
                   </motion.div>
 
                   <motion.div
@@ -231,10 +231,10 @@ export const Hero = () => {
                     transition={{ delay: 1.1, duration: 0.4 }}
                     className="space-y-2"
                   >
-                    <div className="text-green-400">✓ Type-Safe Architecture</div>
-                    <div className="text-green-400">✓ Scalable Backend Systems</div>
-                    <div className="text-green-400">✓ Relational Data Design</div>
-                    <div className="text-green-400">✓ Production-Ready</div>
+                    <div className="text-green-400">✓ {t.hero.visual.typeSafe}</div>
+                    <div className="text-green-400">✓ {t.hero.visual.scalableBackend}</div>
+                    <div className="text-green-400">✓ {t.hero.visual.relationalData}</div>
+                    <div className="text-green-400">✓ {t.hero.visual.productionReady}</div>
                   </motion.div>
 
                   <motion.div
@@ -243,16 +243,16 @@ export const Hero = () => {
                     transition={{ delay: 1.5, duration: 0.4 }}
                     className="pt-4"
                   >
-                    <div className="text-gray-500 mb-2">// Principles:</div>
+                    <div className="text-gray-500 mb-2">// {t.hero.visual.principles}</div>
                     <div className="flex flex-wrap gap-2">
                       <span className="px-3 py-1 bg-gray-700 text-gray-300 rounded-md text-xs">
-                        Performance
+                        {t.hero.visual.performance}
                       </span>
                       <span className="px-3 py-1 bg-gray-700 text-gray-300 rounded-md text-xs">
-                        Maintainable
+                        {t.hero.visual.maintainable}
                       </span>
                       <span className="px-3 py-1 bg-gray-700 text-gray-300 rounded-md text-xs">
-                        Scalable
+                        {t.hero.visual.scalable}
                       </span>
                     </div>
                   </motion.div>
@@ -263,7 +263,7 @@ export const Hero = () => {
                     transition={{ delay: 2.1, duration: 0.4 }}
                     className="pt-4 text-gray-500"
                   >
-                    // → Engineered to last
+                    // → {t.hero.visual.builtToLast}
                   </motion.div>
                 </div>
 
@@ -273,8 +273,8 @@ export const Hero = () => {
 
               {/* Minimal floating quality badges */}
               {[
-                { text: 'Reliable', top: '8%', right: '-12%', delay: 0 },
-                { text: 'Maintainable', bottom: '25%', right: '-15%', delay: 0.3 },
+                { text: t.hero.visual.reliable, top: '8%', right: '-12%', delay: 0 },
+                { text: t.hero.visual.maintainable, bottom: '25%', right: '-15%', delay: 0.3 },
               ].map((badge, idx) => (
                 <motion.div
                   key={idx}
