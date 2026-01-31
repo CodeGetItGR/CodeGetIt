@@ -227,8 +227,11 @@ export const Services = () => {
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 tracking-tight">
             {t.services.title}
           </h2>
-          <p className="text-base md:text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-base md:text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed mb-3">
             {t.services.subtitle}
+          </p>
+          <p className="text-sm text-gray-500 max-w-2xl mx-auto italic">
+            {t.services.specialized}
           </p>
         </motion.div>
 

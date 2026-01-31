@@ -222,7 +222,7 @@ export const Hero = () => {
                     transition={{ delay: 0.9, duration: 0.4 }}
                     className="text-gray-500"
                   >
-                    // Production Stack
+                    // Engineering Focus
                   </motion.div>
 
                   <motion.div
@@ -231,10 +231,10 @@ export const Hero = () => {
                     transition={{ delay: 1.1, duration: 0.4 }}
                     className="space-y-2"
                   >
-                    <div className="text-green-400">✓ React • TypeScript</div>
-                    <div className="text-green-400">✓ Spring Boot • Java</div>
-                    <div className="text-green-400">✓ PostgreSQL</div>
-                    <div className="text-green-400">✓ Docker</div>
+                    <div className="text-green-400">✓ Type-Safe Architecture</div>
+                    <div className="text-green-400">✓ Scalable Backend Systems</div>
+                    <div className="text-green-400">✓ Relational Data Design</div>
+                    <div className="text-green-400">✓ Production-Ready</div>
                   </motion.div>
 
                   <motion.div
@@ -243,16 +243,16 @@ export const Hero = () => {
                     transition={{ delay: 1.5, duration: 0.4 }}
                     className="pt-4"
                   >
-                    <div className="text-gray-500 mb-2">// Not trends:</div>
+                    <div className="text-gray-500 mb-2">// Principles:</div>
                     <div className="flex flex-wrap gap-2">
                       <span className="px-3 py-1 bg-gray-700 text-gray-300 rounded-md text-xs">
-                        Type-safe
+                        Performance
+                      </span>
+                      <span className="px-3 py-1 bg-gray-700 text-gray-300 rounded-md text-xs">
+                        Maintainable
                       </span>
                       <span className="px-3 py-1 bg-gray-700 text-gray-300 rounded-md text-xs">
                         Scalable
-                      </span>
-                      <span className="px-3 py-1 bg-gray-700 text-gray-300 rounded-md text-xs">
-                        Reliable
                       </span>
                     </div>
                   </motion.div>
@@ -263,7 +263,7 @@ export const Hero = () => {
                     transition={{ delay: 2.1, duration: 0.4 }}
                     className="pt-4 text-gray-500"
                   >
-                    // → Built to last
+                    // → Engineered to last
                   </motion.div>
                 </div>
 
@@ -271,10 +271,10 @@ export const Hero = () => {
                 <div className="absolute inset-0 bg-linear-to-t from-green-500/5 via-transparent to-transparent pointer-events-none"></div>
               </motion.div>
 
-              {/* Minimal floating tech badges */}
+              {/* Minimal floating quality badges */}
               {[
-                { text: 'Type-Safe', top: '8%', right: '-12%', delay: 0 },
-                { text: 'Production-Grade', bottom: '25%', right: '-15%', delay: 0.3 },
+                { text: 'Reliable', top: '8%', right: '-12%', delay: 0 },
+                { text: 'Maintainable', bottom: '25%', right: '-15%', delay: 0.3 },
               ].map((badge, idx) => (
                 <motion.div
                   key={idx}

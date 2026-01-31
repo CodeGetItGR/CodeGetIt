@@ -1,10 +1,13 @@
-export type Locale = 'en' | 'es' | 'fr' | 'de';
+export type Locale = 'en' | 'el';
 
 export interface Translations {
   // Navigation
   nav: {
     home: string;
     services: string;
+    portfolio: string;
+    testimonials: string;
+    process: string;
     about: string;
     contact: string;
   };
@@ -66,6 +69,7 @@ export interface Translations {
     hideDetails: string;
     customSolutions: string;
     contactCTA: string;
+    specialized: string;
   };
 
   // Portfolio Section
@@ -92,11 +96,17 @@ export interface Translations {
     testimonialAuthor: string;
     whyFounderLed: string;
     founderAdvantage: string;
+    engineeringPrinciples: string;
+    engineeringPrinciplesDesc: string;
+    engineeringPrinciplesSubtext: string;
     idealProjects: string;
     idealProjectsList: string[];
+    bestSuitedFor: string;
     technicalApproach: string;
     technicalApproachList: string[];
     philosophy: string;
+    engagementModel: string;
+    engagementModelList: string[];
   };
 
   // Stats Section

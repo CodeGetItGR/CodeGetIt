@@ -53,12 +53,6 @@ export const Header = () => {
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
             <button
-              onClick={() => scrollToSection('hero')}
-              className="text-gray-700 hover:text-gray-900 transition-colors font-medium"
-            >
-              {t.nav.home}
-            </button>
-            <button
               onClick={() => scrollToSection('services')}
               className="text-gray-700 hover:text-gray-900 transition-colors font-medium"
             >
@@ -68,13 +62,25 @@ export const Header = () => {
               onClick={() => scrollToSection('portfolio')}
               className="text-gray-700 hover:text-gray-900 transition-colors font-medium"
             >
-              Portfolio
+              {t.nav.portfolio}
             </button>
             <button
               onClick={() => scrollToSection('about')}
               className="text-gray-700 hover:text-gray-900 transition-colors font-medium"
             >
               {t.nav.about}
+            </button>
+            <button
+              onClick={() => scrollToSection('process')}
+              className="text-gray-700 hover:text-gray-900 transition-colors font-medium"
+            >
+              {t.nav.process}
+            </button>
+            <button
+              onClick={() => scrollToSection('testimonials')}
+              className="text-gray-700 hover:text-gray-900 transition-colors font-medium"
+            >
+              {t.nav.testimonials}
             </button>
             <button
               onClick={() => scrollToSection('contact')}
@@ -84,16 +90,14 @@ export const Header = () => {
             </button>
 
             {/* Language Selector */}
-            <select
-              value={locale}
-              onChange={handleLocaleChange}
-              className="px-3 py-1.5 border border-gray-300 rounded-lg text-sm font-medium focus:outline-none focus:ring-2 focus:ring-gray-900 bg-white"
-            >
-              <option value="en">EN</option>
-              <option value="es">ES</option>
-              <option value="fr">FR</option>
-              <option value="de">DE</option>
-            </select>
+            {/*<select*/}
+            {/*  value={locale}*/}
+            {/*  onChange={handleLocaleChange}*/}
+            {/*  className="px-3 py-1.5 border border-gray-300 rounded-lg text-sm font-medium focus:outline-none focus:ring-2 focus:ring-gray-900 bg-white"*/}
+            {/*>*/}
+            {/*  <option value="en">EN</option>*/}
+            {/*  <option value="el">ΕΛ</option>*/}
+            {/*</select>*/}
           </nav>
 
           {/* Mobile Menu Button */}
@@ -138,13 +142,25 @@ export const Header = () => {
               onClick={() => scrollToSection('portfolio')}
               className="block w-full text-left py-2 text-gray-700 hover:text-gray-900 font-medium"
             >
-              Portfolio
+              {t.nav.portfolio}
             </button>
             <button
               onClick={() => scrollToSection('about')}
               className="block w-full text-left py-2 text-gray-700 hover:text-gray-900 font-medium"
             >
               {t.nav.about}
+            </button>
+            <button
+              onClick={() => scrollToSection('process')}
+              className="block w-full text-left py-2 text-gray-700 hover:text-gray-900 font-medium"
+            >
+              {t.nav.process}
+            </button>
+            <button
+              onClick={() => scrollToSection('testimonials')}
+              className="block w-full text-left py-2 text-gray-700 hover:text-gray-900 font-medium"
+            >
+              {t.nav.testimonials}
             </button>
             <button
               onClick={() => scrollToSection('contact')}
@@ -158,9 +174,7 @@ export const Header = () => {
               className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm font-medium focus:outline-none focus:ring-2 focus:ring-gray-900 bg-white"
             >
               <option value="en">English</option>
-              <option value="es">Español</option>
-              <option value="fr">Français</option>
-              <option value="de">Deutsch</option>
+              <option value="el">Ελληνικά</option>
             </select>
           </nav>
         )}

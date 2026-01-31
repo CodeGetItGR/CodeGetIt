@@ -142,7 +142,9 @@ export const About = () => {
         </div>
 
         {/* Process Timeline */}
-        <ProcessTimeline />
+        <div id="process">
+          <ProcessTimeline />
+        </div>
 
         {/* Why Founder-Led */}
         <div className="mt-24">
@@ -156,12 +158,18 @@ export const About = () => {
           </div>
         </div>
 
-        {/* Technical Approach */}
+        {/* Engineering Principles - Neutral Authority Tone */}
         <div className="mt-16 bg-gray-50 rounded-3xl p-8 md:p-12 border-2 border-gray-200">
           <div className="max-w-4xl mx-auto">
-            <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6 text-center">
-              {t.about.technicalApproach}
+            <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4 text-center">
+              {t.about.engineeringPrinciples}
             </h3>
+            <p className="text-lg text-gray-700 text-center mb-8 leading-relaxed">
+              {t.about.engineeringPrinciplesDesc}
+            </p>
+            <p className="text-base text-gray-600 text-center mb-8 leading-relaxed italic">
+              {t.about.engineeringPrinciplesSubtext}
+            </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {t.about.technicalApproachList.map((item, idx) => (
                 <div
@@ -176,9 +184,38 @@ export const About = () => {
               ))}
             </div>
             <div className="mt-8 p-6 bg-gray-900 rounded-xl">
-              <p className="text-white text-center italic">
-                "{t.about.philosophy}"
+              <p className="text-white text-center font-semibold text-lg">
+                {t.about.philosophy}
               </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Engagement Model - Trust Booster */}
+        <div className="mt-16">
+          <div className="max-w-3xl mx-auto">
+            <h3 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6 text-center">
+              {t.about.engagementModel}
+            </h3>
+            <div className="bg-white rounded-2xl p-8 border-2 border-gray-200 shadow-lg">
+              <ul className="space-y-4">
+                {t.about.engagementModelList.map((item, idx) => (
+                  <li
+                    key={idx}
+                    className="flex items-start gap-4 text-gray-700"
+                  >
+                    <div className="w-6 h-6 rounded-full bg-gray-900 flex items-center justify-center shrink-0 mt-0.5">
+                      <Check className="w-4 h-4 text-white" />
+                    </div>
+                    <span className="text-base font-medium leading-relaxed">{item}</span>
+                  </li>
+                ))}
+              </ul>
+              <div className="mt-6 pt-6 border-t border-gray-200">
+                <p className="text-center text-gray-700 italic">
+                  {t.about.bestSuitedFor}
+                </p>
+              </div>
             </div>
           </div>
         </div>
