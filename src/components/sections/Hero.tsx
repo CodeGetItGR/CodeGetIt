@@ -78,41 +78,41 @@ export const Hero = () => {
             </motion.p>
 
             {/* Additional clarity */}
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.55 }}
-              className="text-base md:text-lg text-gray-600 max-w-2xl mb-8 leading-relaxed"
-            >
-              {t.hero.subheadline}
-            </motion.p>
+            {/*<motion.p*/}
+            {/*  initial={{ opacity: 0, y: 20 }}*/}
+            {/*  animate={{ opacity: 1, y: 0 }}*/}
+            {/*  transition={{ duration: 0.6, delay: 0.55 }}*/}
+            {/*  className="text-base md:text-lg text-gray-600 max-w-2xl mb-8 leading-relaxed"*/}
+            {/*>*/}
+            {/*  {t.hero.subheadline}*/}
+            {/*</motion.p>*/}
 
             {/* Social Proof - Added above the fold */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.6 }}
-              className="flex items-center gap-4 mb-10"
-            >
-              <div className="flex -space-x-2">
-                {[1, 2, 3, 4].map((i) => (
-                  <div
-                    key={i}
-                    className="w-10 h-10 rounded-full bg-linear-to-br from-gray-400 to-gray-600 border-2 border-white shadow-md"
-                  ></div>
-                ))}
-              </div>
-              <div className="text-sm font-medium text-gray-700">
-                {t.hero.socialProof}
-              </div>
-            </motion.div>
+            {/*<motion.div*/}
+            {/*  initial={{ opacity: 0, y: 20 }}*/}
+            {/*  animate={{ opacity: 1, y: 0 }}*/}
+            {/*  transition={{ duration: 0.6, delay: 0.6 }}*/}
+            {/*  className="flex items-center gap-4 mb-10"*/}
+            {/*>*/}
+            {/*  <div className="flex -space-x-2">*/}
+            {/*    {[1, 2, 3, 4].map((i) => (*/}
+            {/*      <div*/}
+            {/*        key={i}*/}
+            {/*        className="w-10 h-10 rounded-full bg-linear-to-br from-gray-400 to-gray-600 border-2 border-white shadow-md"*/}
+            {/*      ></div>*/}
+            {/*    ))}*/}
+            {/*  </div>*/}
+            {/*  <div className="text-sm font-medium text-gray-700">*/}
+            {/*    {t.hero.socialProof}*/}
+            {/*  </div>*/}
+            {/*</motion.div>*/}
 
             {/* Proof Bar */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.65 }}
-              className="grid grid-cols-2 gap-3 mb-8"
+              className="grid grid-cols-2 gap-3 mb-8 mt-16"
             >
               {[
                 t.hero.proofBar.seniorEngineering,
