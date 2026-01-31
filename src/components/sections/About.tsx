@@ -91,24 +91,24 @@ export const About = () => {
         <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-linear-to-r from-gray-200 to-gray-300 rounded-full filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
       </div>
 
-      <div className="max-w-360 mx-auto px-6 sm:px-8 lg:px-12 relative z-10">
+      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          {/* Left Content */}
+          {/* Left Content - Meet the Founder */}
           <div className="animate-slide-up">
             <Badge className="mb-6">
               <div className="w-2 h-2 bg-white rounded-full" />
               {t.about.badge.toUpperCase()}
             </Badge>
 
-            <h2 className="text-5xl md:text-6xl font-black text-gray-900 mb-6 leading-tight">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight tracking-tight">
               {t.about.title}
             </h2>
 
-            <h3 className="text-2xl font-bold text-gray-900 mb-6">
+            <h3 className="text-xl md:text-2xl font-semibold text-gray-700 mb-6">
               {t.about.subtitle}
             </h3>
 
-            <p className="text-lg text-gray-700 leading-relaxed mb-8">
+            <p className="text-base md:text-lg text-gray-700 leading-relaxed mb-8">
               {t.about.description}
             </p>
 
@@ -143,6 +143,67 @@ export const About = () => {
 
         {/* Process Timeline */}
         <ProcessTimeline />
+
+        {/* Why Founder-Led */}
+        <div className="mt-24">
+          <div className="max-w-3xl mx-auto text-center mb-12">
+            <h3 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
+              {t.about.whyFounderLed}
+            </h3>
+            <p className="text-lg text-gray-700 leading-relaxed">
+              {t.about.founderAdvantage}
+            </p>
+          </div>
+        </div>
+
+        {/* Technical Approach */}
+        <div className="mt-16 bg-gray-50 rounded-3xl p-8 md:p-12 border-2 border-gray-200">
+          <div className="max-w-4xl mx-auto">
+            <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6 text-center">
+              {t.about.technicalApproach}
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {t.about.technicalApproachList.map((item, idx) => (
+                <div
+                  key={idx}
+                  className="flex items-start gap-3 p-4 bg-white rounded-xl border border-gray-200 hover:border-gray-900 transition-all duration-300"
+                >
+                  <div className="w-6 h-6 rounded-full bg-gray-900 flex items-center justify-center shrink-0 mt-0.5">
+                    <Check className="w-4 h-4 text-white" />
+                  </div>
+                  <span className="text-gray-700 font-medium leading-relaxed">{item}</span>
+                </div>
+              ))}
+            </div>
+            <div className="mt-8 p-6 bg-gray-900 rounded-xl">
+              <p className="text-white text-center italic">
+                "{t.about.philosophy}"
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Ideal Projects */}
+        <div className="mt-16">
+          <div className="text-center mb-12">
+            <h3 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              {t.about.idealProjects}
+            </h3>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+            {t.about.idealProjectsList.map((project, idx) => (
+              <div
+                key={idx}
+                className="bg-white rounded-xl p-6 border-2 border-gray-200 hover:border-gray-900 transition-all duration-300 text-center"
+              >
+                <div className="w-12 h-12 bg-gray-900 rounded-lg mx-auto mb-4 flex items-center justify-center">
+                  <Check className="w-6 h-6 text-white" />
+                </div>
+                <p className="text-base font-medium text-gray-900">{project}</p>
+              </div>
+            ))}
+          </div>
+        </div>
 
         {/* Bottom Testimonial or CTA */}
         <div className="mt-24 text-center">

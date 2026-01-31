@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react';
+import { useState, useCallback, type FormEvent, type ChangeEvent } from 'react';
 import { motion } from 'framer-motion';
 import { HiMail, HiPhone, HiLocationMarker, HiArrowRight } from 'react-icons/hi';
 import { useLocale } from '@/i18n/UseLocale';
@@ -15,7 +15,7 @@ export const Contact = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState('');
 
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = useCallback(async (e: FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
@@ -27,7 +27,19 @@ export const Contact = () => {
     setIsSubmitting(false);
 
     setTimeout(() => setSubmitMessage(''), 5000);
-  };
+  }, []);
+
+  const handleNameChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+    setFormData(prev => ({ ...prev, name: e.target.value }));
+  }, []);
+
+  const handleEmailChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+    setFormData(prev => ({ ...prev, email: e.target.value }));
+  }, []);
+
+  const handleMessageChange = useCallback((e: ChangeEvent<HTMLTextAreaElement>) => {
+    setFormData(prev => ({ ...prev, message: e.target.value }));
+  }, []);
 
   const contactInfo = [
     {
@@ -100,15 +112,15 @@ export const Contact = () => {
             className="col-span-12 lg:col-span-7"
           >
             <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Name Input */}
+              {/* Message Textarea */}
               <div className="group">
-                <label className="text-label text-gray-600 mb-2 block">YOUR NAME</label>
-                <input
-                  type="text"
-                  placeholder={t.contact.namePlaceholder}
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full px-6 py-4 bg-white border-2 border-gray-200 rounded-2xl text-body text-gray-900 placeholder:text-gray-400 focus:border-gray-900 focus:outline-none transition-all duration-300 hover:border-gray-300"
+                <label className="text-label text-gray-600 mb-2 block">YOUR MESSAGE</label>
+                <textarea
+                  rows={6}
+                  placeholder={t.contact.messagePlaceholder}
+                  value={formData.message}
+                  onChange={handleMessageChange}
+                  className="w-full px-6 py-4 bg-white border-2 border-gray-200 rounded-2xl text-body text-gray-900 placeholder:text-gray-400 focus:border-gray-900 focus:outline-none transition-all duration-300 hover:border-gray-300 resize-none"
                   required
                 />
               </div>
@@ -120,7 +132,7 @@ export const Contact = () => {
                   type="email"
                   placeholder={t.contact.emailPlaceholder}
                   value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  onChange={handleEmailChange}
                   className="w-full px-6 py-4 bg-white border-2 border-gray-200 rounded-2xl text-body text-gray-900 placeholder:text-gray-400 focus:border-gray-900 focus:outline-none transition-all duration-300 hover:border-gray-300"
                   required
                 />
@@ -206,9 +218,6 @@ export const Contact = () => {
             {contactInfo.map((info, index) => (
               <motion.div
                 key={index}
-                initial={{ opacity: 0, x: 40 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
                 whileHover={{ y: -4, scale: 1.02 }}
                 className="group relative p-6 bg-linear-to-br from-white to-gray-50 border border-gray-200 rounded-2xl hover:border-gray-900 transition-all duration-300 elegant-shadow texture-noise overflow-hidden"

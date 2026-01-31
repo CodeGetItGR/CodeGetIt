@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import type { Locale } from '@/i18n/types.ts';
 import {useLocale} from "../../i18n/UseLocale.tsx";
 
@@ -16,13 +16,21 @@ export const Header = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const scrollToSection = (sectionId: string) => {
+  const scrollToSection = useCallback((sectionId: string) => {
     const element = document.getElementById(sectionId);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
       setIsMobileMenuOpen(false);
     }
-  };
+  }, []);
+
+  const toggleMobileMenu = useCallback(() => {
+    setIsMobileMenuOpen(prev => !prev);
+  }, []);
+
+  const handleLocaleChange = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
+    setLocale(e.target.value as Locale);
+  }, [setLocale]);
 
   return (
     <header
@@ -78,7 +86,7 @@ export const Header = () => {
             {/* Language Selector */}
             <select
               value={locale}
-              onChange={(e) => setLocale(e.target.value as Locale)}
+              onChange={handleLocaleChange}
               className="px-3 py-1.5 border border-gray-300 rounded-lg text-sm font-medium focus:outline-none focus:ring-2 focus:ring-gray-900 bg-white"
             >
               <option value="en">EN</option>
@@ -90,7 +98,7 @@ export const Header = () => {
 
           {/* Mobile Menu Button */}
           <button
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            onClick={toggleMobileMenu}
             className="md:hidden p-2 text-gray-700 hover:text-gray-900"
           >
             <svg
@@ -146,7 +154,7 @@ export const Header = () => {
             </button>
             <select
               value={locale}
-              onChange={(e) => setLocale(e.target.value as Locale)}
+              onChange={handleLocaleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm font-medium focus:outline-none focus:ring-2 focus:ring-gray-900 bg-white"
             >
               <option value="en">English</option>

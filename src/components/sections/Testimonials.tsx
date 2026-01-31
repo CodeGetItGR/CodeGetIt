@@ -63,7 +63,6 @@ export const Testimonials = () => {
                     whileInView={{ opacity: 1, scale: 1 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.5, delay: index * 0.1 }}
-                    whileHover={{ y: -8, scale: 1.02 }}
                     className="h-full p-8 bg-white border border-gray-200 rounded-2xl hover:border-gray-900 transition-all duration-300 elegant-shadow hover:elegant-shadow-lg"
                   >
                     {/* Rating */}

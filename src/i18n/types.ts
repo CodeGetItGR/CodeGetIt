@@ -13,6 +13,7 @@ export interface Translations {
   hero: {
     title: string;
     subtitle: string;
+    subheadline: string;
     cta: string;
     learnMore: string;
     badge: string;
@@ -23,6 +24,14 @@ export interface Translations {
     ecommercePlatform: string;
     ecommerceDesc: string;
     scroll: string;
+    socialProof: string;
+    proofBar: {
+      seniorEngineering: string;
+      founderLed: string;
+      builtForScale: string;
+      modernStack: string;
+    };
+    availability: string;
   };
 
   // Services Section
@@ -37,6 +46,7 @@ export interface Translations {
       features: string[];
       technicalDetails: {
         title: string;
+        disclaimer?: string;
         items: string[];
       };
     };
@@ -47,6 +57,7 @@ export interface Translations {
       features: string[];
       technicalDetails: {
         title: string;
+        disclaimer?: string;
         items: string[];
       };
     };
@@ -79,6 +90,13 @@ export interface Translations {
     features: string[];
     testimonialQuote: string;
     testimonialAuthor: string;
+    whyFounderLed: string;
+    founderAdvantage: string;
+    idealProjects: string;
+    idealProjectsList: string[];
+    technicalApproach: string;
+    technicalApproachList: string[];
+    philosophy: string;
   };
 
   // Stats Section
@@ -171,5 +189,12 @@ export interface Translations {
   footer: {
     tagline: string;
     rights: string;
+  };
+
+  // Closing CTA
+  closingCTA: {
+    title: string;
+    subtitle: string;
+    button: string;
   };
 }

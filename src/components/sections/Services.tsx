@@ -1,7 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { Section } from '@/components/ui/Section';
 import { Card } from '@/components/ui/Card';
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { HiCode, HiServer, HiChevronDown, HiChevronUp } from 'react-icons/hi';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
@@ -23,6 +23,7 @@ const ServiceCard = ({
   features: string[];
   technicalDetails: {
     title: string;
+    disclaimer?: string;
     items: string[];
   };
   index: number;
@@ -31,6 +32,18 @@ const ServiceCard = ({
   const [isExpanded, setIsExpanded] = useState(false);
   const { t } = useLocale();
 
+  const toggleExpanded = useCallback(() => {
+    setIsExpanded(prev => !prev);
+  }, []);
+
+  const handleMouseEnter = useCallback(() => {
+    setIsHovered(true);
+  }, []);
+
+  const handleMouseLeave = useCallback(() => {
+    setIsHovered(false);
+  }, []);
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
@@ -38,8 +51,8 @@ const ServiceCard = ({
       viewport={{ once: true }}
       transition={{ duration: 0.5, delay: index * 0.2 }}
       className="group relative"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
       {/* Elegant hover glow */}
       <div className={cn(
@@ -93,10 +106,12 @@ const ServiceCard = ({
 
           {/* Expand/Collapse Button */}
           <motion.button
-            onClick={() => setIsExpanded(!isExpanded)}
+            onClick={toggleExpanded}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            className="w-full mt-4 px-4 py-3 bg-gray-100 hover:bg-gray-900 hover:text-white text-gray-900 rounded-lg transition-all duration-300 flex items-center justify-between font-medium text-sm"
+            aria-expanded={isExpanded}
+            aria-label={isExpanded ? t.services.hideDetails : t.services.viewDetails}
+            className="w-full mt-4 px-4 py-3 bg-gray-100 hover:bg-gray-900 hover:text-white text-gray-900 rounded-lg transition-all duration-300 flex items-center justify-between font-medium text-sm focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2"
           >
             <span>{isExpanded ? t.services.hideDetails : t.services.viewDetails}</span>
             {isExpanded ? <HiChevronUp className="w-5 h-5" /> : <HiChevronDown className="w-5 h-5" />}
@@ -113,10 +128,17 @@ const ServiceCard = ({
                 className="overflow-hidden"
               >
                 <div className="mt-6 pt-6 border-t border-gray-200">
-                  <h4 className="text-lg font-bold text-gray-900 mb-4">
+                  <h4 className="text-lg font-bold text-gray-900 mb-3">
                     {technicalDetails.title}
                   </h4>
-                  <p className="text-sm text-gray-600 mb-4 italic">
+                  {technicalDetails.disclaimer && (
+                    <div className="mb-4 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                      <p className="text-sm text-gray-700 italic">
+                        {technicalDetails.disclaimer}
+                      </p>
+                    </div>
+                  )}
+                  <p className="text-sm text-gray-600 mb-4">
                     {description}
                   </p>
                   <ul className="space-y-3">
@@ -156,6 +178,10 @@ const ServiceCard = ({
 export const Services = () => {
   const { t } = useLocale();
 
+  const scrollToContact = useCallback(() => {
+    document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+  }, []);
+
   const services = [
     {
       icon: HiCode,
@@ -181,7 +207,7 @@ export const Services = () => {
       <div className="absolute top-0 left-1/4 w-96 h-96 bg-gray-100 rounded-full filter blur-3xl opacity-20 animate-float"></div>
       <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-gray-50 rounded-full filter blur-3xl opacity-30 animate-float" style={{ animationDelay: '2s' }}></div>
 
-      <div className="max-w-360 mx-auto px-6 sm:px-8 lg:px-12 relative z-10">
+      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 relative z-10">
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -196,18 +222,18 @@ export const Services = () => {
             viewport={{ once: true }}
             className="mb-6"
           >
-            <Badge>{t.services.badge}</Badge>
+            <Badge>{t.services.badge.toUpperCase()}</Badge>
           </motion.div>
-          <h2 className="text-5xl md:text-6xl font-black text-gray-900 mb-6">
+          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 tracking-tight">
             {t.services.title}
           </h2>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-base md:text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
             {t.services.subtitle}
           </p>
         </motion.div>
 
         {/* Services Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 max-w-5xl mx-auto">
           {services.map((service, index) => (
             <ServiceCard key={index} {...service} index={index} />
           ))}
@@ -225,9 +251,7 @@ export const Services = () => {
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            onClick={() => {
-              document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
-            }}
+            onClick={scrollToContact}
             className="px-8 py-4 bg-gray-900 text-white font-semibold rounded-full hover:bg-gray-800 transition-colors duration-300 shadow-lg hover:shadow-2xl"
           >
             {t.services.contactCTA}

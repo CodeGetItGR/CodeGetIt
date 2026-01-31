@@ -7,6 +7,7 @@ import { About } from './components/sections/About';
 // import { Skills } from './components/sections/Skills';
 import { Contact } from './components/sections/Contact.tsx';
 import { Testimonials } from './components/sections/Testimonials';
+import { ClosingCTA } from './components/sections/ClosingCTA';
 import { AnimatedBackground } from './components/ui/AnimatedBackground';
 import { CursorSpotlight } from './components/ui/CursorSpotlight';
 import { ScrollProgress } from './components/ui/ScrollProgress';
@@ -30,6 +31,7 @@ function App() {
           <Testimonials />
           <Contact />
         </main>
+        <ClosingCTA />
         <Footer />
       </div>
     </>

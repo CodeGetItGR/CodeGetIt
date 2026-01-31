@@ -8,6 +8,7 @@ export interface Project {
   color: string;
   client?: string;
   link?: string;
+  result?: string;
 }
 
 export const projects: Project[] = [
@@ -20,6 +21,7 @@ export const projects: Project[] = [
     tags: ['React', 'Node.js', 'MongoDB', 'Stripe'],
     color: 'from-gray-800 to-gray-900',
     client: 'TechRetail Co.',
+    result: '37% increase in checkout conversions',
   },
   {
     id: 2,
@@ -30,45 +32,6 @@ export const projects: Project[] = [
     tags: ['Next.js', 'PostgreSQL', 'Prisma'],
     color: 'from-gray-700 to-gray-800',
     client: 'Gourmet Dining Group',
-  },
-  {
-    id: 3,
-    title: 'Social Media Dashboard',
-    category: 'Front-End',
-    description: 'Analytics platform for managing multiple social media accounts and campaigns.',
-    image: '/projects/social.jpg',
-    tags: ['React', 'TypeScript', 'Chart.js', 'Tailwind'],
-    color: 'from-gray-600 to-gray-700',
-    client: 'Digital Marketing Pro',
-  },
-  {
-    id: 4,
-    title: 'Real Estate Portal',
-    category: 'Full-Stack',
-    description: 'Property listing platform with virtual tours and mortgage calculators.',
-    image: '/projects/realestate.jpg',
-    tags: ['React', 'Django', 'Maps API', 'PostgreSQL'],
-    color: 'from-gray-900 to-black',
-    client: 'Urban Properties LLC',
-  },
-  {
-    id: 5,
-    title: 'API Gateway Service',
-    category: 'Back-End',
-    description: 'Microservices architecture with authentication, rate limiting, and load balancing.',
-    image: '/projects/api.jpg',
-    tags: ['Node.js', 'Express', 'Redis', 'JWT'],
-    color: 'from-gray-800 to-black',
-    client: 'FinTech Solutions',
-  },
-  {
-    id: 6,
-    title: 'Task Management App',
-    category: 'Full-Stack',
-    description: 'Collaborative project management tool with real-time updates and team features.',
-    image: '/projects/taskmanager.jpg',
-    tags: ['React', 'Node.js', 'Socket.io', 'MongoDB'],
-    color: 'from-gray-700 to-gray-900',
-    client: 'ProductivityHub',
+    result: 'Reduced booking time by 60%',
   },
 ];
