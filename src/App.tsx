@@ -4,10 +4,7 @@ import { Hero } from './components/sections/Hero.tsx';
 import { Services } from './components/sections/Services.tsx';
 import { Portfolio } from './components/sections/Portfolio.tsx';
 import { About } from './components/sections/About';
-// import { Skills } from './components/sections/Skills';
 import { Contact } from './components/sections/Contact.tsx';
-import { Testimonials } from './components/sections/Testimonials';
-import { ClosingCTA } from './components/sections/ClosingCTA';
 import { AnimatedBackground } from './components/ui/AnimatedBackground';
 import { CursorSpotlight } from './components/ui/CursorSpotlight';
 import { ScrollProgress } from './components/ui/ScrollProgress';
@@ -27,11 +24,8 @@ function App() {
           <Services />
           <Portfolio />
           <About />
-          {/* <Skills /> - Uncomment if you want to display your tech stack */}
-          <Testimonials />
           <Contact />
         </main>
-        <ClosingCTA />
         <Footer />
       </div>
     </>

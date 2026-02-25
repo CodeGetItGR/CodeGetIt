@@ -146,99 +146,58 @@ export const About = () => {
           <ProcessTimeline />
         </div>
 
-        {/* Why Founder-Led */}
+        {/* What You Get - Performance Metrics */}
         <div className="mt-24">
-          <div className="max-w-3xl mx-auto text-center mb-12">
-            <h3 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
-              {t.about.whyFounderLed}
-            </h3>
-            <p className="text-lg text-gray-700 leading-relaxed">
-              {t.about.founderAdvantage}
-            </p>
-          </div>
-        </div>
-
-        {/* Engineering Principles - Neutral Authority Tone */}
-        <div className="mt-16 bg-gray-50 rounded-3xl p-8 md:p-12 border-2 border-gray-200">
-          <div className="max-w-4xl mx-auto">
-            <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4 text-center">
-              {t.about.engineeringPrinciples}
-            </h3>
-            <p className="text-lg text-gray-700 text-center mb-8 leading-relaxed">
-              {t.about.engineeringPrinciplesDesc}
-            </p>
-            <p className="text-base text-gray-600 text-center mb-8 leading-relaxed italic">
-              {t.about.engineeringPrinciplesSubtext}
-            </p>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {t.about.technicalApproachList.map((item, idx) => (
-                <div
-                  key={idx}
-                  className="flex items-start gap-3 p-4 bg-white rounded-xl border border-gray-200 hover:border-gray-900 transition-all duration-300"
-                >
-                  <div className="w-6 h-6 rounded-full bg-slate-900 flex items-center justify-center shrink-0 mt-0.5">
-                    <Check className="w-3.5 h-3.5 text-white" />
-                  </div>
-                  <p className="text-base text-gray-700">{item}</p>
-                </div>
-              ))}
-            </div>
-            <div className="mt-8 p-6 bg-slate-900 rounded-xl">
-              <p className="text-white text-center font-semibold text-lg">
-                {t.about.philosophy}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Engagement Model - Trust Booster */}
-        <div className="mt-16">
-          <div className="max-w-3xl mx-auto">
-            <h3 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6 text-center">
-              {t.about.engagementModel}
-            </h3>
-            <div className="bg-white rounded-2xl p-8 border-2 border-gray-200 shadow-lg">
-              <ul className="space-y-4">
-                {t.about.engagementModelList.map((item, idx) => (
-                  <li
-                    key={idx}
-                    className="flex items-start gap-4 text-gray-700"
-                  >
-                    <div className="w-6 h-6 rounded-full bg-slate-900 flex items-center justify-center shrink-0 mt-0.5">
-                      <Check className="w-4 h-4 text-white" />
-                    </div>
-                    <span className="text-base font-medium leading-relaxed">{item}</span>
-                  </li>
-                ))}
-              </ul>
-              <div className="mt-6 pt-6 border-t border-gray-200">
-                <p className="text-center text-gray-700 italic">
-                  {t.about.bestSuitedFor}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Ideal Projects */}
-        <div className="mt-16">
           <div className="text-center mb-12">
+            <Badge className="mb-6 mx-auto">
+              <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
+              WHAT YOU GET
+            </Badge>
             <h3 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              {t.about.idealProjects}
+              Results That Matter
             </h3>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Every project is built to perform, scale, and deliver value from day one
+            </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-            {t.about.idealProjectsList.map((project, idx) => (
-              <div
-                key={idx}
-                className="bg-white rounded-xl p-6 border-2 border-gray-200 hover:border-slate-900 transition-all duration-300 text-center"
-              >
-                <div className="w-12 h-12 bg-slate-900 rounded-lg mx-auto mb-4 flex items-center justify-center">
-                  <Check className="w-6 h-6 text-white" />
-                </div>
-                <p className="text-base font-medium text-gray-900">{project}</p>
+
+          {/* Key Metrics - Impact Numbers */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            <div className="text-center p-8 bg-white rounded-2xl border-2 border-gray-200 hover:border-slate-900 transition-all duration-300 hover:shadow-xl group">
+              <div className="text-5xl font-black text-slate-900 mb-3 group-hover:scale-110 transition-transform">
+                99.9%
               </div>
-            ))}
+              <div className="text-sm font-semibold text-gray-600 uppercase tracking-wider mb-2">
+                Uptime Average
+              </div>
+              <div className="text-xs text-gray-500">
+                Production-grade reliability
+              </div>
+            </div>
+
+            <div className="text-center p-8 bg-white rounded-2xl border-2 border-gray-200 hover:border-slate-900 transition-all duration-300 hover:shadow-xl group">
+              <div className="text-5xl font-black text-slate-900 mb-3 group-hover:scale-110 transition-transform">
+                &lt;200ms
+              </div>
+              <div className="text-sm font-semibold text-gray-600 uppercase tracking-wider mb-2">
+                Avg Response Time
+              </div>
+              <div className="text-xs text-gray-500">
+                Optimized for performance
+              </div>
+            </div>
+
+            <div className="text-center p-8 bg-white rounded-2xl border-2 border-gray-200 hover:border-slate-900 transition-all duration-300 hover:shadow-xl group">
+              <div className="text-5xl font-black text-slate-900 mb-3 group-hover:scale-110 transition-transform">
+                2-4wks
+              </div>
+              <div className="text-sm font-semibold text-gray-600 uppercase tracking-wider mb-2">
+                Time to Launch
+              </div>
+              <div className="text-xs text-gray-500">
+                From concept to production
+              </div>
+            </div>
           </div>
         </div>
 
