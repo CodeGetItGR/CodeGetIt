@@ -70,7 +70,7 @@ const ServiceCard = ({
             whileHover={{ scale: 1.05, rotate: 5 }}
             className="mb-6 inline-flex"
           >
-            <div className="p-4 bg-gray-900 rounded-xl shadow-lg group-hover:shadow-2xl transition-all duration-500">
+            <div className="p-4 bg-slate-900 rounded-xl shadow-lg group-hover:shadow-2xl transition-all duration-500">
               <Icon className="w-8 h-8 text-white" />
             </div>
           </motion.div>
@@ -255,7 +255,7 @@ export const Services = () => {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={scrollToContact}
-            className="px-8 py-4 bg-gray-900 text-white font-semibold rounded-full hover:bg-gray-800 transition-colors duration-300 shadow-lg hover:shadow-2xl"
+            className="px-8 py-4 bg-slate-900 text-white font-semibold rounded-full hover:bg-slate-800 transition-colors duration-300 shadow-lg hover:shadow-2xl focus:outline-none focus:ring-2 focus:ring-slate-700 focus:ring-offset-2"
           >
             {t.services.contactCTA}
           </motion.button>

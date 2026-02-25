@@ -10,7 +10,7 @@ export const ClosingCTA = () => {
   };
 
   return (
-    <section className="relative py-24 bg-gray-900 overflow-hidden">
+    <section className="relative py-24 bg-slate-900 overflow-hidden">
       {/* Subtle background pattern */}
       <div className="absolute inset-0 opacity-[0.03]">
         <div style={{
@@ -40,7 +40,7 @@ export const ClosingCTA = () => {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             aria-label="Start your project"
-            className="inline-flex items-center gap-3 px-10 py-5 bg-white text-gray-900 font-bold rounded-full hover:bg-gray-100 transition-all duration-300 shadow-2xl hover:shadow-xl text-lg focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-900"
+            className="inline-flex items-center gap-3 px-10 py-5 bg-white text-slate-900 font-bold rounded-full hover:bg-gray-100 transition-all duration-300 shadow-2xl hover:shadow-xl text-lg focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-slate-900"
           >
             {t.closingCTA.button}
             <HiArrowRight className="w-6 h-6" aria-hidden="true" />

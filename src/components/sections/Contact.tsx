@@ -180,7 +180,7 @@ export const Contact = () => {
                 disabled={isSubmitting}
                 whileHover={{ scale: 1.02, x: 5 }}
                 whileTap={{ scale: 0.98 }}
-                className="px-8 py-4 bg-gray-900 text-white font-semibold rounded-full hover:bg-gray-800 transition-all duration-300 flex items-center gap-2 text-body elegant-shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                 className="px-8 py-4 bg-slate-900 text-white font-semibold rounded-full hover:bg-slate-800 transition-all duration-300 flex items-center gap-2 text-body elegant-shadow-lg disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-slate-700 focus:ring-offset-2"
               >
                 {isSubmitting ? (
                   <>
@@ -204,7 +204,7 @@ export const Contact = () => {
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="p-4 bg-gray-900 text-white rounded-2xl text-body flex items-center gap-3"
+                  className="p-4 bg-slate-900 text-white rounded-2xl text-body flex items-center gap-3"
                 >
                   <div className="w-2 h-2 bg-white rounded-full" />
                   {submitMessage}

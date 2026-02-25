@@ -156,7 +156,7 @@ export const Hero = () => {
               <MagneticButton
                 onClick={() => scrollToSection('contact')}
                 aria-label="Start your project - Contact us"
-                className="group px-8 py-4 bg-gray-900 text-white font-semibold rounded-full hover:bg-gray-800 transition-all duration-300 flex items-center justify-center gap-2 text-base shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2"
+                className="group px-8 py-4 bg-slate-900 text-white font-semibold rounded-full hover:bg-slate-800 transition-all duration-300 flex items-center justify-center gap-2 text-base shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-slate-700 focus:ring-offset-2"
               >
                 <motion.span
                   whileHover={{ scale: 1.02, x: 5 }}
@@ -170,7 +170,7 @@ export const Hero = () => {
               <MagneticButton
                 onClick={() => scrollToSection('portfolio')}
                 aria-label="View our portfolio"
-                className="px-8 py-4 bg-transparent text-gray-900 font-semibold rounded-full border border-gray-300 hover:border-gray-900 transition-all duration-300 text-base focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2"
+                className="px-8 py-4 bg-transparent text-slate-900 font-semibold rounded-full border-2 border-slate-200 hover:border-slate-900 hover:bg-slate-50 transition-all duration-300 text-base focus:outline-none focus:ring-2 focus:ring-slate-700 focus:ring-offset-2"
               >
                 <motion.span
                   whileHover={{ scale: 1.02 }}
@@ -268,7 +268,7 @@ export const Hero = () => {
                 </div>
 
                 {/* Subtle glow effect */}
-                <div className="absolute inset-0 bg-linear-to-t from-green-500/5 via-transparent to-transparent pointer-events-none"></div>
+                <div className="absolute inset-0 bg-linear-to-t from-teal-500/5 via-transparent to-transparent pointer-events-none"></div>
               </motion.div>
 
               {/* Minimal floating quality badges */}
@@ -298,9 +298,9 @@ export const Hero = () => {
                       delay: idx * 0.5,
                       ease: "easeInOut"
                     }}
-                    className="bg-white border-2 border-gray-900 rounded-lg px-4 py-2 shadow-xl"
+                    className="bg-white border-2 border-slate-900 rounded-lg px-4 py-2 shadow-xl"
                   >
-                    <span className="text-sm font-bold text-gray-900">{badge.text}</span>
+                    <span className="text-sm font-bold text-slate-900">{badge.text}</span>
                   </motion.div>
                 </motion.div>
               ))}

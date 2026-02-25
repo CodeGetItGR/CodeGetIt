@@ -59,8 +59,8 @@ const StatCard = ({ value, label, index }: { value: string; label: string; index
       }`}
     >
       <div className="relative inline-block">
-        <div className="absolute inset-0 bg-gray-400 rounded-2xl blur-lg opacity-0 group-hover:opacity-30 transition-opacity duration-500"></div>
-        <div className="relative bg-white rounded-2xl p-6 md:p-8 shadow-lg group-hover:shadow-2xl transition-all duration-500 border-2 border-transparent group-hover:border-gray-900">
+        <div className="absolute inset-0 bg-slate-400 rounded-2xl blur-lg opacity-0 group-hover:opacity-30 transition-opacity duration-500"></div>
+        <div className="relative bg-white rounded-2xl p-6 md:p-8 shadow-lg group-hover:shadow-2xl transition-all duration-500 border-2 border-transparent group-hover:border-slate-900">
           <div className="text-4xl md:text-5xl lg:text-6xl font-black mb-2 text-gray-900 group-hover:scale-110 transition-transform duration-300 wrap-break-word">
             {count > 0 ? count : parseInt(value.replace(/\D/g, ''))}
             {value.includes('+') && '+'}
@@ -121,7 +121,7 @@ export const About = () => {
                     className="flex items-center gap-3 group cursor-default"
                     style={{ animationDelay: `${index * 100}ms` }}
                   >
-                    <div className="w-8 h-8 rounded-lg bg-gray-900 flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:rotate-12 transition-all duration-300">
+                    <div className="w-8 h-8 rounded-lg bg-slate-900 flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:rotate-12 transition-all duration-300">
                       <Check className="w-5 h-5 text-white" />
                     </div>
                     <span className="text-gray-700 font-medium group-hover:text-gray-900 transition-colors duration-300">
@@ -176,14 +176,14 @@ export const About = () => {
                   key={idx}
                   className="flex items-start gap-3 p-4 bg-white rounded-xl border border-gray-200 hover:border-gray-900 transition-all duration-300"
                 >
-                  <div className="w-6 h-6 rounded-full bg-gray-900 flex items-center justify-center shrink-0 mt-0.5">
-                    <Check className="w-4 h-4 text-white" />
+                  <div className="w-6 h-6 rounded-full bg-slate-900 flex items-center justify-center shrink-0 mt-0.5">
+                    <Check className="w-3.5 h-3.5 text-white" />
                   </div>
-                  <span className="text-gray-700 font-medium leading-relaxed">{item}</span>
+                  <p className="text-base text-gray-700">{item}</p>
                 </div>
               ))}
             </div>
-            <div className="mt-8 p-6 bg-gray-900 rounded-xl">
+            <div className="mt-8 p-6 bg-slate-900 rounded-xl">
               <p className="text-white text-center font-semibold text-lg">
                 {t.about.philosophy}
               </p>
@@ -204,7 +204,7 @@ export const About = () => {
                     key={idx}
                     className="flex items-start gap-4 text-gray-700"
                   >
-                    <div className="w-6 h-6 rounded-full bg-gray-900 flex items-center justify-center shrink-0 mt-0.5">
+                    <div className="w-6 h-6 rounded-full bg-slate-900 flex items-center justify-center shrink-0 mt-0.5">
                       <Check className="w-4 h-4 text-white" />
                     </div>
                     <span className="text-base font-medium leading-relaxed">{item}</span>
@@ -231,9 +231,9 @@ export const About = () => {
             {t.about.idealProjectsList.map((project, idx) => (
               <div
                 key={idx}
-                className="bg-white rounded-xl p-6 border-2 border-gray-200 hover:border-gray-900 transition-all duration-300 text-center"
+                className="bg-white rounded-xl p-6 border-2 border-gray-200 hover:border-slate-900 transition-all duration-300 text-center"
               >
-                <div className="w-12 h-12 bg-gray-900 rounded-lg mx-auto mb-4 flex items-center justify-center">
+                <div className="w-12 h-12 bg-slate-900 rounded-lg mx-auto mb-4 flex items-center justify-center">
                   <Check className="w-6 h-6 text-white" />
                 </div>
                 <p className="text-base font-medium text-gray-900">{project}</p>
