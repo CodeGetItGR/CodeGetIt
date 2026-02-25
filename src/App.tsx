@@ -5,19 +5,13 @@ import { Services } from './components/sections/Services.tsx';
 import { Portfolio } from './components/sections/Portfolio.tsx';
 import { About } from './components/sections/About';
 import { Contact } from './components/sections/Contact.tsx';
-import { AnimatedBackground } from './components/ui/AnimatedBackground';
-import { CursorSpotlight } from './components/ui/CursorSpotlight';
-import { ScrollProgress } from './components/ui/ScrollProgress';
 import { SEO } from './components/SEO';
 
 function App() {
   return (
     <>
       <SEO />
-      <div className="min-h-screen relative">
-        <AnimatedBackground />
-        <CursorSpotlight />
-        <ScrollProgress />
+      <div className="min-h-screen">
         <Header />
         <main>
           <Hero />

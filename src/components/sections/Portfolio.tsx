@@ -4,7 +4,6 @@ import { HiArrowRight, HiExternalLink, HiEye } from 'react-icons/hi';
 import { Section } from '@/components/ui/Section';
 import { projects, type Project } from '@/data/projects';
 import { cn } from '@/lib/utils';
-import { Badge } from '@/components/ui/badge';
 import { useLocale } from '@/i18n/UseLocale';
 
 const ProjectCard = ({ project, index, size = 'normal' }: { project: Project; index: number; size?: 'normal' | 'large' | 'wide' }) => {
@@ -106,17 +105,6 @@ const ProjectCard = ({ project, index, size = 'normal' }: { project: Project; in
 
             {/* Bottom Section: Project Details */}
             <div>
-              {/* Client Name */}
-              {project.client && (
-                <motion.p
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="text-sm font-medium text-white/80 mb-2 tracking-wide uppercase"
-                >
-                  {project.client}
-                </motion.p>
-              )}
-
               {/* Project Title */}
               <motion.h3
                 className="text-3xl md:text-4xl text-white mb-3 font-bold tracking-tight leading-tight"
@@ -130,20 +118,6 @@ const ProjectCard = ({ project, index, size = 'normal' }: { project: Project; in
               <p className="text-base md:text-lg text-white/90 mb-4 line-clamp-2 leading-relaxed">
                 {project.description}
               </p>
-
-              {/* Result Metric - Always Visible */}
-              {project.result && (
-                <motion.div
-                  className="mb-5 p-4 bg-white/15 backdrop-blur-md rounded-xl border border-white/30 shadow-lg"
-                  whileHover={{ scale: 1.02 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <p className="text-sm font-bold text-white flex items-center gap-2">
-                    <span className="text-lg">📈</span>
-                    {project.result}
-                  </p>
-                </motion.div>
-              )}
 
               {/* Hover Content: Tags & Actions */}
               <AnimatePresence>
@@ -308,46 +282,23 @@ export const Portfolio = () => {
   }, []);
 
   return (
-    <Section id="portfolio" className="bg-white relative overflow-hidden py-20 lg:py-28">
-      {/* Subtle Background */}
-      <div className="absolute inset-0 opacity-[0.015]">
-        <div style={{
-          backgroundImage: `radial-gradient(circle, #171717 1px, transparent 1px)`,
-          backgroundSize: '24px 24px'
-        }} className="w-full h-full" />
-      </div>
-
-      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 relative z-10">
-        {/* Header */}
+    <Section id="portfolio" className="bg-white py-32 lg:py-40">
+      <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12">
+        {/* Header — left-aligned, no badge, matching other sections */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="mb-12"
+          transition={{ duration: 0.5 }}
+          className="mb-16 max-w-2xl"
         >
-          <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-10">
-            <div className="max-w-2xl">
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                className="mb-4"
-              >
-                <Badge>
-                  <div className="w-2 h-2 bg-white rounded-full" />
-                  {t.portfolio.badge.toUpperCase()}
-                </Badge>
-              </motion.div>
-
-              <h2 className="text-4xl md:text-5xl font-bold mb-4 leading-tight tracking-tight text-gray-900">
-                {t.portfolio.title}
-              </h2>
-              <p className="text-base md:text-lg text-gray-600">
-                {t.portfolio.subtitle}
-              </p>
-            </div>
-          </div>
+          <p className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-4">Portfolio</p>
+          <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight mb-6">
+            {t.portfolio.title}
+          </h2>
+          <p className="text-lg text-gray-600 leading-relaxed">
+            {t.portfolio.subtitle}
+          </p>
         </motion.div>
 
         {/* Filter Buttons */}
@@ -355,24 +306,22 @@ export const Portfolio = () => {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="flex flex-wrap gap-3 mb-10"
+          transition={{ duration: 0.5, delay: 0.1 }}
+          className="flex flex-wrap gap-3 mb-12"
         >
           {categories.map((category) => (
-            <motion.button
+            <button
               key={category}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
               onClick={() => handleFilterChange(category)}
               className={cn(
-                'px-5 py-2.5 rounded-full font-semibold text-sm transition-all duration-300 border-2 focus:outline-none focus:ring-2 focus:ring-slate-700 focus:ring-offset-2',
+                'px-5 py-2 rounded-full text-sm font-medium transition-colors duration-200',
                 activeFilter === category
-                  ? 'bg-slate-900 text-white border-slate-900 shadow-md'
-                  : 'bg-white text-slate-700 border-slate-200 hover:border-slate-400 hover:bg-slate-50'
+                  ? 'bg-gray-900 text-white'
+                  : 'bg-white text-gray-600 hover:text-gray-900 border border-gray-200 hover:border-gray-300'
               )}
             >
               {category === 'all' ? t.portfolio.allProjects : category}
-            </motion.button>
+            </button>
           ))}
         </motion.div>
 
@@ -397,47 +346,39 @@ export const Portfolio = () => {
           </motion.div>
         </AnimatePresence>
 
-        {/* Show More / Show Less Button */}
+        {/* Show More / Show Less */}
         {filteredProjects.length > 3 && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 20 }}
-            className="flex justify-center mt-12"
-          >
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+          <div className="flex justify-center mt-12">
+            <button
               onClick={toggleShowAllProjects}
-              className="px-8 py-3 bg-slate-900 text-white font-semibold rounded-full hover:bg-slate-800 transition-all duration-300 shadow-lg hover:shadow-xl"
+              className="text-sm font-semibold text-gray-600 hover:text-gray-900 transition-colors duration-200 underline decoration-gray-300 underline-offset-4 hover:decoration-gray-900"
             >
-              {showAllProjects ? '← Show Less' : `View All ${filteredProjects.length} Projects →`}
-            </motion.button>
-          </motion.div>
+              {showAllProjects ? '← Show less' : `View all ${filteredProjects.length} projects →`}
+            </button>
+          </div>
         )}
 
-        {/* Bottom CTA - Only show when not showing all projects */}
+        {/* Bottom CTA */}
         {!showAllProjects && (
           <motion.div
-            initial={{ opacity: 0, y: 40 }}
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            className="mt-20 text-center"
+            transition={{ duration: 0.5 }}
+            className="mt-24 pt-16 border-t border-gray-200"
           >
-            <div className="inline-block max-w-2xl">
-              <h3 className="text-3xl md:text-4xl font-bold mb-4">{t.portfolio.projectCTA}</h3>
-              <p className="text-base md:text-lg text-gray-600 mb-8">
-                {t.portfolio.projectCTADesc}
-              </p>
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
+              <div className="max-w-xl">
+                <h3 className="text-2xl font-bold text-gray-900 mb-2">{t.portfolio.projectCTA}</h3>
+                <p className="text-lg text-gray-600">{t.portfolio.projectCTADesc}</p>
+              </div>
+              <button
                 onClick={scrollToContact}
-                className="px-8 py-4 bg-slate-900 text-white font-semibold rounded-full hover:bg-slate-800 transition-all duration-300 inline-flex items-center gap-2 shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-slate-700 focus:ring-offset-2"
+                className="group inline-flex items-center gap-3 px-8 py-4 bg-gray-900 text-white text-base font-semibold rounded-full hover:bg-gray-800 transition-colors duration-200 shrink-0"
               >
                 {t.portfolio.startProject}
-                <HiArrowRight className="w-5 h-5" />
-              </motion.button>
+                <HiArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-200" />
+              </button>
             </div>
           </motion.div>
         )}
