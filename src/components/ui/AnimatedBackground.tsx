@@ -1,22 +1,16 @@
 export const AnimatedBackground = () => {
   return (
-    <div className="fixed inset-0 -z-50 overflow-hidden pointer-events-none">
-      {/* Gradient Mesh */}
-      <div className="absolute inset-0 bg-gradient-to-br from-gray-50 via-white to-gray-100"></div>
+    <div className="pointer-events-none fixed inset-0 -z-50 overflow-hidden">
+      <div className="premium-backdrop absolute inset-0" />
+      <div className="premium-grid absolute inset-0 opacity-60" />
+      <div className="premium-noise absolute inset-0" />
 
-      {/* Animated Orbs */}
-      <div className="absolute top-0 left-1/4 w-96 h-96 bg-gradient-to-r from-gray-100 to-gray-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
-      <div className="absolute top-0 right-1/4 w-96 h-96 bg-gradient-to-r from-gray-200 to-gray-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
-      <div className="absolute bottom-0 left-1/3 w-96 h-96 bg-gradient-to-r from-gray-150 to-gray-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-4000"></div>
+      <div className="premium-orb premium-orb-left" />
+      <div className="premium-orb premium-orb-right" />
+      <div className="premium-orb premium-orb-bottom" />
 
-      {/* Grid Pattern */}
-      <div className="absolute inset-0 opacity-[0.02]" style={{
-        backgroundImage: `
-          linear-gradient(to right, rgb(0 0 0) 1px, transparent 1px),
-          linear-gradient(to bottom, rgb(0 0 0) 1px, transparent 1px)
-        `,
-        backgroundSize: '50px 50px'
-      }}></div>
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/70 to-transparent" />
+      <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-white via-white/75 to-transparent" />
     </div>
   );
 };

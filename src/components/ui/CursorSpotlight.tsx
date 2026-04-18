@@ -11,6 +11,12 @@ export const CursorSpotlight = () => {
   const cursorYSpring = useSpring(cursorY, springConfig);
 
   useEffect(() => {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const isCoarsePointer = window.matchMedia('(pointer: coarse)').matches;
+    if (prefersReducedMotion || isCoarsePointer) {
+      return;
+    }
+
     const moveCursor = (e: MouseEvent) => {
       cursorX.set(e.clientX - 250);
       cursorY.set(e.clientY - 250);
@@ -30,14 +36,14 @@ export const CursorSpotlight = () => {
 
   return (
     <motion.div
-      className="pointer-events-none fixed z-50 hidden lg:block"
+      className="pointer-events-none fixed inset-0 z-0 hidden lg:block"
       style={{
         left: cursorXSpring,
         top: cursorYSpring,
-        opacity: isVisible ? 1 : 0,
+        opacity: isVisible ? 0.8 : 0,
       }}
     >
-      <div className="h-[500px] w-[500px] rounded-full bg-gradient-to-r from-gray-900/5 via-gray-600/5 to-transparent blur-[80px]" />
+      <div className="h-[32rem] w-[32rem] rounded-full bg-[radial-gradient(circle_at_center,rgba(148,163,184,0.16),rgba(255,255,255,0.05)_38%,transparent_72%)] blur-[90px]" />
     </motion.div>
   );
 };

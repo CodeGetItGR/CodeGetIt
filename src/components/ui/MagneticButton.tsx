@@ -1,10 +1,8 @@
-import { motion, useMotionValue, useSpring } from 'framer-motion';
+import { motion, useMotionValue, useSpring, type HTMLMotionProps } from 'framer-motion';
 import { useRef, type ReactNode } from 'react';
 
-interface MagneticButtonProps {
+interface MagneticButtonProps extends Omit<HTMLMotionProps<'button'>, 'children'> {
   children: ReactNode;
-  className?: string;
-  onClick?: () => void;
   strength?: number;
 }
 
@@ -12,7 +10,9 @@ export const MagneticButton = ({
   children,
   className = '',
   onClick,
-  strength = 0.3
+  strength = 0.3,
+  type = 'button',
+  ...props
 }: MagneticButtonProps) => {
   const ref = useRef<HTMLButtonElement>(null);
   const x = useMotionValue(0);
@@ -50,8 +50,10 @@ export const MagneticButton = ({
         x: xSpring,
         y: ySpring,
       }}
+      type={type}
       onClick={onClick}
       className={className}
+      {...props}
     >
       {children}
     </motion.button>

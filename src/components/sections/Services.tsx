@@ -2,6 +2,8 @@ import { motion } from 'framer-motion';
 import { useCallback } from 'react';
 import { HiArrowRight } from 'react-icons/hi';
 import { useLocale } from '@/i18n/UseLocale';
+import { MagneticButton } from '@/components/ui/MagneticButton';
+import { premiumEase, premiumMotion } from '@/lib/motion';
 
 export const Services = () => {
   const { t } = useLocale();
@@ -24,16 +26,20 @@ export const Services = () => {
   ];
 
   return (
-    <section id="services" className="py-28 lg:py-36 bg-linear-to-b from-gray-50 to-white">
+    <section id="services" className="section-depth section-divider relative py-28 lg:py-36">
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-slate-100/75 to-transparent" />
+
       <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
-        {/* Section Header — left-aligned, no badge */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: premiumMotion.normal, ease: premiumEase }}
           className="mb-16 max-w-3xl"
         >
+          <p className="mb-4 inline-flex rounded-full border border-slate-300/70 bg-white/70 px-4 py-2 text-xs font-semibold uppercase tracking-[0.1em] text-slate-600">
+            {t.services.badge}
+          </p>
           <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight mb-5">
             {t.services.title}
           </h2>
@@ -42,7 +48,6 @@ export const Services = () => {
           </p>
         </motion.div>
 
-        {/* Services */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {services.map((service, index) => (
             <motion.div
@@ -50,10 +55,16 @@ export const Services = () => {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="relative overflow-hidden rounded-3xl lux-surface border lux-hairline p-8 md:p-10 lux-shadow hover:lux-shadow-lg transition-shadow duration-300"
+              transition={{ duration: premiumMotion.normal, delay: index * premiumMotion.stagger, ease: premiumEase }}
+              whileHover={{ y: -6 }}
+              className="premium-panel premium-texture group relative overflow-hidden rounded-3xl p-8 md:p-10"
             >
-              <div className="absolute top-0 left-0 right-0 h-px bg-gray-200" />
+              <motion.div
+                className="absolute -right-20 -top-20 h-48 w-48 rounded-full border border-white/35"
+                animate={{ rotate: 360 }}
+                transition={{ duration: 16, repeat: Infinity, ease: 'linear' }}
+              />
+              <div className="absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-white to-transparent" />
 
               <div>
                 <span className="text-xs font-semibold text-gray-500 mb-4 block tracking-[0.08em] uppercase">
@@ -65,7 +76,7 @@ export const Services = () => {
                 <ul className="space-y-3">
                   {service.features.map((feature, i) => (
                     <li key={i} className="flex items-start gap-3 text-gray-700">
-                      <span className="mt-1.5 inline-block h-1.5 w-1.5 rounded-full bg-gray-700" />
+                      <span className="mt-1.5 inline-block h-1.5 w-1.5 rounded-full bg-gray-700 transition-transform duration-300 group-hover:scale-125" />
                       <span className="text-base leading-relaxed">{feature}</span>
                     </li>
                   ))}
@@ -75,23 +86,29 @@ export const Services = () => {
           ))}
         </div>
 
-        {/* Bottom CTA — clean, no scale animation */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: premiumMotion.normal, ease: premiumEase }}
           className="mt-16"
         >
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 rounded-3xl bg-gray-900 px-8 py-8 md:px-10 md:py-9 lux-shadow-lg">
-            <p className="text-lg text-gray-200 max-w-xl">{t.services.customSolutions}</p>
-            <button
-              onClick={scrollToContact}
-              className="group inline-flex items-center gap-3 px-8 py-4 bg-white text-gray-900 text-base font-semibold rounded-full hover:bg-gray-100 transition-colors duration-200 shrink-0"
-            >
-              {t.services.contactCTA}
-              <HiArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-200" />
-            </button>
+          <div className="relative overflow-hidden rounded-3xl border border-slate-900/80 bg-linear-to-r from-slate-950 via-slate-900 to-slate-950 px-8 py-8 md:px-10 md:py-9 shadow-2xl shadow-slate-900/20">
+            <motion.div
+              className="pointer-events-none absolute -right-20 -top-24 h-64 w-64 rounded-full bg-white/10 blur-2xl"
+              animate={{ y: [0, 18, 0], x: [0, -12, 0] }}
+              transition={{ duration: 8.5, repeat: Infinity, ease: 'easeInOut' }}
+            />
+            <div className="relative z-10 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+              <p className="max-w-xl text-lg text-gray-200">{t.services.customSolutions}</p>
+              <MagneticButton
+                onClick={scrollToContact}
+                className="group inline-flex shrink-0 items-center gap-3 rounded-full border border-white/80 bg-white px-8 py-4 text-base font-semibold text-gray-900 transition-colors duration-300 hover:bg-gray-100"
+              >
+                {t.services.contactCTA}
+                <HiArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-200" />
+              </MagneticButton>
+            </div>
           </div>
         </motion.div>
       </div>

@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useLocale } from '@/i18n/UseLocale';
+import { MagneticButton } from '@/components/ui/MagneticButton';
 
 export const Header = () => {
   const { t } = useLocale();
@@ -25,49 +26,49 @@ export const Header = () => {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled ? 'py-3' : 'py-5'
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+        isScrolled ? 'py-3' : 'py-5 sm:py-6'
       }`}
     >
       <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
         <div
-          className={`flex items-center justify-between rounded-2xl px-4 sm:px-5 py-3 transition-all duration-300 ${
+          className={`premium-panel premium-texture relative flex items-center justify-between rounded-2xl px-4 sm:px-5 py-3 transition-all duration-500 ${
             isScrolled
-              ? 'bg-white/90 border lux-hairline lux-shadow backdrop-blur-md'
-              : 'bg-white/80 border border-gray-100/80 backdrop-blur-sm'
+              ? 'translate-y-0 bg-white/88 shadow-xl shadow-slate-900/10'
+              : 'translate-y-0.5 bg-white/74'
           }`}
         >
-          {/* Logo — plain, confident */}
+          <div className="pointer-events-none absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-white/90 to-transparent" />
+
           <button
             onClick={() => scrollToSection('hero')}
-            className="inline-flex items-center text-lg sm:text-xl font-extrabold text-gray-900 tracking-tight hover:opacity-80 transition-opacity duration-200"
+            className="group inline-flex items-center gap-2 text-lg sm:text-xl font-extrabold tracking-tight text-gray-900 transition-opacity duration-300 hover:opacity-85"
           >
+            <span className="h-2 w-2 rounded-full bg-gray-900/70 shadow-[0_0_0_6px_rgba(15,23,42,0.08)] transition-transform duration-300 group-hover:scale-110" />
             CodeGetIt
           </button>
 
-          {/* Desktop Nav — 4 items only */}
           <nav className="hidden md:flex items-center gap-7">
             {navItems.map((item) => (
               <button
                 key={item.id}
                 onClick={() => scrollToSection(item.id)}
-                className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors duration-200"
+                className="relative text-sm font-medium text-gray-600 transition-colors duration-300 hover:text-gray-900 after:absolute after:left-0 after:bottom-[-0.45rem] after:h-[2px] after:w-0 after:bg-gray-900 after:transition-all after:duration-300 hover:after:w-full"
               >
                 {item.label}
               </button>
             ))}
-            <button
+            <MagneticButton
               onClick={() => scrollToSection('contact')}
-              className="inline-flex items-center rounded-full bg-gray-900 px-5 py-2.5 text-sm font-semibold text-white hover:bg-black transition-colors duration-200 shadow-sm"
+              className="inline-flex items-center rounded-full border border-gray-900 bg-gray-900 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-gray-900/15 transition-colors duration-300 hover:bg-black"
             >
               {t.hero.startProject}
-            </button>
+            </MagneticButton>
           </nav>
 
-          {/* Mobile toggle */}
           <button
             onClick={() => setIsMobileMenuOpen(prev => !prev)}
-            className="md:hidden p-2 text-gray-700"
+            className="md:hidden rounded-xl border border-slate-200/80 bg-white/70 p-2 text-gray-700 transition-colors duration-200 hover:bg-white"
             aria-label="Toggle menu"
           >
             <svg className="w-6 h-6" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" stroke="currentColor">
@@ -79,24 +80,23 @@ export const Header = () => {
           </button>
         </div>
 
-        {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <nav className="md:hidden mt-3 rounded-2xl border border-gray-200 bg-white/95 p-4 space-y-1 shadow-lg shadow-gray-900/5">
+          <nav className="premium-panel premium-texture md:hidden mt-3 rounded-2xl p-4 shadow-lg shadow-gray-900/5">
             {navItems.map((item) => (
               <button
                 key={item.id}
                 onClick={() => scrollToSection(item.id)}
-                className="block w-full text-left py-2.5 text-gray-700 hover:text-gray-900 font-medium text-base"
+                className="block w-full rounded-xl px-3 py-2.5 text-left text-base font-medium text-gray-700 transition-colors duration-200 hover:bg-white/60 hover:text-gray-900"
               >
                 {item.label}
               </button>
             ))}
-            <button
+            <MagneticButton
               onClick={() => scrollToSection('contact')}
-              className="mt-2 inline-flex w-full items-center justify-center rounded-full bg-gray-900 px-5 py-3 text-sm font-semibold text-white hover:bg-black transition-colors duration-200"
+              className="mt-3 inline-flex w-full items-center justify-center rounded-full border border-gray-900 bg-gray-900 px-5 py-3 text-sm font-semibold text-white transition-colors duration-300 hover:bg-black"
             >
               {t.hero.startProject}
-            </button>
+            </MagneticButton>
           </nav>
         )}
       </div>

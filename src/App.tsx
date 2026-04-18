@@ -17,14 +17,20 @@ import { Contact } from './components/sections/Contact.tsx';
 import { Hero } from './components/sections/Hero.tsx';
 import { Portfolio } from './components/sections/Portfolio.tsx';
 import { Services } from './components/sections/Services.tsx';
+import { AnimatedBackground } from './components/ui/AnimatedBackground';
+import { CursorSpotlight } from './components/ui/CursorSpotlight';
+import { ScrollProgress } from './components/ui/ScrollProgress';
 
 const MarketingHomePage = () => {
   return (
     <>
       <SEO />
-      <div className="min-h-screen">
+      <div className="marketing-shell min-h-screen">
+        <ScrollProgress />
+        <AnimatedBackground />
+        <CursorSpotlight />
         <Header />
-        <main>
+        <main className="relative z-10 overflow-hidden">
           <Hero />
           <Services />
           <Portfolio />
