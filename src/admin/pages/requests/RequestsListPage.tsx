@@ -1,0 +1,188 @@
+import { useCallback, useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+import { queryKeys } from '@/admin/api/queryKeys';
+import { requestApi, type RequestListQuery } from '@/admin/api/requests';
+import { CreateRequestSheet } from '@/admin/components/CreateRequestSheet';
+import { PaginationControls } from '@/admin/components/PaginationControls';
+import { StatusBadge } from '@/admin/components/StatusBadge';
+import { usePaginationState } from '@/admin/hooks/usePaginationState';
+import type { Priority, RequestStatus } from '@/admin/types';
+
+const statusOptions: readonly RequestStatus[] = ['DRAFT', 'SUBMITTED', 'APPROVED', 'COMPLETED'];
+const priorityOptions: readonly Priority[] = ['LOW', 'MEDIUM', 'HIGH', 'URGENT'];
+
+type FilterType = 'status' | 'priority' | 'requesterEmail' | 'submittedByUserId';
+
+const filterTypeOptions: ReadonlyArray<{ value: FilterType; label: string }> = [
+  { value: 'status', label: 'Status' },
+  { value: 'priority', label: 'Priority' },
+  { value: 'requesterEmail', label: 'Requester email' },
+  { value: 'submittedByUserId', label: 'Submitted by user id' },
+];
+
+function toFilterType(value: string): FilterType {
+  const validValues: readonly FilterType[] = ['status', 'priority', 'requesterEmail', 'submittedByUserId'];
+  return validValues.includes(value as FilterType) ? (value as FilterType) : 'status';
+}
+
+export const RequestsListPage = () => {
+  const { page, resetPage, goToNextPage, goToPreviousPage } = usePaginationState();
+  const [filterType, setFilterType] = useState<FilterType>('status');
+  const [filterValue, setFilterValue] = useState('');
+  const [showCreate, setShowCreate] = useState(false);
+
+  const queryParams = useMemo<RequestListQuery>(() => {
+    const params: RequestListQuery = { page, size: 10, sort: 'createdAt,desc' };
+
+    if (filterType === 'status' && filterValue) {
+      params.status = filterValue as RequestStatus;
+    } else if (filterType === 'priority' && filterValue) {
+      params.priority = filterValue as Priority;
+    } else if (filterType === 'requesterEmail' && filterValue.trim()) {
+      params.requesterEmail = filterValue.trim();
+    } else if (filterType === 'submittedByUserId' && filterValue.trim()) {
+      params.submittedByUserId = filterValue.trim();
+    }
+
+    return params;
+  }, [filterType, filterValue, page]);
+
+  const requestsQuery = useQuery({
+    queryKey: queryKeys.requests.list(queryParams),
+    queryFn: () => requestApi.list(queryParams),
+  });
+
+  const handleFilterTypeChange = useCallback((value: string) => {
+    setFilterType(toFilterType(value));
+    setFilterValue('');
+    resetPage();
+  }, [resetPage]);
+
+  const handleFilterValueChange = useCallback((value: string) => {
+    setFilterValue(value);
+    resetPage();
+  }, [resetPage]);
+
+  return (
+    <div>
+      <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p className="text-sm uppercase tracking-[0.16em] text-gray-500">Requests</p>
+          <h2 className="mt-1 text-3xl font-bold text-gray-900">Incoming requests</h2>
+          <p className="mt-1 text-sm text-gray-600">Filter by one field at a time, matching backend precedence.</p>
+        </div>
+        <button
+          type="button"
+          onClick={() => setShowCreate(true)}
+          className="rounded-xl bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800"
+        >
+          + New request
+        </button>
+      </div>
+
+      <section className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm md:p-5">
+        <div className="mb-4 grid gap-3 md:grid-cols-[190px_1fr]">
+          <select
+            value={filterType}
+            onChange={(event) => handleFilterTypeChange(event.target.value)}
+            className="rounded-xl border border-gray-300 px-3 py-2 text-sm"
+          >
+            {filterTypeOptions.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+
+          {filterType === 'status' ? (
+            <select
+              value={filterValue}
+              onChange={(event) => handleFilterValueChange(event.target.value)}
+              className="rounded-xl border border-gray-300 px-3 py-2 text-sm"
+            >
+              <option value="">All statuses</option>
+              {statusOptions.map((item) => (
+                <option key={item} value={item}>
+                  {item}
+                </option>
+              ))}
+            </select>
+          ) : filterType === 'priority' ? (
+            <select
+              value={filterValue}
+              onChange={(event) => handleFilterValueChange(event.target.value)}
+              className="rounded-xl border border-gray-300 px-3 py-2 text-sm"
+            >
+              <option value="">All priorities</option>
+              {priorityOptions.map((item) => (
+                <option key={item} value={item}>
+                  {item}
+                </option>
+              ))}
+            </select>
+          ) : (
+            <input
+              value={filterValue}
+              onChange={(event) => handleFilterValueChange(event.target.value)}
+              placeholder={filterType === 'requesterEmail' ? 'e.g. jane@example.com' : 'User UUID'}
+              className="rounded-xl border border-gray-300 px-3 py-2 text-sm"
+            />
+          )}
+        </div>
+
+        <div className="overflow-x-auto rounded-xl border border-gray-200">
+          <table className="min-w-full divide-y divide-gray-200 text-sm">
+            <thead className="bg-gray-50 text-left text-xs uppercase tracking-wide text-gray-500">
+              <tr>
+                <th className="px-4 py-3">Title</th>
+                <th className="px-4 py-3">Requester</th>
+                <th className="px-4 py-3">Status</th>
+                <th className="px-4 py-3">Priority</th>
+                <th className="px-4 py-3">Created</th>
+                <th className="px-4 py-3">Action</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-200 bg-white">
+              {requestsQuery.data?.content.map((request) => (
+                <tr key={request.id} className="hover:bg-gray-50">
+                  <td className="px-4 py-3 font-medium text-gray-900">{request.title}</td>
+                  <td className="px-4 py-3 text-gray-600">{request.requesterEmail}</td>
+                  <td className="px-4 py-3">
+                    <StatusBadge value={request.status} />
+                  </td>
+                  <td className="px-4 py-3">
+                    <StatusBadge value={request.priority} />
+                  </td>
+                  <td className="px-4 py-3 text-gray-600">{new Date(request.createdAt).toLocaleDateString()}</td>
+                  <td className="px-4 py-3">
+                    <Link to={`/admin/requests/${request.id}`} className="text-sm font-medium text-gray-900 underline">
+                      View
+                    </Link>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {requestsQuery.isLoading && <p className="mt-4 text-sm text-gray-500">Loading requests...</p>}
+        {!requestsQuery.isLoading && requestsQuery.data?.content.length === 0 && (
+          <p className="mt-4 text-sm text-gray-500">No requests found for the selected filter.</p>
+        )}
+
+        <div className="mt-4">
+          <PaginationControls
+            page={page}
+            totalPages={requestsQuery.data?.totalPages ?? 0}
+            onPrevious={goToPreviousPage}
+            onNext={() => goToNextPage(requestsQuery.data?.totalPages ?? 0)}
+          />
+        </div>
+      </section>
+
+      <CreateRequestSheet isOpen={showCreate} onClose={() => setShowCreate(false)} />
+    </div>
+  );
+};
+

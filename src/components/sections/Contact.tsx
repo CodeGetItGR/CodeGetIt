@@ -2,24 +2,48 @@ import { useState, useCallback, type FormEvent, type ChangeEvent } from 'react';
 import { motion } from 'framer-motion';
 import { HiArrowRight } from 'react-icons/hi';
 import { useLocale } from '@/i18n/UseLocale';
+import { contactMessageApi } from '@/admin/api/contactMessages';
+import { normalizeApiError } from '@/admin/api/client';
 
 export const Contact = () => {
   const { t } = useLocale();
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitMessage, setSubmitMessage] = useState('');
+  const [submitState, setSubmitState] = useState<'idle' | 'success' | 'error'>('idle');
+  const [errorText, setErrorText] = useState('');
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
   const handleSubmit = useCallback(async (e: FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    setSubmitMessage('Message sent successfully. I\'ll get back to you shortly.');
-    setFormData({ name: '', email: '', message: '' });
-    setIsSubmitting(false);
-    setTimeout(() => setSubmitMessage(''), 5000);
-  }, []);
+    setSubmitState('idle');
+    setErrorText('');
+    setFieldErrors({});
 
-  const handleChange = useCallback((field: string) => (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    try {
+      await contactMessageApi.submit({
+        name: formData.name.trim(),
+        email: formData.email.trim(),
+        message: formData.message.trim(),
+      });
+      setSubmitState('success');
+      setFormData({ name: '', email: '', message: '' });
+      setTimeout(() => setSubmitState('idle'), 6000);
+    } catch (error) {
+      setSubmitState('error');
+      const apiError = normalizeApiError(error);
+      setFieldErrors(apiError.fieldErrors ?? {});
+      setErrorText(
+        apiError.fieldErrors
+          ? 'Please fix the errors below.'
+          : apiError.detail || 'Something went wrong. Please try again or email directly.',
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  }, [formData]);
+
+  const handleChange = useCallback((field: keyof typeof formData) => (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData(prev => ({ ...prev, [field]: e.target.value }));
   }, []);
 
@@ -64,6 +88,7 @@ export const Contact = () => {
                   className="w-full px-0 py-4 bg-transparent border-0 border-b-2 border-gray-200 text-lg text-gray-900 placeholder:text-gray-400 focus:border-gray-900 focus:outline-none focus:ring-0 transition-colors duration-200"
                   required
                 />
+                {fieldErrors.name && <p className="mt-1 text-xs text-red-500">{fieldErrors.name}</p>}
               </div>
 
               <div>
@@ -76,6 +101,7 @@ export const Contact = () => {
                   className="w-full px-0 py-4 bg-transparent border-0 border-b-2 border-gray-200 text-lg text-gray-900 placeholder:text-gray-400 focus:border-gray-900 focus:outline-none focus:ring-0 transition-colors duration-200"
                   required
                 />
+                {fieldErrors.email && <p className="mt-1 text-xs text-red-500">{fieldErrors.email}</p>}
               </div>
 
               <div>
@@ -88,6 +114,7 @@ export const Contact = () => {
                   className="w-full px-0 py-4 bg-transparent border-0 border-b-2 border-gray-200 text-lg text-gray-900 placeholder:text-gray-400 focus:border-gray-900 focus:outline-none focus:ring-0 transition-colors duration-200 resize-none"
                   required
                 />
+                {fieldErrors.message && <p className="mt-1 text-xs text-red-500">{fieldErrors.message}</p>}
               </div>
 
               <div className="pt-4">
@@ -110,13 +137,23 @@ export const Contact = () => {
                 </button>
               </div>
 
-              {submitMessage && (
+              {submitState === 'success' && (
                 <motion.p
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   className="text-sm font-medium text-gray-900"
                 >
-                  ✓ {submitMessage}
+                  ✓ Message sent successfully. I'll get back to you shortly.
+                </motion.p>
+              )}
+
+              {submitState === 'error' && errorText && (
+                <motion.p
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="text-sm font-medium text-red-600"
+                >
+                  ✖ {errorText}
                 </motion.p>
               )}
             </form>
