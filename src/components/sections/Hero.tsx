@@ -1,5 +1,5 @@
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { useCallback, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { HiArrowRight } from 'react-icons/hi';
 import { useLocale } from '@/i18n/UseLocale';
 import { MagneticButton } from '@/components/ui/MagneticButton';
@@ -7,6 +7,8 @@ import { premiumEase, premiumMotion } from '@/lib/motion';
 
 export const Hero = () => {
   const { t } = useLocale();
+  const [availabilityTapCount, setAvailabilityTapCount] = useState(0);
+  const [showHeroGem, setShowHeroGem] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -19,6 +21,15 @@ export const Hero = () => {
   const scrollToSection = useCallback((id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
   }, []);
+
+  useEffect(() => {
+    if (availabilityTapCount === 0) {
+      return;
+    }
+
+    const timer = window.setTimeout(() => setAvailabilityTapCount(0), 1800);
+    return () => window.clearTimeout(timer);
+  }, [availabilityTapCount]);
 
   return (
     <section ref={sectionRef} id="hero" className="relative flex min-h-screen items-center overflow-hidden pt-30 pb-24 sm:pt-34 sm:pb-28">
@@ -77,14 +88,36 @@ export const Hero = () => {
               {t.hero.subtitle}
             </motion.p>
 
-            <motion.p
+            <motion.button
+              type="button"
               initial={{ opacity: 0, y: 18 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.45, delay: 0.2 }}
-              className="mb-10 text-sm font-medium text-gray-500"
+              onClick={() => {
+                setAvailabilityTapCount(prev => {
+                  const next = prev + 1;
+                  if (next >= 4) {
+                    setShowHeroGem(true);
+                    window.setTimeout(() => setShowHeroGem(false), 3500);
+                    return 0;
+                  }
+                  return next;
+                });
+              }}
+              className="mb-8 text-left text-sm font-medium text-gray-500"
             >
               {t.hero.availability}
-            </motion.p>
+            </motion.button>
+
+            {showHeroGem && (
+              <motion.span
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="hidden-gem mb-6"
+              >
+                Precision mode activated
+              </motion.span>
+            )}
 
             <motion.div
               initial={{ opacity: 0, y: 16 }}
@@ -94,10 +127,10 @@ export const Hero = () => {
             >
               <MagneticButton
                 onClick={() => scrollToSection('contact')}
-                className="group inline-flex items-center gap-3 rounded-full border border-gray-900 bg-gray-900 px-8 py-4 text-base font-semibold text-white shadow-lg shadow-gray-900/20 transition-all duration-300 hover:-translate-y-0.5 hover:bg-black"
+                className="cta-polish group inline-flex items-center gap-3 rounded-full border border-gray-900 bg-gray-900 px-8 py-4 text-base font-semibold text-white shadow-lg shadow-gray-900/20 transition-all duration-300 hover:bg-black"
               >
                 {t.hero.startProject}
-                <HiArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-200" />
+                <HiArrowRight className="w-5 h-5 opacity-90 transition-opacity duration-200 group-hover:opacity-100" />
               </MagneticButton>
 
               <button

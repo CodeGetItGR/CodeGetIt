@@ -1,23 +1,8 @@
-import { createContext, useCallback, useMemo, useState, type PropsWithChildren } from 'react';
+import { useCallback, useMemo, useState, type PropsWithChildren } from 'react';
 import { authApi } from '@/admin/api/auth';
 import { AUTH_STORAGE_KEY } from '@/admin/auth/constants';
-import type { AuthResponse, Role } from '@/admin/types';
-
-interface AuthState {
-  token: string;
-  username: string;
-  role: Role;
-}
-
-interface AuthContextValue {
-  auth: AuthState | null;
-  isAuthenticated: boolean;
-  isAdmin: boolean;
-  login: (username: string, password: string) => Promise<void>;
-  logout: () => void;
-}
-
-export const AuthContext = createContext<AuthContextValue | null>(null);
+import type { AuthResponse } from '@/admin/types';
+import { AuthContext, type AuthContextValue, type AuthState } from '@/admin/auth/auth-context';
 
 function readStoredAuth(): AuthState | null {
   const raw = localStorage.getItem(AUTH_STORAGE_KEY);

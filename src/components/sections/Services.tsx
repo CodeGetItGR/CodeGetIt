@@ -37,13 +37,13 @@ export const Services = () => {
           transition={{ duration: premiumMotion.normal, ease: premiumEase }}
           className="mb-16 max-w-3xl"
         >
-          <p className="mb-4 inline-flex rounded-full border border-slate-300/70 bg-white/70 px-4 py-2 text-xs font-semibold uppercase tracking-[0.1em] text-slate-600">
+          <p className="section-kicker">
             {t.services.badge}
           </p>
-          <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight mb-5">
+          <h2 className="section-title">
             {t.services.title}
           </h2>
-          <p className="text-lg text-gray-600 leading-relaxed max-w-2xl">
+          <p className="section-subtitle">
             {t.services.subtitle}
           </p>
         </motion.div>
@@ -57,7 +57,7 @@ export const Services = () => {
               viewport={{ once: true }}
               transition={{ duration: premiumMotion.normal, delay: index * premiumMotion.stagger, ease: premiumEase }}
               whileHover={{ y: -6 }}
-              className="premium-panel premium-texture group relative overflow-hidden rounded-3xl p-8 md:p-10"
+              className="interactive-card premium-panel premium-texture group relative overflow-hidden rounded-3xl p-8 md:p-10"
             >
               <motion.div
                 className="absolute -right-20 -top-20 h-48 w-48 rounded-full border border-white/35"
@@ -103,10 +103,10 @@ export const Services = () => {
               <p className="max-w-xl text-lg text-gray-200">{t.services.customSolutions}</p>
               <MagneticButton
                 onClick={scrollToContact}
-                className="group inline-flex shrink-0 items-center gap-3 rounded-full border border-white/80 bg-white px-8 py-4 text-base font-semibold text-gray-900 transition-colors duration-300 hover:bg-gray-100"
+                className="cta-polish group inline-flex shrink-0 items-center gap-3 rounded-full border border-white/80 bg-white px-8 py-4 text-base font-semibold text-gray-900 transition-colors duration-300 hover:bg-gray-100"
               >
                 {t.services.contactCTA}
-                <HiArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-200" />
+                <HiArrowRight className="w-5 h-5 opacity-90 transition-opacity duration-200 group-hover:opacity-100" />
               </MagneticButton>
             </div>
           </div>

@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { motion } from 'framer-motion';
 import { useLocale } from '@/i18n/UseLocale';
 import { MagneticButton } from '@/components/ui/MagneticButton';
 
@@ -6,11 +7,28 @@ export const Header = () => {
   const { t } = useLocale();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [logoTapStreak, setLogoTapStreak] = useState(0);
+  const [showGem, setShowGem] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
+    if (logoTapStreak === 0) {
+      return;
+    }
+
+    const resetTimer = window.setTimeout(() => setLogoTapStreak(0), 2200);
+    return () => window.clearTimeout(resetTimer);
+  }, [logoTapStreak]);
+
+  const triggerGem = useCallback(() => {
+    setShowGem(true);
+    const hideTimer = window.setTimeout(() => setShowGem(false), 3200);
+    return () => window.clearTimeout(hideTimer);
   }, []);
 
   const scrollToSection = useCallback((sectionId: string) => {
@@ -41,12 +59,33 @@ export const Header = () => {
           <div className="pointer-events-none absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-white/90 to-transparent" />
 
           <button
-            onClick={() => scrollToSection('hero')}
+            onClick={() => {
+              scrollToSection('hero');
+              setLogoTapStreak(prev => {
+                const next = prev + 1;
+                if (next >= 5) {
+                  triggerGem();
+                  return 0;
+                }
+                return next;
+              });
+            }}
             className="group inline-flex items-center gap-2 text-lg sm:text-xl font-extrabold tracking-tight text-gray-900 transition-opacity duration-300 hover:opacity-85"
           >
             <span className="h-2 w-2 rounded-full bg-gray-900/70 shadow-[0_0_0_6px_rgba(15,23,42,0.08)] transition-transform duration-300 group-hover:scale-110" />
             CodeGetIt
           </button>
+
+          {showGem && (
+            <motion.span
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              className="hidden-gem absolute left-28 top-1/2 -translate-y-1/2"
+            >
+              Hidden gem unlocked
+            </motion.span>
+          )}
 
           <nav className="hidden md:flex items-center gap-7">
             {navItems.map((item) => (
@@ -60,7 +99,7 @@ export const Header = () => {
             ))}
             <MagneticButton
               onClick={() => scrollToSection('contact')}
-              className="inline-flex items-center rounded-full border border-gray-900 bg-gray-900 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-gray-900/15 transition-colors duration-300 hover:bg-black"
+              className="cta-polish inline-flex items-center rounded-full border border-gray-900 bg-gray-900 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-gray-900/15 transition-colors duration-300 hover:bg-black"
             >
               {t.hero.startProject}
             </MagneticButton>
@@ -93,7 +132,7 @@ export const Header = () => {
             ))}
             <MagneticButton
               onClick={() => scrollToSection('contact')}
-              className="mt-3 inline-flex w-full items-center justify-center rounded-full border border-gray-900 bg-gray-900 px-5 py-3 text-sm font-semibold text-white transition-colors duration-300 hover:bg-black"
+              className="cta-polish mt-3 inline-flex w-full items-center justify-center rounded-full border border-gray-900 bg-gray-900 px-5 py-3 text-sm font-semibold text-white transition-colors duration-300 hover:bg-black"
             >
               {t.hero.startProject}
             </MagneticButton>

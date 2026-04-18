@@ -61,13 +61,13 @@ export const Contact = () => {
           transition={{ duration: premiumMotion.normal, ease: premiumEase }}
           className="mb-14 max-w-4xl"
         >
-          <p className="mb-4 inline-flex rounded-full border border-slate-300/70 bg-white/70 px-4 py-2 text-xs font-semibold uppercase tracking-[0.1em] text-slate-600">
+          <p className="section-kicker">
             {t.contact.badge}
           </p>
-          <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight mb-5">
+          <h2 className="section-title">
             {t.contact.title}
           </h2>
-          <p className="text-lg text-gray-600 leading-relaxed max-w-2xl">
+          <p className="section-subtitle">
             {t.contact.subtitle}
           </p>
         </motion.div>
@@ -78,7 +78,7 @@ export const Contact = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: premiumMotion.normal, ease: premiumEase }}
-            className="premium-panel premium-texture lg:col-span-7 rounded-3xl p-7 md:p-9"
+            className="interactive-card premium-panel premium-texture lg:col-span-7 rounded-3xl p-7 md:p-9"
           >
             <form onSubmit={handleSubmit} className="space-y-8">
               <div>
@@ -124,7 +124,7 @@ export const Contact = () => {
                 <MagneticButton
                   type="submit"
                   disabled={isSubmitting}
-                  className="group inline-flex items-center gap-3 rounded-full border border-gray-900 bg-gray-900 px-8 py-4 text-base font-semibold text-white shadow-lg shadow-gray-900/20 transition-colors duration-300 hover:bg-black disabled:cursor-not-allowed disabled:opacity-50"
+                  className="cta-polish group inline-flex items-center gap-3 rounded-full border border-gray-900 bg-gray-900 px-8 py-4 text-base font-semibold text-white shadow-lg shadow-gray-900/20 transition-colors duration-300 hover:bg-black disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   {isSubmitting ? (
                     <>
@@ -134,7 +134,7 @@ export const Contact = () => {
                   ) : (
                     <>
                       {t.contact.sendButton}
-                      <HiArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-200" />
+                      <HiArrowRight className="w-5 h-5 opacity-90 transition-opacity duration-200 group-hover:opacity-100" />
                     </>
                   )}
                 </MagneticButton>
