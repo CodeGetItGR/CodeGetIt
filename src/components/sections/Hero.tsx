@@ -11,69 +11,56 @@ export const Hero = () => {
   }, []);
 
   return (
-    <section className="relative min-h-screen flex items-center bg-white pt-28 pb-24 overflow-hidden">
-      {/* Subtle dot grid */}
-      <div className="absolute inset-0 opacity-[0.03]">
-        <div
-          style={{
-            backgroundImage: `radial-gradient(circle, #94a3b8 1px, transparent 1px)`,
-            backgroundSize: '48px 48px',
-          }}
-          className="w-full h-full"
-        />
+    <section id="hero" className="relative min-h-screen flex items-center bg-linear-to-b from-white via-gray-50/70 to-white pt-28 pb-20 overflow-hidden">
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute -top-12 -left-10 h-72 w-72 rounded-full bg-gray-100/80 blur-3xl" />
+        <div className="absolute top-24 right-0 h-80 w-80 rounded-full bg-gray-200/50 blur-3xl" />
       </div>
 
-      <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 w-full relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-20 items-center">
-          {/* Left — copy */}
+      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 w-full relative z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           <div>
-            {/* Availability */}
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.5 }}
-              className="text-sm font-medium text-gray-500 mb-10 flex items-center gap-2.5 tracking-wide"
-            >
-              <span className="relative flex h-2.5 w-2.5">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75" />
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-teal-500" />
-              </span>
-              {t.hero.availability}
-            </motion.p>
-
-            {/* Headline */}
             <motion.h1
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.1 }}
-              className="text-gray-900 leading-[1.08] tracking-tight mb-8"
-              style={{ fontSize: 'clamp(2.5rem, 4.5vw, 4rem)', letterSpacing: '-0.025em', fontWeight: 800 }}
+              transition={{ duration: 0.4, delay: 0.05 }}
+              className="text-gray-900 leading-[1.04] tracking-tight mb-6"
+              style={{ fontSize: 'clamp(2.55rem, 5.4vw, 5rem)', fontWeight: 800 }}
             >
               {t.hero.title}
               <br />
-              <span className="text-gray-400">{t.hero.reimagined}</span>
+              <span className="text-gray-500">
+                {t.hero.reimagined}
+              </span>
             </motion.h1>
 
-            {/* Subheadline */}
             <motion.p
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="text-lg md:text-xl text-gray-600 mb-12 leading-relaxed"
+              transition={{ duration: 0.4, delay: 0.12 }}
+              className="text-lg md:text-xl text-gray-600 leading-relaxed max-w-2xl mb-6"
             >
               {t.hero.subtitle}
             </motion.p>
 
-            {/* CTA */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
+            <motion.p
+              initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              className="flex flex-col sm:flex-row items-start sm:items-center gap-6"
+              transition={{ duration: 0.4, delay: 0.15 }}
+              className="text-sm font-medium text-gray-500 mb-10"
+            >
+              {t.hero.availability}
+            </motion.p>
+
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.18 }}
+              className="flex flex-wrap items-center gap-4 mb-10"
             >
               <button
                 onClick={() => scrollToSection('contact')}
-                className="group inline-flex items-center gap-3 px-8 py-4 bg-gray-900 text-white text-base font-semibold rounded-full hover:bg-gray-800 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
+                className="group inline-flex items-center gap-3 px-8 py-4 bg-gray-900 text-white text-base font-semibold rounded-full hover:bg-black transition-colors duration-200 shadow-lg shadow-gray-900/10"
               >
                 {t.hero.startProject}
                 <HiArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-200" />
@@ -81,94 +68,70 @@ export const Hero = () => {
 
               <button
                 onClick={() => scrollToSection('portfolio')}
-                className="text-base font-semibold text-gray-600 hover:text-gray-900 transition-colors duration-200 underline decoration-gray-300 underline-offset-4 hover:decoration-gray-900"
+                className="text-base font-semibold text-gray-700 hover:text-gray-900 transition-colors duration-200 underline decoration-gray-300 underline-offset-4"
               >
                 {t.hero.viewWork}
               </button>
             </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.24 }}
+              className="flex flex-wrap items-center gap-4 text-sm text-gray-600"
+            >
+              {[t.hero.proofBar.seniorEngineering, t.hero.proofBar.builtForScale, t.hero.proofBar.modernStack].map((item, index) => (
+                <span key={item} className="inline-flex items-center gap-4">
+                  <span>{item}</span>
+                  {index < 2 && <span className="text-gray-300">/</span>}
+                </span>
+              ))}
+            </motion.div>
           </div>
 
-          {/* Right — visual element that fills the space on desktop */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.96 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-            className="hidden lg:block"
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.45, delay: 0.18 }}
+            className="relative"
           >
-            <div className="relative">
-              {/* Main card — a real-looking project preview */}
-              <div className="bg-gray-950 rounded-2xl overflow-hidden shadow-2xl shadow-gray-900/20">
-                {/* Browser chrome */}
-                <div className="flex items-center gap-2 px-5 py-4 border-b border-gray-800">
-                  <div className="flex gap-1.5">
-                    <div className="w-3 h-3 rounded-full bg-gray-700" />
-                    <div className="w-3 h-3 rounded-full bg-gray-700" />
-                    <div className="w-3 h-3 rounded-full bg-gray-700" />
-                  </div>
-                  <div className="flex-1 mx-4">
-                    <div className="bg-gray-800 rounded-lg px-4 py-1.5 text-xs text-gray-500 font-mono max-w-xs mx-auto text-center">
-                      your-project.com
-                    </div>
-                  </div>
+            <div className="rounded-3xl border lux-hairline lux-surface p-7 lux-shadow-lg backdrop-blur-sm">
+              <div className="flex items-center justify-between mb-7">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.08em] text-gray-500">Delivery Framework</p>
+                  <p className="text-lg font-bold text-gray-900 mt-1">From strategy to launch</p>
                 </div>
-
-                {/* Content — stylized UI mockup */}
-                <div className="p-8 space-y-6">
-                  {/* Simulated nav */}
-                  <div className="flex items-center justify-between">
-                    <div className="w-20 h-4 bg-gray-800 rounded" />
-                    <div className="flex gap-4">
-                      <div className="w-12 h-3 bg-gray-800 rounded" />
-                      <div className="w-12 h-3 bg-gray-800 rounded" />
-                      <div className="w-12 h-3 bg-gray-800 rounded" />
-                    </div>
-                  </div>
-
-                  {/* Hero area */}
-                  <div className="pt-8 space-y-4">
-                    <div className="w-3/4 h-6 bg-gray-800 rounded" />
-                    <div className="w-1/2 h-6 bg-gray-800 rounded" />
-                    <div className="w-2/3 h-3 bg-gray-800/60 rounded mt-4" />
-                    <div className="w-1/2 h-3 bg-gray-800/60 rounded" />
-                  </div>
-
-                  {/* CTA */}
-                  <div className="pt-4">
-                    <div className="w-32 h-10 bg-teal-600 rounded-full" />
-                  </div>
-
-                  {/* Cards */}
-                  <div className="grid grid-cols-3 gap-3 pt-8">
-                    {[0, 1, 2].map((i) => (
-                      <div key={i} className="bg-gray-800/60 rounded-xl p-4 space-y-3">
-                        <div className="w-8 h-8 bg-gray-700 rounded-lg" />
-                        <div className="w-full h-2.5 bg-gray-700 rounded" />
-                        <div className="w-3/4 h-2 bg-gray-700/60 rounded" />
-                      </div>
-                    ))}
-                  </div>
-                </div>
+                <span className="text-xs font-semibold text-gray-500 uppercase tracking-[0.08em]">Direct collaboration</span>
               </div>
 
-              {/* Floating metric pill — top right */}
-              <motion.div
-                animate={{ y: [0, -6, 0] }}
-                transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-                className="absolute -top-4 -right-4 bg-white border border-gray-200 rounded-xl px-5 py-3 shadow-lg"
-              >
-                <div className="text-xs font-medium text-gray-500 mb-0.5">Uptime</div>
-                <div className="text-lg font-extrabold text-gray-900">99.9%</div>
-              </motion.div>
+              <div className="space-y-4">
+                {[
+                  'Discovery and technical scope',
+                  'Design and implementation',
+                  'Launch, QA, and optimization',
+                ].map((step, index) => (
+                  <div key={step} className="flex items-start gap-3 rounded-2xl border border-gray-200 bg-gray-50 px-4 py-3">
+                    <div className="mt-0.5 h-6 w-6 shrink-0 rounded-full bg-gray-900 text-white text-xs font-semibold flex items-center justify-center">
+                      {index + 1}
+                    </div>
+                    <p className="text-sm text-gray-700 leading-relaxed">{step}</p>
+                  </div>
+                ))}
+              </div>
 
-              {/* Floating metric pill — bottom left */}
-              <motion.div
-                animate={{ y: [0, 6, 0] }}
-                transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
-                className="absolute -bottom-4 -left-4 bg-white border border-gray-200 rounded-xl px-5 py-3 shadow-lg"
-              >
-                <div className="text-xs font-medium text-gray-500 mb-0.5">Response</div>
-                <div className="text-lg font-extrabold text-gray-900">&lt;200ms</div>
-              </motion.div>
+              <div className="grid grid-cols-2 gap-3 mt-6">
+                {[
+                  { label: 'Typical launch', value: '2-4 wks' },
+                  { label: 'Response', value: '<24h' },
+                  { label: 'Uptime target', value: '99.9%' },
+                  { label: 'Code quality', value: 'Type-safe' },
+                ].map((item) => (
+                  <div key={item.label} className="rounded-xl border border-gray-200 bg-white px-3 py-3">
+                    <p className="text-xs text-gray-500 mb-1">{item.label}</p>
+                    <p className="text-sm font-semibold text-gray-900">{item.value}</p>
+                  </div>
+                ))}
+              </div>
             </div>
           </motion.div>
         </div>

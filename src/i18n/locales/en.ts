@@ -13,7 +13,7 @@ export const en: Translations = {
   hero: {
     title: 'Production-Grade Web Applications',
     subtitle: 'Software engineered for performance, scalability, and long-term maintainability.',
-    subheadline: 'A founder-led independent software studio — delivering senior-level execution without communication layers or management overhead.',
+    subheadline: 'An independent software studio — delivering senior-level execution with direct collaboration and clear communication.',
     cta: 'Get Started',
     learnMore: 'Learn More',
     badge: 'Independent Software Engineer',
@@ -27,9 +27,9 @@ export const en: Translations = {
     socialProof: 'Trusted by growing businesses',
     proofBar: {
       seniorEngineering: 'Senior-level engineering',
-      founderLed: 'Founder-led',
+      founderLed: 'Direct collaboration',
       builtForScale: 'Built for scale',
-      modernStack: 'Production-grade',
+      modernStack: 'Built for real-world scale',
     },
     availability: 'Available for a limited number of projects each quarter',
     visual: {
@@ -49,12 +49,12 @@ export const en: Translations = {
   },
   services: {
     title: 'Services',
-    subtitle: 'Production-grade software engineered for performance and longevity',
+    subtitle: 'High-quality software engineered for performance and longevity',
     badge: 'What I Build',
     fullStack: {
       title: 'Web Applications',
       description: 'Scalable platforms engineered for performance and long-term maintainability',
-      simpleDescription: 'Modern web applications built with production-grade architecture. From high-performance landing pages to complex platforms handling real-time data.',
+      simpleDescription: 'Modern web applications built with robust architecture. From high-performance landing pages to complex platforms handling real-time data.',
       features: [
         'Static & Dynamic Websites',
         'Full-Stack Platforms',
@@ -69,7 +69,7 @@ export const en: Translations = {
           'Optimized server-side rendering when performance requires it',
           'Real-time features and live data synchronization',
           'Secure authentication and authorization systems',
-          'Production-grade deployment with comprehensive monitoring',
+          'Reliable deployment with comprehensive monitoring',
           'Every project begins with a technical discovery phase to ensure accurate timelines and eliminate surprises',
         ],
       },
@@ -77,7 +77,7 @@ export const en: Translations = {
     api: {
       title: 'Backend Systems',
       description: 'Robust backend services built for reliability and scale',
-      simpleDescription: 'Production-grade API architecture and backend systems. Clean, maintainable code that teams can work with long-term.',
+      simpleDescription: 'Robust API architecture and backend systems. Clean, maintainable code that teams can work with long-term.',
       features: [
         'RESTful API Architecture',
         'Relational Database Design',
@@ -112,11 +112,11 @@ export const en: Translations = {
     allProjects: 'All Projects',
     viewCaseStudy: 'View Details',
     projectCTA: 'Ready to build something that lasts?',
-    projectCTADesc: 'Let\'s discuss your project and how I can help you ship production-grade software.',
+    projectCTADesc: 'Let\'s discuss your project and how I can help you ship reliable, scalable software.',
     startProject: 'Start Your Project',
   },
   about: {
-    title: 'Meet the Founder',
+    title: 'About the Studio',
     subtitle: 'Direct access to senior-level execution',
     description: 'Hi — I\'m George Tsourdiou, a full-stack engineer specializing in modern web applications and backend systems. Direct collaboration with every client ensures senior-level execution without communication layers or management overhead.',
     badge: 'About',
@@ -128,15 +128,15 @@ export const en: Translations = {
     ],
     testimonialQuote: 'Working directly with George meant fast iterations and zero miscommunication. Best technical partner we\'ve had.',
     testimonialAuthor: 'Satisfied Client',
-    whyFounderLed: 'Why Founder-Led?',
-    founderAdvantage: 'Direct collaboration with the engineer building your product — not an account manager. This means faster decisions, clearer communication, and senior-level execution from day one.',
+    whyFounderLed: 'Why Direct Collaboration?',
+    founderAdvantage: 'Direct collaboration with the engineer building your product — not an account manager. This means faster decisions, clearer communication, and strong technical execution from day one.',
     engineeringPrinciples: 'Engineering Principles',
-    engineeringPrinciplesDesc: 'Built with proven, production-grade technologies — not experimental stacks that require rewrites six months later.',
+    engineeringPrinciplesDesc: 'Built with proven, reliable technologies — not experimental stacks that require rewrites six months later.',
     engineeringPrinciplesSubtext: 'Typical architecture includes type-safe frontends, robust backend services, and relational databases designed for long-term growth.',
     idealProjects: 'Ideal Projects',
     idealProjectsList: [
       'Building a product that needs to scale reliably',
-      'Replacing fragile systems with production-grade architecture',
+      'Replacing fragile systems with reliable architecture',
       'Technical leadership for critical projects',
       'Long-term partnership requiring senior execution',
     ],
@@ -245,7 +245,7 @@ export const en: Translations = {
   },
   closingCTA: {
     title: 'Let\'s build something that scales.',
-    subtitle: 'Available for a limited number of projects each quarter. Let\'s discuss how I can help you ship production-grade software.',
+    subtitle: 'Available for a limited number of projects each quarter. Let\'s discuss how I can help you ship reliable, scalable software.',
     button: 'Start Your Project',
   },
 };

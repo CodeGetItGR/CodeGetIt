@@ -15,28 +15,28 @@ export const Testimonials = () => {
   const { t } = useLocale();
 
   return (
-    <Section id="testimonials" className="bg-linear-to-b from-white to-gray-50">
-      <div className="max-w-360 mx-auto px-6 sm:px-8 lg:px-12">
+    <Section id="testimonials" className="bg-linear-to-b from-white to-gray-50 py-28 lg:py-36">
+      <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12">
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+          className="mb-14 max-w-3xl"
         >
           <motion.span
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
-            className="inline-block px-4 py-1.5 bg-gray-900 text-white text-label rounded-full mb-6"
+            className="inline-block text-xs sm:text-sm font-semibold text-gray-500 uppercase tracking-[0.08em] mb-4"
           >
             {t.testimonials?.badge || 'CLIENT TESTIMONIALS'}
           </motion.span>
-          <h2 className="text-headline-lg md:text-display-sm mb-6">
+          <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight mb-5">
             {t.testimonials?.title || 'What Our Clients Say'}
           </h2>
-          <p className="text-body-lg text-gray-600 max-w-2xl mx-auto">
+          <p className="text-lg text-gray-600 leading-relaxed max-w-2xl">
             {t.testimonials?.subtitle || 'Trusted by innovative companies worldwide'}
           </p>
         </motion.div>
@@ -108,7 +108,7 @@ export const Testimonials = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.4 }}
-          className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-8"
+          className="mt-14 grid grid-cols-2 md:grid-cols-4 gap-8 border-t border-gray-200 pt-10"
         >
           {[
             { label: t.testimonials?.metrics?.satisfaction || '100% Satisfaction', value: '★★★★★' },
@@ -122,9 +122,9 @@ export const Testimonials = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.5 + index * 0.1 }}
-              className="text-center"
+              className="text-left"
             >
-              <div className="text-headline-md font-bold text-gray-900 mb-2">
+              <div className="text-3xl md:text-4xl font-bold text-gray-900 mb-2 tracking-tight">
                 {metric.value}
               </div>
               <div className="text-body-sm text-gray-600">{metric.label}</div>

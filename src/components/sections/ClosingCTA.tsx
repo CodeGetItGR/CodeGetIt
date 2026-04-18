@@ -10,7 +10,7 @@ export const ClosingCTA = () => {
   };
 
   return (
-    <section className="relative py-24 bg-slate-900 overflow-hidden">
+    <section className="relative py-20 bg-slate-900 overflow-hidden">
       {/* Subtle background pattern */}
       <div className="absolute inset-0 opacity-[0.03]">
         <div style={{
@@ -19,19 +19,19 @@ export const ClosingCTA = () => {
         }} className="w-full h-full" />
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 relative z-10">
+      <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-center"
+          className="rounded-3xl border border-slate-700 bg-slate-900/90 px-6 py-14 text-center"
         >
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight tracking-tight">
             {t.closingCTA.title}
           </h2>
 
-          <p className="text-lg md:text-xl text-gray-400 mb-10 max-w-2xl mx-auto">
+          <p className="text-lg md:text-xl text-gray-400 mb-10 max-w-2xl mx-auto leading-relaxed">
             {t.closingCTA.subtitle}
           </p>
 

@@ -13,7 +13,6 @@ import { ContactMessagesPage } from '@/admin/pages/ContactMessagesPage';
 import { SEO } from './components/SEO';
 import { Footer } from './components/layout/Footer';
 import { Header } from './components/layout/Header';
-import { About } from './components/sections/About';
 import { Contact } from './components/sections/Contact.tsx';
 import { Hero } from './components/sections/Hero.tsx';
 import { Portfolio } from './components/sections/Portfolio.tsx';
@@ -29,7 +28,6 @@ const MarketingHomePage = () => {
           <Hero />
           <Services />
           <Portfolio />
-          <About />
           <Contact />
         </main>
         <Footer />
