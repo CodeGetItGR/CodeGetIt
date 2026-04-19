@@ -7,7 +7,6 @@ import type {
   BudgetRange,
   CommunicationPreference,
   DataSensitivity,
-  DecisionMakerRole,
   DesiredStartWindow,
   Priority,
   ProjectType,
@@ -32,8 +31,7 @@ interface DetailedRequestFormState {
   targetLaunchWindow: string;
   budgetRange: string;
   budgetFlexibility: string;
-  decisionMakerRole: string;
-  stakeholderCount: string;
+  enterpriseInquiry: boolean;
   communicationPreference: string;
   legalOrBrandConstraints: string;
   dataSensitivity: string;
@@ -52,8 +50,7 @@ const blankDetailedRequest: DetailedRequestFormState = {
   targetLaunchWindow: '',
   budgetRange: '',
   budgetFlexibility: '',
-  decisionMakerRole: '',
-  stakeholderCount: '',
+  enterpriseInquiry: false,
   communicationPreference: '',
   legalOrBrandConstraints: '',
   dataSensitivity: '',
@@ -78,7 +75,6 @@ export const Contact = () => {
   const { options: desiredStartWindowOptions } = useSettingsOptions({ groupKey: 'request.desiredStartWindow', scope: 'public', onlyEnabled: true });
   const { options: budgetRangeOptions } = useSettingsOptions({ groupKey: 'request.budgetRange', scope: 'public', onlyEnabled: true });
   const { options: budgetFlexibilityOptions } = useSettingsOptions({ groupKey: 'request.budgetFlexibility', scope: 'public', onlyEnabled: true });
-  const { options: decisionMakerRoleOptions } = useSettingsOptions({ groupKey: 'request.decisionMakerRole', scope: 'public', onlyEnabled: true });
   const { options: communicationPreferenceOptions } = useSettingsOptions({ groupKey: 'request.communicationPreference', scope: 'public', onlyEnabled: true });
   const { options: dataSensitivityOptions } = useSettingsOptions({ groupKey: 'request.dataSensitivity', scope: 'public', onlyEnabled: true });
   const { options: priorityOptions } = useSettingsOptions({ groupKey: 'request.priority', scope: 'public', onlyEnabled: true });
@@ -86,8 +82,7 @@ export const Contact = () => {
   const hasDetailedRequiredOptions =
     projectTypeOptions.length > 0 &&
     desiredStartWindowOptions.length > 0 &&
-    budgetRangeOptions.length > 0 &&
-    decisionMakerRoleOptions.length > 0;
+    budgetRangeOptions.length > 0;
 
   const resetMessages = useCallback(() => {
     setSubmitState('idle');
@@ -111,7 +106,6 @@ export const Contact = () => {
         desiredStartWindow: ensureEnabledOption(prev.desiredStartWindow, desiredStartWindowOptions.map((item) => item.value)),
         budgetRange: ensureEnabledOption(prev.budgetRange, budgetRangeOptions.map((item) => item.value)),
         budgetFlexibility: ensureEnabledOption(prev.budgetFlexibility, budgetFlexibilityOptions.map((item) => item.value)),
-        decisionMakerRole: ensureEnabledOption(prev.decisionMakerRole, decisionMakerRoleOptions.map((item) => item.value)),
         communicationPreference: ensureEnabledOption(prev.communicationPreference, communicationPreferenceOptions.map((item) => item.value)),
         dataSensitivity: ensureEnabledOption(prev.dataSensitivity, dataSensitivityOptions.map((item) => item.value)),
         priority: ensureEnabledOption(prev.priority, priorityOptions.map((item) => item.value)) || 'MEDIUM',
@@ -122,7 +116,6 @@ export const Contact = () => {
         next.desiredStartWindow !== prev.desiredStartWindow ||
         next.budgetRange !== prev.budgetRange ||
         next.budgetFlexibility !== prev.budgetFlexibility ||
-        next.decisionMakerRole !== prev.decisionMakerRole ||
         next.communicationPreference !== prev.communicationPreference ||
         next.dataSensitivity !== prev.dataSensitivity ||
         next.priority !== prev.priority;
@@ -138,7 +131,6 @@ export const Contact = () => {
     budgetRangeOptions,
     communicationPreferenceOptions,
     dataSensitivityOptions,
-    decisionMakerRoleOptions,
     desiredStartWindowOptions,
     ensureEnabledOption,
     priorityOptions,
@@ -166,7 +158,6 @@ export const Contact = () => {
     else if (detailedRequest.businessGoal.trim().length > 2000) errors.businessGoal = 'Business goal must be 2000 characters or fewer.';
     if (!detailedRequest.desiredStartWindow) errors.desiredStartWindow = 'Desired start window is required.';
     if (!detailedRequest.budgetRange) errors.budgetRange = 'Budget range is required.';
-    if (!detailedRequest.decisionMakerRole) errors.decisionMakerRole = 'Decision-maker role is required.';
 
     if (formData.message.trim().length > 5000) errors.description = 'Description must be 5000 characters or fewer.';
     if (detailedRequest.organizationName.trim().length > 255) errors.organizationName = 'Organization name must be 255 characters or fewer.';
@@ -175,27 +166,22 @@ export const Contact = () => {
     if (detailedRequest.targetLaunchWindow.trim().length > 100) errors.targetLaunchWindow = 'Target launch window must be 100 characters or fewer.';
     if (detailedRequest.legalOrBrandConstraints.trim().length > 2000) errors.legalOrBrandConstraints = 'Constraints must be 2000 characters or fewer.';
 
-    if (detailedRequest.stakeholderCount.trim()) {
-      const count = Number(detailedRequest.stakeholderCount);
-      if (!Number.isInteger(count) || count < 1 || count > 1000) {
-        errors.stakeholderCount = 'Stakeholder count must be an integer between 1 and 1000.';
-      }
-    }
-
     return errors;
   }, [detailedRequest, formData.email, formData.message, formData.name]);
 
   const detailedSteps = useMemo(() => [
     { title: 'Contact info' },
     { title: 'Project essentials' },
-    { title: 'Extra context' },
-  ] as const, []);
+    ...(!detailedRequest.enterpriseInquiry ? [{ title: 'Extra context' }] : []),
+  ] as const, [detailedRequest.enterpriseInquiry]);
 
   const detailedStepFields = useMemo<ReadonlyArray<ReadonlyArray<string>>>(() => [
     ['requesterName', 'requesterEmail', 'title', 'requesterPhone'],
-    ['projectType', 'businessGoal', 'desiredStartWindow', 'budgetRange', 'decisionMakerRole', 'stakeholderCount'],
-    ['description', 'organizationName', 'industry', 'targetAudience', 'targetLaunchWindow', 'legalOrBrandConstraints'],
-  ], []);
+    ['projectType', 'businessGoal', 'desiredStartWindow', 'budgetRange'],
+    ...(!detailedRequest.enterpriseInquiry
+      ? [['description', 'organizationName', 'industry', 'targetAudience', 'targetLaunchWindow', 'legalOrBrandConstraints']]
+      : []),
+  ], [detailedRequest.enterpriseInquiry]);
 
   const hasErrorsInStep = useCallback((errors: Record<string, string>, stepIndex: number) => {
     const fields = detailedStepFields[stepIndex] ?? [];
@@ -270,8 +256,7 @@ export const Contact = () => {
           targetLaunchWindow: detailedRequest.targetLaunchWindow.trim() || undefined,
           budgetRange: detailedRequest.budgetRange as BudgetRange,
           budgetFlexibility: (detailedRequest.budgetFlexibility || undefined) as BudgetFlexibility | undefined,
-          decisionMakerRole: detailedRequest.decisionMakerRole as DecisionMakerRole,
-          stakeholderCount: detailedRequest.stakeholderCount ? Number(detailedRequest.stakeholderCount) : undefined,
+          enterpriseInquiry: detailedRequest.enterpriseInquiry,
           communicationPreference: (detailedRequest.communicationPreference || undefined) as CommunicationPreference | undefined,
           legalOrBrandConstraints: detailedRequest.legalOrBrandConstraints.trim() || undefined,
           dataSensitivity: (detailedRequest.dataSensitivity || undefined) as DataSensitivity | undefined,
@@ -321,21 +306,36 @@ export const Contact = () => {
   }, [resetMessages]);
 
   const handleDetailedFieldChange = useCallback((event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const field = event.currentTarget.dataset.requestField as keyof DetailedRequestFormState | undefined;
+    const field = event.target instanceof HTMLElement
+      ? (event.target.getAttribute('data-request-field') as keyof DetailedRequestFormState | null)
+      : null;
     if (!field) {
       return;
     }
 
-    const { value } = event.currentTarget;
+    const value = (event.target as HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement).value;
     setDetailedRequest((prev) => ({ ...prev, [field]: value }));
   }, []);
+
+  const handleEnterpriseInquiryToggle = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    const { checked } = event.target;
+    setDetailedRequest((prev) => ({
+      ...prev,
+      enterpriseInquiry: checked,
+      budgetFlexibility: checked ? '' : prev.budgetFlexibility,
+      communicationPreference: checked ? '' : prev.communicationPreference,
+      dataSensitivity: checked ? '' : prev.dataSensitivity,
+      priority: checked ? 'MEDIUM' : prev.priority,
+    }));
+    resetMessages();
+  }, [resetMessages]);
 
   const contactFormEnabled = getBool('availability.contactFormEnabled', true);
   const publicContactEmail = getString('marketing.contactEmail', 'hello@codegetit.com');
 
   return (
     <section id="contact" className="section-depth section-divider relative py-28 lg:py-36">
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-slate-100/65 to-transparent" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-linear-to-b from-slate-100/65 to-transparent" />
 
       <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
         <motion.div
@@ -467,6 +467,22 @@ export const Contact = () => {
                       />
                       {fieldErrors.requesterPhone && <p className="mt-1 text-xs text-red-500">{fieldErrors.requesterPhone}</p>}
                     </div>
+
+                    <label className="flex items-start gap-2 rounded-xl border border-gray-200 bg-gray-50 px-3 py-3 text-sm text-gray-700 md:col-span-2">
+                      <input
+                        type="checkbox"
+                        checked={detailedRequest.enterpriseInquiry}
+                        onChange={handleEnterpriseInquiryToggle}
+                        className="mt-0.5"
+                      />
+                      <span>This is an enterprise inquiry - I prefer direct communication.</span>
+                    </label>
+
+                    {detailedRequest.enterpriseInquiry && (
+                      <p className="rounded-xl border border-blue-100 bg-blue-50 px-3 py-2 text-sm text-blue-700 md:col-span-2">
+                        You marked this as an enterprise inquiry. Share the core details now and we will follow up directly to refine the full scope.
+                      </p>
+                    )}
                   </div>
                   )}
 
@@ -539,99 +555,72 @@ export const Contact = () => {
                       {fieldErrors.budgetRange && <p className="mt-1 text-xs text-red-500">{fieldErrors.budgetRange}</p>}
                     </div>
 
-                    <div>
-                      <label className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-3 block">Decision-maker role</label>
-                      <select
-                        value={detailedRequest.decisionMakerRole}
-                        data-request-field="decisionMakerRole"
-                        onChange={handleDetailedFieldChange}
-                        className="w-full rounded-xl border border-gray-200 bg-white/85 px-4 py-3 text-base text-gray-900"
-                        required={useDetailedRequest}
-                      >
-                        <option value="">Select role</option>
-                        {decisionMakerRoleOptions.map((item) => (
-                          <option key={item.value} value={item.value}>{item.label}</option>
-                        ))}
-                      </select>
-                      {fieldErrors.decisionMakerRole && <p className="mt-1 text-xs text-red-500">{fieldErrors.decisionMakerRole}</p>}
-                    </div>
+                    {!detailedRequest.enterpriseInquiry && (
+                      <>
+                        <div>
+                          <label className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-3 block">Budget flexibility</label>
+                          <select
+                            value={detailedRequest.budgetFlexibility}
+                            data-request-field="budgetFlexibility"
+                            onChange={handleDetailedFieldChange}
+                            className="w-full rounded-xl border border-gray-200 bg-white/85 px-4 py-3 text-base text-gray-900"
+                          >
+                            <option value="">Select flexibility</option>
+                            {budgetFlexibilityOptions.map((item) => (
+                              <option key={item.value} value={item.value}>{item.label}</option>
+                            ))}
+                          </select>
+                        </div>
 
-                    <div>
-                      <label className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-3 block">Budget flexibility</label>
-                      <select
-                        value={detailedRequest.budgetFlexibility}
-                        data-request-field="budgetFlexibility"
-                        onChange={handleDetailedFieldChange}
-                        className="w-full rounded-xl border border-gray-200 bg-white/85 px-4 py-3 text-base text-gray-900"
-                      >
-                        <option value="">Select flexibility</option>
-                        {budgetFlexibilityOptions.map((item) => (
-                          <option key={item.value} value={item.value}>{item.label}</option>
-                        ))}
-                      </select>
-                    </div>
+                        <div>
+                          <label className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-3 block">Communication preference</label>
+                          <select
+                            value={detailedRequest.communicationPreference}
+                            data-request-field="communicationPreference"
+                            onChange={handleDetailedFieldChange}
+                            className="w-full rounded-xl border border-gray-200 bg-white/85 px-4 py-3 text-base text-gray-900"
+                          >
+                            <option value="">Select preference</option>
+                            {communicationPreferenceOptions.map((item) => (
+                              <option key={item.value} value={item.value}>{item.label}</option>
+                            ))}
+                          </select>
+                        </div>
 
-                    <div>
-                      <label className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-3 block">Communication preference</label>
-                      <select
-                        value={detailedRequest.communicationPreference}
-                        data-request-field="communicationPreference"
-                        onChange={handleDetailedFieldChange}
-                        className="w-full rounded-xl border border-gray-200 bg-white/85 px-4 py-3 text-base text-gray-900"
-                      >
-                        <option value="">Select preference</option>
-                        {communicationPreferenceOptions.map((item) => (
-                          <option key={item.value} value={item.value}>{item.label}</option>
-                        ))}
-                      </select>
-                    </div>
+                        <div>
+                          <label className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-3 block">Data sensitivity</label>
+                          <select
+                            value={detailedRequest.dataSensitivity}
+                            data-request-field="dataSensitivity"
+                            onChange={handleDetailedFieldChange}
+                            className="w-full rounded-xl border border-gray-200 bg-white/85 px-4 py-3 text-base text-gray-900"
+                          >
+                            <option value="">Select sensitivity</option>
+                            {dataSensitivityOptions.map((item) => (
+                              <option key={item.value} value={item.value}>{item.label}</option>
+                            ))}
+                          </select>
+                        </div>
 
-                    <div>
-                      <label className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-3 block">Data sensitivity</label>
-                      <select
-                        value={detailedRequest.dataSensitivity}
-                        data-request-field="dataSensitivity"
-                        onChange={handleDetailedFieldChange}
-                        className="w-full rounded-xl border border-gray-200 bg-white/85 px-4 py-3 text-base text-gray-900"
-                      >
-                        <option value="">Select sensitivity</option>
-                        {dataSensitivityOptions.map((item) => (
-                          <option key={item.value} value={item.value}>{item.label}</option>
-                        ))}
-                      </select>
-                    </div>
-
-                    <div>
-                      <label className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-3 block">Priority</label>
-                      <select
-                        value={detailedRequest.priority}
-                        data-request-field="priority"
-                        onChange={handleDetailedFieldChange}
-                        className="w-full rounded-xl border border-gray-200 bg-white/85 px-4 py-3 text-base text-gray-900"
-                      >
-                        {priorityOptions.map((item) => (
-                          <option key={item.value} value={item.value}>{item.label}</option>
-                        ))}
-                      </select>
-                    </div>
-
-                    <div>
-                      <label className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-3 block">Stakeholders</label>
-                      <input
-                        type="number"
-                        min={1}
-                        max={1000}
-                        value={detailedRequest.stakeholderCount}
-                        data-request-field="stakeholderCount"
-                        onChange={handleDetailedFieldChange}
-                        className="w-full rounded-xl border border-gray-200 bg-white/85 px-4 py-3 text-base text-gray-900"
-                      />
-                      {fieldErrors.stakeholderCount && <p className="mt-1 text-xs text-red-500">{fieldErrors.stakeholderCount}</p>}
-                    </div>
+                        <div>
+                          <label className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-3 block">Priority</label>
+                          <select
+                            value={detailedRequest.priority}
+                            data-request-field="priority"
+                            onChange={handleDetailedFieldChange}
+                            className="w-full rounded-xl border border-gray-200 bg-white/85 px-4 py-3 text-base text-gray-900"
+                          >
+                            {priorityOptions.map((item) => (
+                              <option key={item.value} value={item.value}>{item.label}</option>
+                            ))}
+                          </select>
+                        </div>
+                      </>
+                    )}
                   </div>
                   )}
 
-                  {currentStep === 2 && (
+                  {currentStep === 2 && !detailedRequest.enterpriseInquiry && (
                   <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <input
                       type="text"
@@ -668,7 +657,7 @@ export const Contact = () => {
                   </div>
                   )}
 
-                  {currentStep === 2 && (
+                  {currentStep === 2 && !detailedRequest.enterpriseInquiry && (
                   <textarea
                     placeholder="Legal or brand constraints (optional)"
                     value={detailedRequest.legalOrBrandConstraints}
@@ -697,7 +686,7 @@ export const Contact = () => {
                   onChange={handleChange('message')}
                   rows={5}
                   className="w-full resize-none rounded-xl border border-gray-200 bg-white/85 px-4 py-3.5 text-lg text-gray-900 placeholder:text-gray-400 transition-colors duration-200 focus:border-gray-400 focus:outline-none focus:ring-0"
-                  required
+                  required={!useDetailedRequest}
                 />
                 {fieldErrors.message && <p className="mt-1 text-xs text-red-500">{fieldErrors.message}</p>}
                 {fieldErrors.description && <p className="mt-1 text-xs text-red-500">{fieldErrors.description}</p>}

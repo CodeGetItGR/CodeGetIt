@@ -1,18 +1,59 @@
-import { useCallback, useState, type ChangeEvent, type FormEvent } from 'react';
+import { useCallback, useMemo, useState, type ChangeEvent, type FormEvent } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { offerApi, type CreateOfferPayload } from '@/admin/api/offers';
 import { SlideSheet } from '@/admin/components/SlideSheet';
 import { useApiErrorState } from '@/admin/hooks/useApiErrorState';
-import type { UUID } from '@/admin/types';
+import type { BudgetFlexibility, BudgetRange, UUID } from '@/admin/types';
 import { Input } from '@/components/ui/Input';
 import { Textarea } from '@/components/ui/Textarea';
+
+interface OfferPricingContext {
+  budgetRange: BudgetRange;
+  budgetFlexibility?: BudgetFlexibility;
+}
 
 interface CreateOfferSheetProps {
   isOpen: boolean;
   onClose: () => void;
   /** Pre-fill if opened from a request detail page */
   defaultRequestId?: UUID;
+  pricingContext?: OfferPricingContext;
   onCreated?: () => void;
+}
+
+function getBudgetRangeLabel(range: BudgetRange): string {
+  switch (range) {
+    case 'UNDER_2K':
+      return 'Under 2K';
+    case 'FROM_2K_TO_5K':
+      return '2K to 5K';
+    case 'FROM_5K_TO_10K':
+      return '5K to 10K';
+    case 'FROM_10K_TO_25K':
+      return '10K to 25K';
+    case 'ABOVE_25K':
+      return 'Above 25K';
+    case 'UNKNOWN':
+      return 'Unknown';
+    default:
+      return range;
+  }
+}
+
+function getFlexibilityText(flexibility?: BudgetFlexibility): string {
+  if (!flexibility || flexibility === 'UNKNOWN') {
+    return 'Budget flexibility was not specified.';
+  }
+
+  if (flexibility === 'FIXED') {
+    return 'Requester marked budget as fixed. Keep pricing close to the selected range.';
+  }
+
+  if (flexibility === 'SOMEWHAT_FLEXIBLE') {
+    return 'Requester is somewhat flexible. A modest stretch beyond range may still be acceptable with clear scope value.';
+  }
+
+  return 'Requester is flexible. You can propose options or phased pricing around this range.';
 }
 
 const blankForm = (): CreateOfferPayload => ({
@@ -28,6 +69,7 @@ export const CreateOfferSheet = ({
   isOpen,
   onClose,
   defaultRequestId,
+  pricingContext,
   onCreated,
 }: CreateOfferSheetProps) => {
   const [form, setForm] = useState<CreateOfferPayload>(() => ({
@@ -107,6 +149,18 @@ export const CreateOfferSheet = ({
     setField('description', event.target.value);
   }, [setField]);
 
+  const pricingTips = useMemo(() => {
+    if (!pricingContext) {
+      return null;
+    }
+
+    return {
+      budgetLabel: getBudgetRangeLabel(pricingContext.budgetRange),
+      flexibilityText: getFlexibilityText(pricingContext.budgetFlexibility),
+      showRangeTip: pricingContext.budgetRange !== 'UNKNOWN',
+    };
+  }, [pricingContext]);
+
   return (
     <SlideSheet
       isOpen={isOpen}
@@ -150,6 +204,17 @@ export const CreateOfferSheet = ({
             maxLength={5}
           />
         </div>
+
+        {pricingTips && (
+          <div className="rounded-xl border border-blue-100 bg-blue-50 px-3 py-2 text-sm text-blue-800">
+            <p className="font-medium">Pricing tip from request context</p>
+            <p className="mt-1">Requested budget range: {pricingTips.budgetLabel}</p>
+            <p className="mt-1">{pricingTips.flexibilityText}</p>
+            {pricingTips.showRangeTip && (
+              <p className="mt-1 text-blue-700">Try anchoring this offer close to the stated range, then justify any deviations in the description.</p>
+            )}
+          </div>
+        )}
 
         <Input
           label="Valid until"

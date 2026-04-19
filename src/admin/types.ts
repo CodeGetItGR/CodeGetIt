@@ -13,7 +13,6 @@ export type ProjectType = 'WEBSITE' | 'WEB_APP' | 'MOBILE_APP' | 'ECOMMERCE' | '
 export type DesiredStartWindow = 'ASAP' | 'WITHIN_1_MONTH' | 'WITHIN_3_MONTHS' | 'WITHIN_6_MONTHS' | 'FLEXIBLE';
 export type BudgetRange = 'UNDER_2K' | 'FROM_2K_TO_5K' | 'FROM_5K_TO_10K' | 'FROM_10K_TO_25K' | 'ABOVE_25K' | 'UNKNOWN';
 export type BudgetFlexibility = 'FIXED' | 'SOMEWHAT_FLEXIBLE' | 'FLEXIBLE' | 'UNKNOWN';
-export type DecisionMakerRole = 'FOUNDER_OWNER' | 'EXECUTIVE' | 'MANAGER' | 'TEAM_LEAD' | 'PROCUREMENT' | 'OTHER';
 export type CommunicationPreference = 'EMAIL' | 'PHONE' | 'VIDEO_CALL' | 'MESSAGING_APP';
 export type DataSensitivity = 'NONE' | 'BASIC_PERSONAL_DATA' | 'SENSITIVE_PERSONAL_DATA' | 'FINANCIAL_DATA' | 'HEALTHCARE_DATA' | 'OTHER';
 
@@ -56,8 +55,7 @@ export interface RequestResponse {
   targetLaunchWindow?: string;
   budgetRange: BudgetRange;
   budgetFlexibility?: BudgetFlexibility;
-  decisionMakerRole: DecisionMakerRole;
-  stakeholderCount?: number;
+  enterpriseInquiry: boolean;
   communicationPreference?: CommunicationPreference;
   legalOrBrandConstraints?: string;
   dataSensitivity?: DataSensitivity;

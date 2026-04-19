@@ -2,7 +2,6 @@ import { useCallback, useMemo, useState, type ChangeEvent } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { queryKeys } from '@/admin/api/queryKeys';
 import { settingsApi, type AppSettingType } from '@/admin/api/settings';
-import { useSettingsOptions } from '@/admin/hooks/useSettingsOptions';
 
 interface SettingDefinition {
   key: string;
@@ -14,94 +13,22 @@ interface SettingDefinition {
 }
 
 const SETTING_DEFINITIONS: SettingDefinition[] = [
-  {
-    key: 'availability.acceptingProjects',
-    label: 'Accepting new projects',
-    group: 'Availability',
-    type: 'BOOLEAN',
-    defaultValue: 'true',
-  },
-  {
-    key: 'availability.statusMessage',
-    label: 'Availability message',
-    group: 'Availability',
-    type: 'STRING',
-    defaultValue: 'I am currently accepting new projects.',
-  },
-  {
-    key: 'availability.contactFormEnabled',
-    label: 'Contact form enabled',
-    group: 'Availability',
-    type: 'BOOLEAN',
-    defaultValue: 'true',
-  },
-  {
-    key: 'availability.requestSubmissionEnabled',
-    label: 'Request submission CTA enabled',
-    group: 'Availability',
-    type: 'BOOLEAN',
-    defaultValue: 'true',
-  },
-  {
-    key: 'marketing.heroTitle',
-    label: 'Hero title',
-    group: 'Marketing Hero',
-    type: 'STRING',
-    defaultValue: '',
-  },
-  {
-    key: 'marketing.heroSubtitle',
-    label: 'Hero subtitle',
-    group: 'Marketing Hero',
-    type: 'STRING',
-    defaultValue: '',
-  },
-  {
-    key: 'marketing.ctaPrimaryText',
-    label: 'Primary CTA text',
-    group: 'CTA',
-    type: 'STRING',
-    defaultValue: 'Start a project',
-  },
-  {
-    key: 'marketing.ctaPrimaryUrl',
-    label: 'Primary CTA URL',
-    group: 'CTA',
-    type: 'STRING',
-    defaultValue: '#contact',
-    description: 'Use /path, #section-id, or a full https:// URL.',
-  },
-  {
-    key: 'marketing.bannerEnabled',
-    label: 'Banner enabled',
-    group: 'Banner',
-    type: 'BOOLEAN',
-    defaultValue: 'false',
-  },
-  {
-    key: 'marketing.bannerText',
-    label: 'Banner text',
-    group: 'Banner',
-    type: 'STRING',
-    defaultValue: '',
-  },
-  {
-    key: 'marketing.bannerSeverity',
-    label: 'Banner severity',
-    group: 'Banner',
-    type: 'STRING',
-    defaultValue: 'info',
-  },
-  {
-    key: 'marketing.contactEmail',
-    label: 'Public contact email',
-    group: 'Contact',
-    type: 'STRING',
-    defaultValue: 'hello@codegetit.com',
-  },
+  { key: 'availability.acceptingProjects', label: 'Accepting new projects', group: 'Availability', type: 'BOOLEAN', defaultValue: 'true' },
+  { key: 'availability.statusMessage', label: 'Availability message', group: 'Availability', type: 'STRING', defaultValue: 'I am currently accepting new projects.' },
+  { key: 'availability.contactFormEnabled', label: 'Contact form enabled', group: 'Availability', type: 'BOOLEAN', defaultValue: 'true' },
+  { key: 'availability.requestSubmissionEnabled', label: 'Request submission CTA enabled', group: 'Availability', type: 'BOOLEAN', defaultValue: 'true' },
+  { key: 'marketing.heroTitle', label: 'Hero title', group: 'Marketing Hero', type: 'STRING', defaultValue: '' },
+  { key: 'marketing.heroSubtitle', label: 'Hero subtitle', group: 'Marketing Hero', type: 'STRING', defaultValue: '' },
+  { key: 'marketing.ctaPrimaryText', label: 'Primary CTA text', group: 'CTA', type: 'STRING', defaultValue: 'Start a project' },
+  { key: 'marketing.ctaPrimaryUrl', label: 'Primary CTA URL', group: 'CTA', type: 'STRING', defaultValue: '#contact' },
+  { key: 'marketing.bannerEnabled', label: 'Banner enabled', group: 'Banner', type: 'BOOLEAN', defaultValue: 'false' },
+  { key: 'marketing.bannerText', label: 'Banner text', group: 'Banner', type: 'STRING', defaultValue: '' },
+  { key: 'marketing.bannerSeverity', label: 'Banner severity', group: 'Banner', type: 'STRING', defaultValue: 'INFO' },
+  { key: 'marketing.contactEmail', label: 'Public contact email', group: 'Contact', type: 'STRING', defaultValue: 'hello@codegetit.com' },
 ];
 
 const GROUP_ORDER: SettingDefinition['group'][] = ['Availability', 'Marketing Hero', 'CTA', 'Banner', 'Contact'];
+const DEFAULT_BANNER_SEVERITIES = ['INFO', 'SUCCESS', 'WARNING', 'ERROR'] as const;
 
 export const SettingsPage = () => {
   const queryClient = useQueryClient();
@@ -130,27 +57,37 @@ export const SettingsPage = () => {
     return merged;
   }, [settingsQuery.data]);
 
-  const values = useMemo(
-    () => ({ ...serverValues, ...draftValues }),
-    [serverValues, draftValues],
-  );
+  const values = useMemo(() => ({ ...serverValues, ...draftValues }), [serverValues, draftValues]);
 
   const groupedDefinitions = useMemo(
-    () => GROUP_ORDER.map((group) => ({
-      group,
-      items: SETTING_DEFINITIONS.filter((definition) => definition.group === group),
-    })),
+    () => GROUP_ORDER.map((group) => ({ group, items: SETTING_DEFINITIONS.filter((definition) => definition.group === group) })),
     [],
   );
 
+  const configurableOptionGroups = useMemo(
+    () => (optionsQuery.data?.groups ?? []).filter((group) => group.configurable),
+    [optionsQuery.data?.groups],
+  );
+
+  const bannerSeverityOptions = useMemo(() => {
+    const group = optionsQuery.data?.groups.find((item) => item.key === 'settings.marketing.bannerSeverity');
+    if (!group || group.items.length === 0) {
+      return DEFAULT_BANNER_SEVERITIES;
+    }
+    return group.items.map((item) => item.value);
+  }, [optionsQuery.data?.groups]);
+
+  const isDirty = useMemo(() => Object.keys(draftValues).length > 0, [draftValues]);
+
   const saveMutation = useMutation({
-    mutationFn: () => settingsApi.batchUpdate({
-      items: SETTING_DEFINITIONS.map((definition) => ({
-        key: definition.key,
-        type: definition.type,
-        value: values[definition.key] ?? definition.defaultValue,
-      })),
-    }),
+    mutationFn: () =>
+      settingsApi.batchUpdate({
+        items: SETTING_DEFINITIONS.map((definition) => ({
+          key: definition.key,
+          type: definition.type,
+          value: values[definition.key] ?? definition.defaultValue,
+        })),
+      }),
     onSuccess: async () => {
       setDraftValues({});
       await Promise.all([
@@ -171,68 +108,77 @@ export const SettingsPage = () => {
     },
   });
 
-  const updateValue = useCallback((key: string, nextValue: string) => {
-    setDraftValues((prev) => ({ ...prev, [key]: nextValue }));
-  }, []);
+  const updateValue = useCallback((key: string, value: string) => {
+    setDraftValues((prev) => {
+      const next = { ...prev };
+      if (serverValues[key] === value) {
+        delete next[key];
+      } else {
+        next[key] = value;
+      }
+      return next;
+    });
+  }, [serverValues]);
+
+  const handleSettingValueChange = useCallback(
+    (event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+      const key = event.currentTarget.dataset.settingKey;
+      if (!key) {
+        return;
+      }
+      updateValue(key, event.currentTarget.value);
+    },
+    [updateValue],
+  );
 
   const handleSave = useCallback(() => {
     saveMutation.mutate();
   }, [saveMutation]);
 
-  const handleSettingValueChange = useCallback((event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const key = event.currentTarget.dataset.settingKey;
-    if (!key) {
-      return;
-    }
-    updateValue(key, event.currentTarget.value);
-  }, [updateValue]);
+  const handleOptionToggle = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      const groupKey = event.currentTarget.dataset.groupKey;
+      const optionValue = event.currentTarget.dataset.optionValue;
+      if (!groupKey || !optionValue) {
+        return;
+      }
 
-  const { options: bannerSeverityOptions } = useSettingsOptions({
-    groupKey: 'settings.marketing.bannerSeverity',
-    scope: 'admin',
-  });
+      const group = configurableOptionGroups.find((item) => item.key === groupKey);
+      if (!group) {
+        return;
+      }
 
-  const configurableOptionGroups = useMemo(
-    () => (optionsQuery.data?.groups ?? []).filter((group) => group.configurable),
-    [optionsQuery.data?.groups],
+      const currentlyDisabled = new Set(group.items.filter((item) => !item.enabled).map((item) => item.value));
+      if (event.currentTarget.checked) {
+        currentlyDisabled.delete(optionValue);
+      } else {
+        currentlyDisabled.add(optionValue);
+      }
+
+      updateDisabledOptionsMutation.mutate({
+        groupKey,
+        disabledValues: Array.from(currentlyDisabled),
+      });
+    },
+    [configurableOptionGroups, updateDisabledOptionsMutation],
   );
 
-  const handleOptionToggle = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-    const groupKey = event.currentTarget.dataset.groupKey;
-    const optionValue = event.currentTarget.dataset.optionValue;
-    if (!groupKey || !optionValue) {
-      return;
-    }
-
-    const group = configurableOptionGroups.find((item) => item.key === groupKey);
-    if (!group) {
-      return;
-    }
-
-    const currentlyDisabled = group.items.filter((item) => !item.enabled).map((item) => item.value);
-    const shouldEnable = event.currentTarget.checked;
-    const nextDisabled = shouldEnable
-      ? currentlyDisabled.filter((value) => value !== optionValue)
-      : Array.from(new Set([...currentlyDisabled, optionValue]));
-
-    updateDisabledOptionsMutation.mutate({ groupKey, disabledValues: nextDisabled });
-  }, [configurableOptionGroups, updateDisabledOptionsMutation]);
-
   return (
-    <div>
-      <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
+    <div className="space-y-6">
+      <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="text-sm font-medium uppercase tracking-[0.16em] text-gray-500">Settings</p>
-          <h2 className="mt-1 text-3xl font-bold tracking-tight text-gray-900">Marketing controls</h2>
-          <p className="mt-2 text-sm text-gray-600">Manage public-facing availability, hero copy, CTA behavior, banner, and contact settings.</p>
+          <p className="text-sm uppercase tracking-[0.16em] text-gray-500">Settings</p>
+          <h2 className="mt-1 text-3xl font-bold text-gray-900">Site configuration</h2>
+          <p className="mt-1 text-sm text-gray-600">Manage public content and availability flags served by backend settings.</p>
         </div>
+
         <button
           type="button"
           onClick={handleSave}
-          disabled={saveMutation.isPending || settingsQuery.isLoading}
-          className="rounded-xl border border-gray-900 bg-gray-900 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-black disabled:cursor-not-allowed disabled:opacity-50"
+          disabled={!isDirty || saveMutation.isPending || settingsQuery.isLoading || settingsQuery.isError}
+          className="rounded-xl bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-60"
         >
-          {saveMutation.isPending ? 'Saving...' : 'Save all changes'}
+          {saveMutation.isPending ? 'Saving...' : 'Save all settings'}
         </button>
       </div>
 
@@ -272,13 +218,13 @@ export const SettingsPage = () => {
                         </select>
                       ) : item.key === 'marketing.bannerSeverity' ? (
                         <select
-                          value={value || 'info'}
+                          value={value || 'INFO'}
                           data-setting-key={item.key}
                           onChange={handleSettingValueChange}
                           className="mt-3 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900"
                         >
-                          {bannerSeverityOptions.map((option) => (
-                            <option key={option.value} value={option.value}>{option.label}</option>
+                          {bannerSeverityOptions.map((optionValue) => (
+                            <option key={optionValue} value={optionValue}>{optionValue}</option>
                           ))}
                         </select>
                       ) : (
@@ -317,14 +263,20 @@ export const SettingsPage = () => {
 
             {optionsQuery.isLoading && <p className="mt-4 text-sm text-gray-500">Loading option groups...</p>}
 
-            {!optionsQuery.isLoading && configurableOptionGroups.length === 0 && (
+            {optionsQuery.isError && (
+              <p className="mt-4 rounded-xl border border-rose-200 bg-rose-50 px-3 py-2 text-sm text-rose-700">
+                Failed to load option groups.
+              </p>
+            )}
+
+            {!optionsQuery.isLoading && !optionsQuery.isError && configurableOptionGroups.length === 0 && (
               <p className="mt-4 text-sm text-gray-500">No configurable option groups available.</p>
             )}
 
             <div className="mt-5 space-y-5">
               {configurableOptionGroups.map((group) => (
                 <div key={group.key} className="rounded-xl border border-gray-200 p-4">
-                  <p className="text-sm font-semibold text-gray-900">{group.label}</p>
+                  <p className="text-sm font-medium text-gray-900">{group.label}</p>
                   <p className="mt-1 text-xs text-gray-500">{group.key}</p>
 
                   <div className="mt-3 grid gap-2 md:grid-cols-2">

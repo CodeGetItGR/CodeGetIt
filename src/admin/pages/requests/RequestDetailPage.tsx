@@ -15,7 +15,6 @@ import type {
   BudgetRange,
   CommunicationPreference,
   DataSensitivity,
-  DecisionMakerRole,
   DesiredStartWindow,
   Priority,
   ProjectType,
@@ -37,8 +36,7 @@ interface RequestFormState {
   targetLaunchWindow: string;
   budgetRange: BudgetRange;
   budgetFlexibility: BudgetFlexibility;
-  decisionMakerRole: DecisionMakerRole;
-  stakeholderCount?: number;
+  enterpriseInquiry: boolean;
   communicationPreference: CommunicationPreference;
   legalOrBrandConstraints: string;
   dataSensitivity: DataSensitivity;
@@ -58,8 +56,7 @@ const defaultFormState: RequestFormState = {
   targetLaunchWindow: '',
   budgetRange: 'UNKNOWN',
   budgetFlexibility: 'UNKNOWN',
-  decisionMakerRole: 'OTHER',
-  stakeholderCount: undefined,
+  enterpriseInquiry: false,
   communicationPreference: 'EMAIL',
   legalOrBrandConstraints: '',
   dataSensitivity: 'NONE',
@@ -71,6 +68,7 @@ export const RequestDetailPage = () => {
   const queryClient = useQueryClient();
   const { errorMessage, setApiError, clearError } = useApiErrorState();
   const [showCreateOffer, setShowCreateOffer] = useState(false);
+  const [copyState, setCopyState] = useState<'idle' | 'copied' | 'error'>('idle');
 
   const requestQuery = useQuery({
     queryKey: queryKeys.requests.detail(id),
@@ -94,8 +92,7 @@ export const RequestDetailPage = () => {
       targetLaunchWindow: request?.targetLaunchWindow ?? '',
       budgetRange: request?.budgetRange ?? 'UNKNOWN',
       budgetFlexibility: request?.budgetFlexibility ?? 'UNKNOWN',
-      decisionMakerRole: request?.decisionMakerRole ?? 'OTHER',
-      stakeholderCount: request?.stakeholderCount,
+      enterpriseInquiry: request?.enterpriseInquiry ?? false,
       communicationPreference: request?.communicationPreference ?? 'EMAIL',
       legalOrBrandConstraints: request?.legalOrBrandConstraints ?? '',
       dataSensitivity: request?.dataSensitivity ?? 'NONE',
@@ -164,6 +161,31 @@ export const RequestDetailPage = () => {
     void queryClient.invalidateQueries({ queryKey: queryKeys.offers.root });
   }, [queryClient]);
 
+  const handleCopyRequestId = useCallback(async () => {
+    if (!id) {
+      return;
+    }
+
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(id);
+      } else {
+        const input = document.createElement('input');
+        input.value = id;
+        document.body.appendChild(input);
+        input.select();
+        document.execCommand('copy');
+        document.body.removeChild(input);
+      }
+
+      setCopyState('copied');
+      window.setTimeout(() => setCopyState('idle'), 1800);
+    } catch {
+      setCopyState('error');
+      window.setTimeout(() => setCopyState('idle'), 2200);
+    }
+  }, [id]);
+
   const handleTitleChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
     handleFieldChange('title', event.target.value);
   }, [handleFieldChange]);
@@ -216,13 +238,8 @@ export const RequestDetailPage = () => {
     handleFieldChange('budgetFlexibility', event.target.value as BudgetFlexibility);
   }, [handleFieldChange]);
 
-  const handleDecisionMakerRoleChange = useCallback((event: ChangeEvent<HTMLSelectElement>) => {
-    handleFieldChange('decisionMakerRole', event.target.value as DecisionMakerRole);
-  }, [handleFieldChange]);
-
-  const handleStakeholderCountChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-    const parsed = Number(event.target.value);
-    handleFieldChange('stakeholderCount', Number.isFinite(parsed) && parsed > 0 ? parsed : undefined);
+  const handleEnterpriseInquiryChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    handleFieldChange('enterpriseInquiry', event.target.checked);
   }, [handleFieldChange]);
 
   const handleCommunicationPreferenceChange = useCallback((event: ChangeEvent<HTMLSelectElement>) => {
@@ -249,7 +266,6 @@ export const RequestDetailPage = () => {
   const { options: desiredStartWindowOptions } = useSettingsOptions({ groupKey: 'request.desiredStartWindow', scope: 'admin' });
   const { options: budgetRangeOptions } = useSettingsOptions({ groupKey: 'request.budgetRange', scope: 'admin' });
   const { options: budgetFlexibilityOptions } = useSettingsOptions({ groupKey: 'request.budgetFlexibility', scope: 'admin' });
-  const { options: decisionMakerRoleOptions } = useSettingsOptions({ groupKey: 'request.decisionMakerRole', scope: 'admin' });
   const { options: communicationPreferenceOptions } = useSettingsOptions({ groupKey: 'request.communicationPreference', scope: 'admin' });
   const { options: dataSensitivityOptions } = useSettingsOptions({ groupKey: 'request.dataSensitivity', scope: 'admin' });
   const { options: priorityOptions } = useSettingsOptions({ groupKey: 'request.priority', scope: 'admin' });
@@ -274,17 +290,27 @@ export const RequestDetailPage = () => {
             <StatusBadge value={request.status} />
             <StatusBadge value={request.priority} />
           </div>
-        </div>
-        <div className="flex items-center gap-3">
-          {request.status === 'APPROVED' && (
+          <div className="mt-3 flex flex-wrap items-center gap-2">
+            <span className="rounded-lg bg-gray-100 px-2 py-1 font-mono text-xs text-gray-700">{request.id}</span>
             <button
               type="button"
-              onClick={handleOpenCreateOffer}
-              className="rounded-xl bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800"
+              onClick={handleCopyRequestId}
+              className="rounded-lg border border-gray-300 px-2 py-1 text-xs font-medium text-gray-700 hover:bg-gray-50"
             >
-              + Create offer
+              Copy ID
             </button>
-          )}
+            {copyState === 'copied' && <span className="text-xs text-emerald-700">Copied</span>}
+            {copyState === 'error' && <span className="text-xs text-rose-700">Copy failed</span>}
+          </div>
+        </div>
+        <div className="flex items-center gap-3">
+          <button
+            type="button"
+            onClick={handleOpenCreateOffer}
+            className="rounded-xl bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800"
+          >
+            + Create offer
+          </button>
           <Link to="/admin/requests" className="text-sm font-medium text-gray-700 underline">
             Back to requests
           </Link>
@@ -293,6 +319,26 @@ export const RequestDetailPage = () => {
 
       {errorMessage && <p className="rounded-xl bg-rose-50 px-3 py-2 text-sm text-rose-700">{errorMessage}</p>}
 
+      <section className="rounded-2xl border border-gray-200 bg-white p-6">
+        <h3 className="text-lg font-semibold text-gray-900">Status actions</h3>
+        <p className="mt-1 text-sm text-gray-600">Only valid transitions are shown.</p>
+
+        <div className="mt-4 flex flex-wrap gap-2">
+          {availableTransitions.length === 0 && <p className="text-sm text-gray-500">No further transitions available.</p>}
+          {availableTransitions.map((target) => (
+              <button
+                  key={target}
+                  type="button"
+                  data-target-status={target}
+                  onClick={handleStatusTransition}
+                  disabled={statusMutation.isPending}
+                  className="rounded-lg border border-gray-300 px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-50"
+              >
+                Move to {target}
+              </button>
+          ))}
+        </div>
+      </section>
       <section className="rounded-2xl border border-gray-200 bg-white p-6">
         <h3 className="text-lg font-semibold text-gray-900">Editable details</h3>
         <p className="mt-1 text-sm text-gray-600">Contact email and phone are immutable by backend contract.</p>
@@ -374,24 +420,15 @@ export const RequestDetailPage = () => {
             </select>
           </label>
 
-          <label className="text-sm">
-            <span className="mb-1 block text-gray-600">Decision-maker role</span>
-            <select value={formState.decisionMakerRole} onChange={handleDecisionMakerRoleChange} className="w-full rounded-xl border border-gray-300 px-3 py-2">
-              {decisionMakerRoleOptions.map((item) => (
-                <option key={item.value} value={item.value}>{item.label}</option>
-              ))}
-            </select>
+          <label className="flex items-start gap-2 rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-700 md:col-span-2">
+            <input
+              type="checkbox"
+              checked={formState.enterpriseInquiry}
+              onChange={handleEnterpriseInquiryChange}
+              className="mt-0.5"
+            />
+            <span>Enterprise inquiry (prefer direct communication and staged discovery)</span>
           </label>
-
-          <Input
-            label="Stakeholder count"
-            type="number"
-            min={1}
-            max={1000}
-            value={formState.stakeholderCount?.toString() ?? ''}
-            onChange={handleStakeholderCountChange}
-            className="rounded-xl px-3 py-2"
-          />
 
           <label className="text-sm">
             <span className="mb-1 block text-gray-600">Communication preference</span>
@@ -452,27 +489,6 @@ export const RequestDetailPage = () => {
         </form>
       </section>
 
-      <section className="rounded-2xl border border-gray-200 bg-white p-6">
-        <h3 className="text-lg font-semibold text-gray-900">Status actions</h3>
-        <p className="mt-1 text-sm text-gray-600">Only valid transitions are shown.</p>
-
-        <div className="mt-4 flex flex-wrap gap-2">
-          {availableTransitions.length === 0 && <p className="text-sm text-gray-500">No further transitions available.</p>}
-          {availableTransitions.map((target) => (
-            <button
-              key={target}
-              type="button"
-              data-target-status={target}
-              onClick={handleStatusTransition}
-              disabled={statusMutation.isPending}
-              className="rounded-lg border border-gray-300 px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-50"
-            >
-              Move to {target}
-            </button>
-          ))}
-        </div>
-      </section>
-
       <section>
         <EntityAuxPanels entityType="REQUEST" entityId={request.id} />
       </section>
@@ -481,6 +497,10 @@ export const RequestDetailPage = () => {
         isOpen={showCreateOffer}
         onClose={handleCloseCreateOffer}
         defaultRequestId={request.id}
+        pricingContext={{
+          budgetRange: request.budgetRange,
+          budgetFlexibility: request.budgetFlexibility,
+        }}
         onCreated={handleOfferCreated}
       />
     </div>

@@ -9,7 +9,6 @@ import type {
   BudgetRange,
   CommunicationPreference,
   DataSensitivity,
-  DecisionMakerRole,
   DesiredStartWindow,
   Priority,
   ProjectType,
@@ -38,8 +37,7 @@ const blankForm: SubmitRequestPayload = {
   targetLaunchWindow: '',
   budgetRange: 'UNKNOWN',
   budgetFlexibility: 'UNKNOWN',
-  decisionMakerRole: 'OTHER',
-  stakeholderCount: undefined,
+  enterpriseInquiry: false,
   communicationPreference: 'EMAIL',
   legalOrBrandConstraints: '',
   dataSensitivity: 'NONE',
@@ -144,13 +142,8 @@ export const CreateRequestSheet = ({ isOpen, onClose, onCreated }: CreateRequest
     setField('budgetFlexibility', event.target.value as BudgetFlexibility);
   }, [setField]);
 
-  const handleDecisionMakerRoleChange = useCallback((event: ChangeEvent<HTMLSelectElement>) => {
-    setField('decisionMakerRole', event.target.value as DecisionMakerRole);
-  }, [setField]);
-
-  const handleStakeholderCountChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-    const parsed = Number(event.target.value);
-    setField('stakeholderCount', Number.isFinite(parsed) && parsed > 0 ? parsed : undefined);
+  const handleEnterpriseInquiryChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    setField('enterpriseInquiry', event.target.checked);
   }, [setField]);
 
   const handleCommunicationPreferenceChange = useCallback((event: ChangeEvent<HTMLSelectElement>) => {
@@ -169,7 +162,6 @@ export const CreateRequestSheet = ({ isOpen, onClose, onCreated }: CreateRequest
   const { options: desiredStartWindowOptions } = useSettingsOptions({ groupKey: 'request.desiredStartWindow', scope: 'public', onlyEnabled: true });
   const { options: budgetRangeOptions } = useSettingsOptions({ groupKey: 'request.budgetRange', scope: 'public', onlyEnabled: true });
   const { options: budgetFlexibilityOptions } = useSettingsOptions({ groupKey: 'request.budgetFlexibility', scope: 'public', onlyEnabled: true });
-  const { options: decisionMakerRoleOptions } = useSettingsOptions({ groupKey: 'request.decisionMakerRole', scope: 'public', onlyEnabled: true });
   const { options: communicationPreferenceOptions } = useSettingsOptions({ groupKey: 'request.communicationPreference', scope: 'public', onlyEnabled: true });
   const { options: dataSensitivityOptions } = useSettingsOptions({ groupKey: 'request.dataSensitivity', scope: 'public', onlyEnabled: true });
   const { options: priorityOptions } = useSettingsOptions({ groupKey: 'request.priority', scope: 'public', onlyEnabled: true });
@@ -239,6 +231,22 @@ export const CreateRequestSheet = ({ isOpen, onClose, onCreated }: CreateRequest
           required
         />
 
+        <label className="flex items-start gap-2 rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-700">
+          <input
+            type="checkbox"
+            checked={Boolean(form.enterpriseInquiry)}
+            onChange={handleEnterpriseInquiryChange}
+            className="mt-0.5"
+          />
+          <span>This is an enterprise inquiry (prefer direct communication)</span>
+        </label>
+
+        {form.enterpriseInquiry && (
+          <p className="rounded-xl border border-blue-100 bg-blue-50 px-3 py-2 text-sm text-blue-700">
+            Enterprise inquiry enabled: this request can start with lean details and be refined through direct follow-up.
+          </p>
+        )}
+
         <Input label="Organization name" value={form.organizationName ?? ''} onChange={handleOrganizationNameChange} />
         <Input label="Industry" value={form.industry ?? ''} onChange={handleIndustryChange} />
         <Input label="Target audience" value={form.targetAudience ?? ''} onChange={handleTargetAudienceChange} />
@@ -271,24 +279,6 @@ export const CreateRequestSheet = ({ isOpen, onClose, onCreated }: CreateRequest
             ))}
           </select>
         </div>
-
-        <div>
-          <label className="mb-1 block text-sm text-gray-600">Decision-maker role</label>
-          <select value={form.decisionMakerRole} onChange={handleDecisionMakerRoleChange} className="w-full rounded-xl border border-gray-300 px-3 py-2 text-sm" required>
-            {decisionMakerRoleOptions.map((item) => (
-              <option key={item.value} value={item.value}>{item.label}</option>
-            ))}
-          </select>
-        </div>
-
-        <Input
-          label="Stakeholder count"
-          type="number"
-          min={1}
-          max={1000}
-          value={form.stakeholderCount?.toString() ?? ''}
-          onChange={handleStakeholderCountChange}
-        />
 
         <div>
           <label className="mb-1 block text-sm text-gray-600">Communication preference</label>

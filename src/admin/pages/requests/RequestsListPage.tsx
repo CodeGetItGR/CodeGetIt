@@ -29,6 +29,7 @@ export const RequestsListPage = () => {
   const [filterType, setFilterType] = useState<FilterType>('status');
   const [filterValue, setFilterValue] = useState('');
   const [showCreate, setShowCreate] = useState(false);
+  const [copiedRequestId, setCopiedRequestId] = useState<string | null>(null);
 
   const queryParams = useMemo<RequestListQuery>(() => {
     const params: RequestListQuery = { page, size: 10, sort: 'createdAt,desc' };
@@ -81,6 +82,26 @@ export const RequestsListPage = () => {
   const handleNextPage = useCallback(() => {
     goToNextPage(requestsQuery.data?.totalPages ?? 0);
   }, [goToNextPage, requestsQuery.data?.totalPages]);
+
+  const handleCopyRequestId = useCallback(async (requestId: string) => {
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(requestId);
+      } else {
+        const input = document.createElement('input');
+        input.value = requestId;
+        document.body.appendChild(input);
+        input.select();
+        document.execCommand('copy');
+        document.body.removeChild(input);
+      }
+
+      setCopiedRequestId(requestId);
+      window.setTimeout(() => setCopiedRequestId(null), 1800);
+    } catch {
+      setCopiedRequestId(null);
+    }
+  }, []);
 
   const { options: requestStatusOptions } = useSettingsOptions({ groupKey: 'request.status', scope: 'admin' });
   const { options: requestPriorityOptions } = useSettingsOptions({ groupKey: 'request.priority', scope: 'admin' });
@@ -157,6 +178,7 @@ export const RequestsListPage = () => {
             <thead className="bg-gray-50 text-left text-xs uppercase tracking-wide text-gray-500">
               <tr>
                 <th className="px-4 py-3">Title</th>
+                <th className="px-4 py-3">Request ID</th>
                 <th className="px-4 py-3">Requester</th>
                 <th className="px-4 py-3">Status</th>
                 <th className="px-4 py-3">Priority</th>
@@ -168,6 +190,20 @@ export const RequestsListPage = () => {
               {requestsQuery.data?.content.map((request) => (
                 <tr key={request.id} className="hover:bg-gray-50">
                   <td className="px-4 py-3 font-medium text-gray-900">{request.title}</td>
+                  <td className="px-4 py-3">
+                    <div className="flex items-center gap-2">
+                      <span className="max-w-[170px] truncate rounded bg-gray-100 px-2 py-1 font-mono text-xs text-gray-700" title={request.id}>
+                        {request.id}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => void handleCopyRequestId(request.id)}
+                        className="rounded border border-gray-300 px-2 py-1 text-xs font-medium text-gray-700 hover:bg-gray-50"
+                      >
+                        {copiedRequestId === request.id ? 'Copied' : 'Copy'}
+                      </button>
+                    </div>
+                  </td>
                   <td className="px-4 py-3 text-gray-600">{request.requesterEmail}</td>
                   <td className="px-4 py-3">
                     <StatusBadge value={request.status} />

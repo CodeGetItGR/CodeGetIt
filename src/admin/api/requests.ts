@@ -4,7 +4,6 @@ import type {
   BudgetRange,
   CommunicationPreference,
   DataSensitivity,
-  DecisionMakerRole,
   DesiredStartWindow,
   PagedResponse,
   Priority,
@@ -38,8 +37,7 @@ export interface UpdateRequestPayload {
   targetLaunchWindow?: string;
   budgetRange?: BudgetRange;
   budgetFlexibility?: BudgetFlexibility;
-  decisionMakerRole?: DecisionMakerRole;
-  stakeholderCount?: number;
+  enterpriseInquiry?: boolean;
   communicationPreference?: CommunicationPreference;
   legalOrBrandConstraints?: string;
   dataSensitivity?: DataSensitivity;
@@ -65,8 +63,7 @@ export interface SubmitRequestPayload {
   targetLaunchWindow?: string;
   budgetRange: BudgetRange;
   budgetFlexibility?: BudgetFlexibility;
-  decisionMakerRole: DecisionMakerRole;
-  stakeholderCount?: number;
+  enterpriseInquiry?: boolean;
   communicationPreference?: CommunicationPreference;
   legalOrBrandConstraints?: string;
   dataSensitivity?: DataSensitivity;
