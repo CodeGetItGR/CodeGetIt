@@ -25,9 +25,7 @@ export const Hero = () => {
   }, []);
 
   const heroTitle = getString('marketing.heroTitle', t.hero.title);
-  console.log('Hero title:', heroTitle, t.hero.title);
   const heroSubtitle = getString('marketing.heroSubtitle', t.hero.subtitle);
-  console.log('Hero subtitle:', heroSubtitle,t.hero.subtitle);
   const availabilityMessage = getString('availability.statusMessage', t.hero.availability);
   const acceptingProjects = getBool('availability.acceptingProjects', true);
   const requestSubmissionEnabled = getBool('availability.requestSubmissionEnabled', true);
@@ -62,6 +60,7 @@ export const Hero = () => {
   return (
     <section ref={sectionRef} id="hero" className="relative flex min-h-screen items-center overflow-hidden pt-30 pb-24 sm:pt-34 sm:pb-28">
       <div className="pointer-events-none absolute inset-0">
+        {/* ...existing code... */}
         <motion.div
           className="absolute -top-8 left-[10%] h-44 w-44 rounded-full border border-white/60 bg-white/45 backdrop-blur-md"
           style={{ y: orbOneY }}
@@ -83,15 +82,48 @@ export const Hero = () => {
       <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 w-full relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           <div>
-            <motion.span
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: premiumMotion.normal, ease: premiumEase }}
-              className="mb-6 inline-flex items-center gap-2 rounded-full border border-slate-300/70 bg-white/65 px-4 py-2 text-xs font-semibold uppercase tracking-[0.1em] text-slate-600"
+            {/* Elegant Availability Badge */}
+            <motion.button
+              type="button"
+              onClick={() => {
+                setAvailabilityTapCount(prev => {
+                  const next = prev + 1;
+                  if (next >= 4) {
+                    setShowHeroGem(true);
+                    window.setTimeout(() => setShowHeroGem(false), 3500);
+                    return 0;
+                  }
+                  return next;
+                });
+              }}
+              className="mb-4 inline-block"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.6, delay: 0.15, ease: premiumEase }}
             >
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 shadow-[0_0_12px_rgba(16,185,129,0.7)]" />
-              {t.hero.badge}
-            </motion.span>
+              <div className={`relative group cursor-pointer`}>
+                <div className={`flex items-center gap-2 px-4 py-2.5 rounded-full backdrop-blur-md border transition-all duration-300 ${
+                  acceptingProjects
+                    ? 'border-emerald-200/60 bg-emerald-50/40 hover:bg-emerald-50/60 hover:border-emerald-300/80'
+                    : 'border-rose-200/60 bg-rose-50/40 hover:bg-rose-50/60 hover:border-rose-300/80'
+                }`}>
+                  <motion.span
+                    className={`h-2 w-2 rounded-full ${acceptingProjects ? 'bg-emerald-500' : 'bg-rose-500'} shadow-lg`}
+                    animate={{ scale: [1, 1.2, 1] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                  />
+                  <span className={`text-xs font-semibold tracking-wide ${acceptingProjects ? 'text-emerald-700' : 'text-rose-700'}`}>
+                    {acceptingProjects ? 'Available' : 'Not Available'}
+                  </span>
+                </div>
+                {/* Subtle tooltip on hover */}
+                <div className="absolute top-full mt-2 left-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-50">
+                  <div className="bg-gray-900/90 text-white text-xs rounded-lg px-3 py-2 whitespace-nowrap font-medium">
+                    {availabilityMessage}
+                  </div>
+                </div>
+              </div>
+            </motion.button>
 
             <motion.h1
               initial={{ opacity: 0, y: 18 }}
@@ -116,26 +148,7 @@ export const Hero = () => {
               {heroSubtitle}
             </motion.p>
 
-            <motion.button
-              type="button"
-              initial={{ opacity: 0, y: 18 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.45, delay: 0.2 }}
-              onClick={() => {
-                setAvailabilityTapCount(prev => {
-                  const next = prev + 1;
-                  if (next >= 4) {
-                    setShowHeroGem(true);
-                    window.setTimeout(() => setShowHeroGem(false), 3500);
-                    return 0;
-                  }
-                  return next;
-                });
-              }}
-              className={`mb-8 text-left text-sm font-medium ${acceptingProjects ? 'text-emerald-700' : 'text-rose-700'}`}
-            >
-              {availabilityMessage}
-            </motion.button>
+            {/* Availability badge moved to fixed position in hero section - see below */}
 
             {showHeroGem && (
               <motion.span

@@ -22,8 +22,6 @@ export const PublicSettingsProvider = ({ children }: { children: ReactNode }) =>
 
   const value = useMemo<PublicSettingsContextValue>(() => {
     const settings = settingsQuery.data ?? {};
-    console.log(settings)
-
     return {
       settings,
       isLoading: settingsQuery.isLoading,
