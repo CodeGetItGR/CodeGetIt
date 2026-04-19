@@ -1,8 +1,11 @@
 import { useLocale } from '@/i18n/UseLocale';
+import { usePublicSettings } from '@/settings/usePublicSettings';
 
 export const Footer = () => {
   const { t } = useLocale();
+  const { getString } = usePublicSettings();
   const currentYear = new Date().getFullYear();
+  const publicContactEmail = getString('marketing.contactEmail', 'hello@codegetit.com');
 
   return (
     <footer className="relative overflow-hidden border-t border-gray-800/90 bg-linear-to-b from-gray-950 via-slate-950 to-black py-12">
@@ -16,11 +19,11 @@ export const Footer = () => {
           </p>
           <div className="flex items-center gap-4 text-sm text-gray-400">
             <a
-              href="mailto:hello@codegetit.com"
+              href={`mailto:${publicContactEmail}`}
               className="text-sm text-gray-300 transition-colors duration-200 hover:text-white"
               aria-label={t.footer.emailAria}
             >
-              hello@codegetit.com
+              {publicContactEmail}
             </a>
             <span>{t.footer.basedIn}</span>
           </div>

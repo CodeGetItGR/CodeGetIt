@@ -26,6 +26,11 @@ interface QueryKeys {
     root: readonly [string];
     list: (params: object) => readonly [string, object];
   };
+  settings: {
+    root: readonly [string];
+    list: readonly [string, string];
+    public: readonly [string, string];
+  };
 }
 
 export const queryKeys: QueryKeys = {
@@ -60,6 +65,11 @@ export const queryKeys: QueryKeys = {
   contactMessages: {
     root: ['contact-messages'] as const,
     list: (params: object) => ['contact-messages', params] as const,
+  },
+  settings: {
+    root: ['settings'] as const,
+    list: ['settings', 'list'] as const,
+    public: ['settings', 'public'] as const,
   },
 };
 

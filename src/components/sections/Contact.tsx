@@ -6,9 +6,11 @@ import { contactMessageApi } from '@/admin/api/contactMessages';
 import { normalizeApiError } from '@/admin/api/client';
 import { MagneticButton } from '@/components/ui/MagneticButton';
 import { premiumEase, premiumMotion } from '@/lib/motion';
+import { usePublicSettings } from '@/settings/usePublicSettings';
 
 export const Contact = () => {
   const { t } = useLocale();
+  const { getBool, getString } = usePublicSettings();
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitState, setSubmitState] = useState<'idle' | 'success' | 'error'>('idle');
@@ -49,6 +51,9 @@ export const Contact = () => {
     setFormData(prev => ({ ...prev, [field]: e.target.value }));
   }, []);
 
+  const contactFormEnabled = getBool('availability.contactFormEnabled', true);
+  const publicContactEmail = getString('marketing.contactEmail', 'hello@codegetit.com');
+
   return (
     <section id="contact" className="section-depth section-divider relative py-28 lg:py-36">
       <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-slate-100/65 to-transparent" />
@@ -73,14 +78,15 @@ export const Contact = () => {
         </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: premiumMotion.normal, ease: premiumEase }}
-            className="interactive-card premium-panel premium-texture lg:col-span-7 rounded-3xl p-7 md:p-9"
-          >
-            <form onSubmit={handleSubmit} className="space-y-8">
+          {contactFormEnabled && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: premiumMotion.normal, ease: premiumEase }}
+              className="interactive-card premium-panel premium-texture lg:col-span-7 rounded-3xl p-7 md:p-9"
+            >
+              <form onSubmit={handleSubmit} className="space-y-8">
               <div>
                 <label className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-3 block">{t.contact.nameLabel}</label>
                 <input
@@ -159,15 +165,16 @@ export const Contact = () => {
                   ✖ {errorText}
                 </motion.p>
               )}
-            </form>
-          </motion.div>
+              </form>
+            </motion.div>
+          )}
 
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: premiumMotion.normal, delay: 0.1, ease: premiumEase }}
-            className="lg:col-span-5"
+            className={contactFormEnabled ? 'lg:col-span-5' : 'lg:col-span-7'}
           >
             <div className="sticky top-32 space-y-10 overflow-hidden rounded-3xl border border-gray-800 bg-linear-to-b from-gray-950 via-slate-900 to-gray-950 p-8 text-gray-100 shadow-2xl shadow-slate-900/30">
               <motion.div
@@ -179,10 +186,10 @@ export const Contact = () => {
               <div>
                 <p className="text-sm font-medium text-gray-400 uppercase tracking-wider mb-3">{t.contact.email}</p>
                 <a
-                  href="mailto:hello@codegetit.com"
+                  href={`mailto:${publicContactEmail}`}
                   className="text-lg font-semibold text-white hover:text-gray-300 transition-colors duration-200 underline decoration-gray-700 underline-offset-4"
                 >
-                  hello@codegetit.com
+                  {publicContactEmail}
                 </a>
               </div>
 

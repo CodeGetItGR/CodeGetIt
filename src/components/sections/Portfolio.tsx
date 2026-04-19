@@ -5,9 +5,11 @@ import { projects } from '@/data/projects';
 import { useLocale } from '@/i18n/UseLocale';
 import { MagneticButton } from '@/components/ui/MagneticButton';
 import { premiumEase, premiumMotion } from '@/lib/motion';
+import { usePublicSettings } from '@/settings/usePublicSettings';
 
 export const Portfolio = () => {
   const { t } = useLocale();
+  const { getBool, getString } = usePublicSettings();
   const [revealedProjectId, setRevealedProjectId] = useState<number | null>(null);
 
   const featuredProjects = projects.slice(0, 6);
@@ -16,6 +18,26 @@ export const Portfolio = () => {
     setRevealedProjectId(projectId);
     window.setTimeout(() => setRevealedProjectId(null), 2600);
   },[]);
+
+  const requestSubmissionEnabled = getBool('availability.requestSubmissionEnabled', true);
+  const ctaPrimaryText = getString('marketing.ctaPrimaryText', t.portfolio.startProject);
+  const ctaPrimaryUrl = getString('marketing.ctaPrimaryUrl', '#contact');
+
+  const handlePrimaryCta = useCallback(() => {
+    const target = ctaPrimaryUrl.trim();
+
+    if (target.startsWith('#')) {
+      document.getElementById(target.slice(1))?.scrollIntoView({ behavior: 'smooth' });
+      return;
+    }
+
+    if (target.startsWith('/')) {
+      window.location.assign(target);
+      return;
+    }
+
+    window.open(target, '_blank', 'noopener,noreferrer');
+  }, [ctaPrimaryUrl]);
 
   return (
     <section id="portfolio" className="section-depth section-divider relative py-28 lg:py-36">
@@ -125,13 +147,15 @@ export const Portfolio = () => {
               <h3 className="text-2xl font-bold text-gray-900 tracking-tight mb-2">{t.portfolio.projectCTA}</h3>
               <p className="text-lg text-gray-600">{t.portfolio.projectCTADesc}</p>
             </div>
-            <MagneticButton
-              onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
-              className="cursor-pointer hover:opacity-75 cta-polish inline-flex items-center gap-2 rounded-full border border-gray-900 bg-gray-900 px-7 py-3.5 font-semibold text-white transition-colors duration-300 hover:bg-black"
-            >
-              {t.portfolio.startProject}
-              <HiArrowRight className="w-5 h-5" />
-            </MagneticButton>
+            {requestSubmissionEnabled && (
+              <MagneticButton
+                onClick={handlePrimaryCta}
+                className="cursor-pointer hover:opacity-75 cta-polish inline-flex items-center gap-2 rounded-full border border-gray-900 bg-gray-900 px-7 py-3.5 font-semibold text-white transition-colors duration-300 hover:bg-black"
+              >
+                {ctaPrimaryText}
+                <HiArrowRight className="w-5 h-5" />
+              </MagneticButton>
+            )}
           </div>
         </motion.div>
       </div>

@@ -10,9 +10,11 @@ import { ProjectsListPage } from '@/admin/pages/projects/ProjectsListPage';
 import { RequestDetailPage } from '@/admin/pages/requests/RequestDetailPage';
 import { RequestsListPage } from '@/admin/pages/requests/RequestsListPage';
 import { ContactMessagesPage } from '@/admin/pages/ContactMessagesPage';
+import { SettingsPage } from '@/admin/pages/SettingsPage';
 import { SEO } from './components/SEO';
 import { Footer } from './components/layout/Footer';
 import { Header } from './components/layout/Header';
+import { AnnouncementBanner } from './components/sections/AnnouncementBanner';
 import { Contact } from './components/sections/Contact.tsx';
 import { Hero } from './components/sections/Hero.tsx';
 import { Portfolio } from './components/sections/Portfolio.tsx';
@@ -22,27 +24,31 @@ import { ValueProposition } from './components/sections/ValueProposition.tsx';
 import { AnimatedBackground } from './components/ui/AnimatedBackground';
 import { CursorSpotlight } from './components/ui/CursorSpotlight';
 import { ScrollProgress } from './components/ui/ScrollProgress';
+import { PublicSettingsProvider } from '@/settings/PublicSettingsProvider';
 
 const MarketingHomePage = () => {
   return (
-    <>
-      <SEO />
-      <div className="marketing-shell min-h-screen">
-        <ScrollProgress />
-        <AnimatedBackground />
-        <CursorSpotlight />
-        <Header />
-        <main className="relative z-10 overflow-hidden">
-          <Hero />
-          <Services />
-          <ValueProposition />
-          <ProcessTimeline />
-          <Portfolio />
-          <Contact />
-        </main>
-        <Footer />
-      </div>
-    </>
+    <PublicSettingsProvider>
+      <>
+        <SEO />
+        <div className="marketing-shell min-h-screen">
+          <ScrollProgress />
+          <AnimatedBackground />
+          <CursorSpotlight />
+          <Header />
+          <main className="relative z-10 overflow-hidden">
+            <AnnouncementBanner />
+            <Hero />
+            <Services />
+            <ValueProposition />
+            <ProcessTimeline />
+            <Portfolio />
+            <Contact />
+          </main>
+          <Footer />
+        </div>
+      </>
+    </PublicSettingsProvider>
   );
 };
 
@@ -62,6 +68,7 @@ function App() {
           <Route path="projects" element={<ProjectsListPage />} />
           <Route path="projects/:id" element={<ProjectDetailPage />} />
           <Route path="messages" element={<ContactMessagesPage />} />
+            <Route path="settings" element={<SettingsPage />} />
         </Route>
       </Route>
 

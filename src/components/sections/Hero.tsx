@@ -4,9 +4,11 @@ import { HiArrowRight } from 'react-icons/hi';
 import { useLocale } from '@/i18n/UseLocale';
 import { MagneticButton } from '@/components/ui/MagneticButton';
 import { premiumEase, premiumMotion } from '@/lib/motion';
+import { usePublicSettings } from '@/settings/usePublicSettings';
 
 export const Hero = () => {
   const { t } = useLocale();
+  const { getBool, getString } = usePublicSettings();
   const [availabilityTapCount, setAvailabilityTapCount] = useState(0);
   const [showHeroGem, setShowHeroGem] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
@@ -21,6 +23,32 @@ export const Hero = () => {
   const scrollToSection = useCallback((id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
   }, []);
+
+  const heroTitle = getString('marketing.heroTitle', t.hero.title);
+  console.log('Hero title:', heroTitle, t.hero.title);
+  const heroSubtitle = getString('marketing.heroSubtitle', t.hero.subtitle);
+  console.log('Hero subtitle:', heroSubtitle,t.hero.subtitle);
+  const availabilityMessage = getString('availability.statusMessage', t.hero.availability);
+  const acceptingProjects = getBool('availability.acceptingProjects', true);
+  const requestSubmissionEnabled = getBool('availability.requestSubmissionEnabled', true);
+  const ctaPrimaryText = getString('marketing.ctaPrimaryText', t.hero.startProject);
+  const ctaPrimaryUrl = getString('marketing.ctaPrimaryUrl', '#contact');
+
+  const handlePrimaryCta = useCallback(() => {
+    const target = ctaPrimaryUrl.trim();
+
+    if (target.startsWith('#')) {
+      scrollToSection(target.slice(1));
+      return;
+    }
+
+    if (target.startsWith('/')) {
+      window.location.assign(target);
+      return;
+    }
+
+    window.open(target, '_blank', 'noopener,noreferrer');
+  }, [ctaPrimaryUrl, scrollToSection]);
 
   useEffect(() => {
     if (availabilityTapCount === 0) {
@@ -72,7 +100,7 @@ export const Hero = () => {
               className="mb-6 leading-[1.03] tracking-tight text-gray-900"
               style={{ fontSize: 'clamp(2.6rem, 5.7vw, 5.2rem)', fontWeight: 800 }}
             >
-              {t.hero.title}
+              {heroTitle}
               <br />
               <span className="bg-linear-to-r from-slate-500 via-slate-700 to-slate-500 bg-[length:200%_100%] bg-clip-text text-transparent animate-[gradientShift_8s_ease_infinite]">
                 {t.hero.reimagined}
@@ -85,7 +113,7 @@ export const Hero = () => {
               transition={{ duration: premiumMotion.normal, delay: 0.14, ease: premiumEase }}
               className="mb-6 max-w-2xl text-lg leading-relaxed text-gray-600 md:text-xl"
             >
-              {t.hero.subtitle}
+              {heroSubtitle}
             </motion.p>
 
             <motion.button
@@ -104,9 +132,9 @@ export const Hero = () => {
                   return next;
                 });
               }}
-              className="mb-8 text-left text-sm font-medium text-gray-500"
+              className={`mb-8 text-left text-sm font-medium ${acceptingProjects ? 'text-emerald-700' : 'text-rose-700'}`}
             >
-              {t.hero.availability}
+              {availabilityMessage}
             </motion.button>
 
             {showHeroGem && (
@@ -125,13 +153,15 @@ export const Hero = () => {
               transition={{ duration: premiumMotion.normal, delay: 0.24, ease: premiumEase }}
               className="mb-10 flex flex-wrap items-center gap-4"
             >
-              <MagneticButton
-                onClick={() => scrollToSection('contact')}
-                className="cta-polish group inline-flex items-center gap-3 rounded-full border border-gray-900 bg-gray-900 px-8 py-4 text-base font-semibold text-white shadow-lg shadow-gray-900/20 transition-all duration-300 hover:bg-black cursor-pointer hover:opacity-75"
-              >
-                {t.hero.startProject}
-                <HiArrowRight className="w-5 h-5 opacity-90 transition-opacity duration-200 group-hover:opacity-100" />
-              </MagneticButton>
+              {requestSubmissionEnabled && (
+                <MagneticButton
+                  onClick={handlePrimaryCta}
+                  className="cta-polish group inline-flex items-center gap-3 rounded-full border border-gray-900 bg-gray-900 px-8 py-4 text-base font-semibold text-white shadow-lg shadow-gray-900/20 transition-all duration-300 hover:bg-black cursor-pointer hover:opacity-75"
+                >
+                  {ctaPrimaryText}
+                  <HiArrowRight className="w-5 h-5 opacity-90 transition-opacity duration-200 group-hover:opacity-100" />
+                </MagneticButton>
+              )}
 
               <button
                 onClick={() => scrollToSection('portfolio')}

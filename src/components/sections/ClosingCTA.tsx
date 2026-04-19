@@ -1,13 +1,32 @@
 import { motion } from 'framer-motion';
+import { useCallback } from 'react';
 import { HiArrowRight } from 'react-icons/hi';
 import { useLocale } from '@/i18n/UseLocale';
+import { usePublicSettings } from '@/settings/usePublicSettings';
 
 export const ClosingCTA = () => {
   const { t } = useLocale();
+  const { getBool, getString } = usePublicSettings();
 
-  const scrollToContact = () => {
-    document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
-  };
+  const requestSubmissionEnabled = getBool('availability.requestSubmissionEnabled', true);
+  const ctaPrimaryText = getString('marketing.ctaPrimaryText', t.closingCTA.button);
+  const ctaPrimaryUrl = getString('marketing.ctaPrimaryUrl', '#contact');
+
+  const scrollToContact = useCallback(() => {
+    const target = ctaPrimaryUrl.trim();
+
+    if (target.startsWith('#')) {
+      document.getElementById(target.slice(1))?.scrollIntoView({ behavior: 'smooth' });
+      return;
+    }
+
+    if (target.startsWith('/')) {
+      window.location.assign(target);
+      return;
+    }
+
+    window.open(target, '_blank', 'noopener,noreferrer');
+  }, [ctaPrimaryUrl]);
 
   return (
     <section className="relative py-20 bg-slate-900 overflow-hidden">
@@ -35,16 +54,18 @@ export const ClosingCTA = () => {
             {t.closingCTA.subtitle}
           </p>
 
-          <motion.button
-            onClick={scrollToContact}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            aria-label={t.closingCTA.buttonAria}
-            className="inline-flex items-center gap-3 px-10 py-5 bg-white text-slate-900 font-bold rounded-full hover:bg-gray-100 transition-all duration-300 shadow-2xl hover:shadow-xl text-lg focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-slate-900"
-          >
-            {t.closingCTA.button}
-            <HiArrowRight className="w-6 h-6 " aria-hidden="true" />
-          </motion.button>
+          {requestSubmissionEnabled && (
+            <motion.button
+              onClick={scrollToContact}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              aria-label={t.closingCTA.buttonAria}
+              className="inline-flex items-center gap-3 px-10 py-5 bg-white text-slate-900 font-bold rounded-full hover:bg-gray-100 transition-all duration-300 shadow-2xl hover:shadow-xl text-lg focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-slate-900"
+            >
+              {ctaPrimaryText}
+              <HiArrowRight className="w-6 h-6 " aria-hidden="true" />
+            </motion.button>
+          )}
         </motion.div>
       </div>
     </section>

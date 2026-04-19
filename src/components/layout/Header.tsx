@@ -2,9 +2,11 @@ import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { useLocale } from '@/i18n/UseLocale';
 import { MagneticButton } from '@/components/ui/MagneticButton';
+import { usePublicSettings } from '@/settings/usePublicSettings';
 
 export const Header = () => {
   const { t } = useLocale();
+  const { getBool, getString } = usePublicSettings();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [logoTapStreak, setLogoTapStreak] = useState(0);
@@ -35,6 +37,27 @@ export const Header = () => {
     document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth' });
     setIsMobileMenuOpen(false);
   }, []);
+
+  const requestSubmissionEnabled = getBool('availability.requestSubmissionEnabled', true);
+  const ctaPrimaryText = getString('marketing.ctaPrimaryText', t.hero.startProject);
+  const ctaPrimaryUrl = getString('marketing.ctaPrimaryUrl', '#contact');
+
+  const handlePrimaryCta = useCallback(() => {
+    const target = ctaPrimaryUrl.trim();
+    setIsMobileMenuOpen(false);
+
+    if (target.startsWith('#')) {
+      scrollToSection(target.slice(1));
+      return;
+    }
+
+    if (target.startsWith('/')) {
+      window.location.assign(target);
+      return;
+    }
+
+    window.open(target, '_blank', 'noopener,noreferrer');
+  }, [ctaPrimaryUrl, scrollToSection]);
 
   const navItems = [
     { label: t.nav.services, id: 'services' },
@@ -97,12 +120,14 @@ export const Header = () => {
                 {item.label}
               </button>
             ))}
-            <MagneticButton
-              onClick={() => scrollToSection('contact')}
-              className="cursor-pointer hover:opacity-75 cta-polish inline-flex items-center rounded-full border border-gray-900 bg-gray-900 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-gray-900/15 transition-colors duration-300 hover:bg-black"
-            >
-              {t.hero.startProject}
-            </MagneticButton>
+            {requestSubmissionEnabled && (
+              <MagneticButton
+                onClick={handlePrimaryCta}
+                className="cursor-pointer hover:opacity-75 cta-polish inline-flex items-center rounded-full border border-gray-900 bg-gray-900 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-gray-900/15 transition-colors duration-300 hover:bg-black"
+              >
+                {ctaPrimaryText}
+              </MagneticButton>
+            )}
           </nav>
 
           <button
@@ -130,12 +155,14 @@ export const Header = () => {
                 {item.label}
               </button>
             ))}
-            <MagneticButton
-              onClick={() => scrollToSection('contact')}
-              className="cta-polish mt-3 inline-flex w-full items-center justify-center rounded-full border border-gray-900 bg-gray-900 px-5 py-3 text-sm font-semibold text-white transition-colors duration-300 hover:bg-black"
-            >
-              {t.hero.startProject}
-            </MagneticButton>
+            {requestSubmissionEnabled && (
+              <MagneticButton
+                onClick={handlePrimaryCta}
+                className="cta-polish mt-3 inline-flex w-full items-center justify-center rounded-full border border-gray-900 bg-gray-900 px-5 py-3 text-sm font-semibold text-white transition-colors duration-300 hover:bg-black"
+              >
+                {ctaPrimaryText}
+              </MagneticButton>
+            )}
           </nav>
         )}
       </div>
