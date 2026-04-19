@@ -5,6 +5,7 @@ export type Role = 'ROLE_USER' | 'ROLE_ADMIN';
 export type RequestStatus = 'DRAFT' | 'SUBMITTED' | 'APPROVED' | 'COMPLETED';
 export type OfferStatus = 'DRAFT' | 'SUBMITTED' | 'ACCEPTED' | 'CANCELLED' | 'REJECTED';
 export type ProjectStatus = 'PLANNING' | 'IN_PROGRESS' | 'ON_HOLD' | 'COMPLETED' | 'CANCELLED';
+export type GithubRepoStatus = 'NOT_CREATED' | 'CREATED' | 'FAILED';
 
 export type Priority = 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT';
 export type EntityType = 'REQUEST' | 'OFFER' | 'PROJECT';
@@ -88,6 +89,11 @@ export interface ProjectResponse {
   description?: string;
   status: ProjectStatus;
   ownerUserId?: UUID;
+  githubRepoOwner?: string;
+  githubRepoName?: string;
+  githubRepoUrl?: string;
+  githubRepoStatus?: GithubRepoStatus;
+  githubLastError?: string | null;
   createdAt: string;
   updatedAt: string;
 }

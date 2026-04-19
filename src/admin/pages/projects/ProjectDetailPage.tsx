@@ -4,6 +4,9 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { projectApi } from '@/admin/api/projects';
 import { queryKeys } from '@/admin/api/queryKeys';
 import { EntityAuxPanels } from '@/admin/components/EntityAuxPanels';
+import { ProjectGithubRepoCard } from '@/admin/pages/projects/components/ProjectGithubRepoCard';
+import { ProjectGithubRepoSheets } from '@/admin/pages/projects/components/ProjectGithubRepoSheets';
+import { useProjectGithubRepoActions } from '@/admin/pages/projects/hooks/useProjectGithubRepoActions';
 import { StatusBadge } from '@/admin/components/StatusBadge';
 import { projectTransitions } from '@/admin/config/workflows';
 import { useApiErrorState } from '@/admin/hooks/useApiErrorState';
@@ -85,6 +88,12 @@ export const ProjectDetailPage = () => {
     onError: (error) => setApiError(error),
   });
 
+  const githubRepoActions = useProjectGithubRepoActions({
+    projectId: id,
+    projectDetailQueryKey,
+    onSuccess: clearError,
+  });
+
   const availableTransitions = useMemo(() => {
     const current = projectQuery.data?.status;
     if (!current) {
@@ -147,6 +156,13 @@ export const ProjectDetailPage = () => {
       </div>
 
       {errorMessage && <p className="rounded-xl bg-rose-50 px-3 py-2 text-sm text-rose-700">{errorMessage}</p>}
+      {githubRepoActions.githubActionSuccess && <p className="rounded-xl bg-emerald-50 px-3 py-2 text-sm text-emerald-700">{githubRepoActions.githubActionSuccess}</p>}
+
+      <ProjectGithubRepoCard
+        project={project}
+        onCreateRepo={githubRepoActions.openCreateRepoSheet}
+        onLinkRepo={githubRepoActions.openLinkRepoSheet}
+      />
 
       <section className="rounded-2xl border border-gray-200 bg-white p-6">
         <h3 className="text-lg font-semibold text-gray-900">Project details</h3>
@@ -211,6 +227,25 @@ export const ProjectDetailPage = () => {
       <section>
         <EntityAuxPanels entityType="PROJECT" entityId={project.id} />
       </section>
+
+      <ProjectGithubRepoSheets
+        showCreateRepoSheet={githubRepoActions.showCreateRepoSheet}
+        showLinkRepoSheet={githubRepoActions.showLinkRepoSheet}
+        createRepoName={githubRepoActions.createRepoName}
+        createPrivateRepo={githubRepoActions.createPrivateRepo}
+        linkRepoUrl={githubRepoActions.linkRepoUrl}
+        linkRepoName={githubRepoActions.linkRepoName}
+        githubActionError={githubRepoActions.githubActionError}
+        isPending={githubRepoActions.isGithubActionPending}
+        onCloseCreateRepoSheet={githubRepoActions.closeCreateRepoSheet}
+        onCloseLinkRepoSheet={githubRepoActions.closeLinkRepoSheet}
+        onCreateRepoNameChange={githubRepoActions.handleCreateRepoNameChange}
+        onCreatePrivateRepoChange={githubRepoActions.handleCreatePrivateRepoChange}
+        onLinkRepoUrlChange={githubRepoActions.handleLinkRepoUrlChange}
+        onLinkRepoNameChange={githubRepoActions.handleLinkRepoNameChange}
+        onCreateRepoSubmit={githubRepoActions.submitCreateRepo}
+        onLinkRepoSubmit={githubRepoActions.submitLinkRepo}
+      />
     </div>
   );
 };

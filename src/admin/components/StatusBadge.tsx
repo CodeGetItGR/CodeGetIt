@@ -1,6 +1,6 @@
-import type { OfferStatus, Priority, ProjectStatus, RequestStatus } from '@/admin/types';
+import type { GithubRepoStatus, OfferStatus, Priority, ProjectStatus, RequestStatus } from '@/admin/types';
 
-type StatusValue = RequestStatus | OfferStatus | ProjectStatus | Priority;
+type StatusValue = RequestStatus | OfferStatus | ProjectStatus | Priority | GithubRepoStatus;
 
 const colorMap: Record<StatusValue, string> = {
   DRAFT: 'bg-slate-100 text-slate-700 border-slate-200',
@@ -13,6 +13,9 @@ const colorMap: Record<StatusValue, string> = {
   PLANNING: 'bg-indigo-50 text-indigo-700 border-indigo-200',
   IN_PROGRESS: 'bg-cyan-50 text-cyan-700 border-cyan-200',
   ON_HOLD: 'bg-amber-50 text-amber-700 border-amber-200',
+  NOT_CREATED: 'bg-slate-100 text-slate-700 border-slate-200',
+  CREATED: 'bg-emerald-100 text-emerald-800 border-emerald-300',
+  FAILED: 'bg-rose-50 text-rose-700 border-rose-200',
   LOW: 'bg-slate-100 text-slate-700 border-slate-200',
   MEDIUM: 'bg-blue-50 text-blue-700 border-blue-200',
   HIGH: 'bg-amber-50 text-amber-700 border-amber-200',
