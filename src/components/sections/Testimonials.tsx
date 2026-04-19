@@ -13,6 +13,16 @@ import { useLocale } from '@/i18n/UseLocale';
 
 export const Testimonials = () => {
   const { t } = useLocale();
+  const localizedTestimonials = testimonials.map((item, index) => {
+    const localized = t.testimonials.items[index];
+
+    return {
+      ...item,
+      role: localized?.role ?? item.role,
+      company: localized?.company ?? item.company,
+      content: localized?.content ?? item.content,
+    };
+  });
 
   return (
     <Section id="testimonials" className="bg-linear-to-b from-white to-gray-50 py-28 lg:py-36">
@@ -31,13 +41,13 @@ export const Testimonials = () => {
             viewport={{ once: true }}
             className="inline-block text-xs sm:text-sm font-semibold text-gray-500 uppercase tracking-[0.08em] mb-4"
           >
-            {t.testimonials?.badge || 'CLIENT TESTIMONIALS'}
+            {t.testimonials.badge}
           </motion.span>
           <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight mb-5">
-            {t.testimonials?.title || 'What Our Clients Say'}
+            {t.testimonials.title}
           </h2>
           <p className="text-lg text-gray-600 leading-relaxed max-w-2xl">
-            {t.testimonials?.subtitle || 'Trusted by innovative companies worldwide'}
+            {t.testimonials.subtitle}
           </p>
         </motion.div>
 
@@ -56,7 +66,7 @@ export const Testimonials = () => {
             className="w-full"
           >
             <CarouselContent>
-              {testimonials.map((testimonial, index) => (
+              {localizedTestimonials.map((testimonial, index) => (
                 <CarouselItem key={testimonial.id} className="md:basis-1/2 lg:basis-1/3">
                   <motion.div
                     initial={{ opacity: 0, scale: 0.9 }}
@@ -96,8 +106,8 @@ export const Testimonials = () => {
               ))}
             </CarouselContent>
             <div className="hidden md:block">
-              <CarouselPrevious className="-left-4 lg:-left-12" />
-              <CarouselNext className="-right-4 lg:-right-12" />
+              <CarouselPrevious className="-left-4 lg:-left-12" srLabel={t.testimonials.controls.previousSlide} />
+              <CarouselNext className="-right-4 lg:-right-12" srLabel={t.testimonials.controls.nextSlide} />
             </div>
           </Carousel>
         </motion.div>
@@ -111,10 +121,10 @@ export const Testimonials = () => {
           className="mt-14 grid grid-cols-2 md:grid-cols-4 gap-8 border-t border-gray-200 pt-10"
         >
           {[
-            { label: t.testimonials?.metrics?.satisfaction || '100% Satisfaction', value: '★★★★★' },
-            { label: t.testimonials?.metrics?.projects || '50+ Projects', value: '50+' },
-            { label: t.testimonials?.metrics?.clients || '30+ Clients', value: '30+' },
-            { label: t.testimonials?.metrics?.experience || '5+ Years', value: '5+' },
+            { label: t.testimonials.metrics.satisfaction, value: '★★★★★' },
+            { label: t.testimonials.metrics.projects, value: '50+' },
+            { label: t.testimonials.metrics.clients, value: '30+' },
+            { label: t.testimonials.metrics.experience, value: '5+' },
           ].map((metric, index) => (
             <motion.div
               key={index}

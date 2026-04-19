@@ -68,7 +68,7 @@ export const Services = () => {
 
               <div>
                 <span className="text-xs font-semibold text-gray-500 mb-4 block tracking-[0.08em] uppercase">
-                  Service 0{index + 1}
+                  {t.services.serviceLabel} 0{index + 1}
                 </span>
                 <h3 className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-5 tracking-tight">{service.title}</h3>
                 <p className="text-lg text-gray-600 leading-relaxed mb-7">{service.description}</p>
@@ -103,7 +103,7 @@ export const Services = () => {
               <p className="max-w-xl text-lg text-gray-200">{t.services.customSolutions}</p>
               <MagneticButton
                 onClick={scrollToContact}
-                className="cta-polish group inline-flex shrink-0 items-center gap-3 rounded-full border border-white/80 bg-white px-8 py-4 text-base font-semibold text-gray-900 transition-colors duration-300 hover:bg-gray-100"
+                className="cursor-pointer hover:opacity-75 cta-polish group inline-flex shrink-0 items-center gap-3 rounded-full border border-white/80 bg-white px-8 py-4 text-base font-semibold text-gray-900 transition-colors duration-300 hover:bg-gray-100"
               >
                 {t.services.contactCTA}
                 <HiArrowRight className="w-5 h-5 opacity-90 transition-opacity duration-200 group-hover:opacity-100" />

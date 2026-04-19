@@ -18,11 +18,11 @@ export const Footer = () => {
             <a
               href="mailto:hello@codegetit.com"
               className="text-sm text-gray-300 transition-colors duration-200 hover:text-white"
-              aria-label="Email"
+              aria-label={t.footer.emailAria}
             >
               hello@codegetit.com
             </a>
-            <span>Based in Greece</span>
+            <span>{t.footer.basedIn}</span>
           </div>
         </div>
       </div>

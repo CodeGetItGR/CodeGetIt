@@ -83,7 +83,7 @@ export const Header = () => {
               exit={{ opacity: 0 }}
               className="hidden-gem absolute left-28 top-1/2 -translate-y-1/2"
             >
-              Hidden gem unlocked
+              {t.hero.hiddenGem}
             </motion.span>
           )}
 
@@ -92,14 +92,14 @@ export const Header = () => {
               <button
                 key={item.id}
                 onClick={() => scrollToSection(item.id)}
-                className="relative text-sm font-medium text-gray-600 transition-colors duration-300 hover:text-gray-900 after:absolute after:left-0 after:bottom-[-0.45rem] after:h-[2px] after:w-0 after:bg-gray-900 after:transition-all after:duration-300 hover:after:w-full"
+                className="cursor-pointer hover:opacity-75 relative text-sm font-medium text-gray-600 transition-colors duration-300 hover:text-gray-900 after:absolute after:left-0 after:bottom-[-0.45rem] after:h-[2px] after:w-0 after:bg-gray-900 after:transition-all after:duration-300 hover:after:w-full"
               >
                 {item.label}
               </button>
             ))}
             <MagneticButton
               onClick={() => scrollToSection('contact')}
-              className="cta-polish inline-flex items-center rounded-full border border-gray-900 bg-gray-900 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-gray-900/15 transition-colors duration-300 hover:bg-black"
+              className="cursor-pointer hover:opacity-75 cta-polish inline-flex items-center rounded-full border border-gray-900 bg-gray-900 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-gray-900/15 transition-colors duration-300 hover:bg-black"
             >
               {t.hero.startProject}
             </MagneticButton>
@@ -107,8 +107,8 @@ export const Header = () => {
 
           <button
             onClick={() => setIsMobileMenuOpen(prev => !prev)}
-            className="md:hidden rounded-xl border border-slate-200/80 bg-white/70 p-2 text-gray-700 transition-colors duration-200 hover:bg-white"
-            aria-label="Toggle menu"
+            className="cursor-pointer hover:opacity-75 md:hidden rounded-xl border border-slate-200/80 bg-white/70 p-2 text-gray-700 transition-colors duration-200 hover:bg-white"
+            aria-label={t.nav.toggleMenu}
           >
             <svg className="w-6 h-6" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" stroke="currentColor">
               {isMobileMenuOpen

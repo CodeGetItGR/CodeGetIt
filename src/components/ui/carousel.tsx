@@ -191,8 +191,8 @@ CarouselItem.displayName = "CarouselItem"
 
 const CarouselPrevious = React.forwardRef<
   HTMLButtonElement,
-  React.ButtonHTMLAttributes<HTMLButtonElement>
->(({ className, ...props }, ref) => {
+      React.ButtonHTMLAttributes<HTMLButtonElement> & { srLabel?: string }
+>(({ className, srLabel = "Previous slide", ...props }, ref) => {
   const { orientation, scrollPrev, canScrollPrev } = useCarousel()
 
   return (
@@ -209,7 +209,7 @@ const CarouselPrevious = React.forwardRef<
       onClick={scrollPrev}
       {...props}
     >
-      <span className="sr-only">Previous slide</span>
+      <span className="sr-only">{srLabel}</span>
       ←
     </button>
   )
@@ -218,8 +218,8 @@ CarouselPrevious.displayName = "CarouselPrevious"
 
 const CarouselNext = React.forwardRef<
   HTMLButtonElement,
-  React.ButtonHTMLAttributes<HTMLButtonElement>
->(({ className, ...props }, ref) => {
+  React.ButtonHTMLAttributes<HTMLButtonElement> & { srLabel?: string }
+>(({ className, srLabel = "Next slide", ...props }, ref) => {
   const { orientation, scrollNext, canScrollNext } = useCarousel()
 
   return (
@@ -236,7 +236,7 @@ const CarouselNext = React.forwardRef<
       onClick={scrollNext}
       {...props}
     >
-      <span className="sr-only">Next slide</span>
+      <span className="sr-only">{srLabel}</span>
       →
     </button>
   )

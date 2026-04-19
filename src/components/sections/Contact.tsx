@@ -37,13 +37,13 @@ export const Contact = () => {
       setFieldErrors(apiError.fieldErrors ?? {});
       setErrorText(
         apiError.fieldErrors
-          ? 'Please fix the errors below.'
-          : apiError.detail || 'Something went wrong. Please try again or email directly.',
+          ? t.contact.errorFixFields
+          : apiError.detail || t.contact.errorGeneric,
       );
     } finally {
       setIsSubmitting(false);
     }
-  }, [formData]);
+  }, [formData, t.contact.errorFixFields, t.contact.errorGeneric]);
 
   const handleChange = useCallback((field: keyof typeof formData) => (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData(prev => ({ ...prev, [field]: e.target.value }));
@@ -124,7 +124,7 @@ export const Contact = () => {
                 <MagneticButton
                   type="submit"
                   disabled={isSubmitting}
-                  className="cta-polish group inline-flex items-center gap-3 rounded-full border border-gray-900 bg-gray-900 px-8 py-4 text-base font-semibold text-white shadow-lg shadow-gray-900/20 transition-colors duration-300 hover:bg-black disabled:cursor-not-allowed disabled:opacity-50"
+                  className="cursor-pointer hover:opacity-75 cta-polish group inline-flex items-center gap-3 rounded-full border border-gray-900 bg-gray-900 px-8 py-4 text-base font-semibold text-white shadow-lg shadow-gray-900/20 transition-colors duration-300 hover:bg-black disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   {isSubmitting ? (
                     <>
@@ -188,20 +188,20 @@ export const Contact = () => {
 
               <div>
                 <p className="text-sm font-medium text-gray-400 uppercase tracking-wider mb-3">{t.contact.location}</p>
-                <p className="text-lg text-white">Greece</p>
+                <p className="text-lg text-white">{t.contact.locationValue}</p>
               </div>
 
               <div>
-                <p className="text-sm font-medium text-gray-400 uppercase tracking-wider mb-3">Response time</p>
+                <p className="text-sm font-medium text-gray-400 uppercase tracking-wider mb-3">{t.contact.responseTimeLabel}</p>
                 <p className="inline-flex items-center gap-2 text-lg text-white">
                   <span className="inline-block h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_12px_rgba(52,211,153,0.75)]" />
-                  Within 24 hours
+                  {t.contact.responseTimeValue}
                 </p>
               </div>
 
               <div className="rounded-2xl border border-gray-800 bg-gray-900/80 px-4 py-4">
                 <p className="text-sm text-gray-300 leading-relaxed">
-                  Clear scope, honest timelines, and direct collaboration from day one.
+                  {t.contact.trustNote}
                 </p>
               </div>
             </div>

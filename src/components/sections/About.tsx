@@ -102,17 +102,13 @@ export const About = () => {
           transition={{ duration: 0.5 }}
           className="mt-24 bg-gray-950 rounded-3xl p-10 md:p-14"
         >
-          <p className="text-xs sm:text-sm font-semibold text-gray-400 uppercase tracking-[0.08em] mb-4">Performance</p>
+          <p className="text-xs sm:text-sm font-semibold text-gray-400 uppercase tracking-[0.08em] mb-4">{t.about.performance.badge}</p>
           <h3 className="text-3xl md:text-4xl font-extrabold text-white tracking-tight mb-12">
-            Results that matter
+            {t.about.performance.title}
           </h3>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-8">
-            {[
-              { metric: '99.9%', label: 'Uptime average', desc: 'Reliable performance' },
-              { metric: '<200ms', label: 'Response time', desc: 'Optimized for performance' },
-              { metric: '2–4 wks', label: 'Time to launch', desc: 'From concept to launch' },
-            ].map((item, i) => (
+            {t.about.performance.metrics.map((item, i) => (
               <div key={i}>
                 <div className="text-4xl md:text-5xl font-extrabold text-white tracking-tight mb-3">
                   {item.metric}

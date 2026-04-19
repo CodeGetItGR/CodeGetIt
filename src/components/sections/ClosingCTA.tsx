@@ -39,11 +39,11 @@ export const ClosingCTA = () => {
             onClick={scrollToContact}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            aria-label="Start your project"
+            aria-label={t.closingCTA.buttonAria}
             className="inline-flex items-center gap-3 px-10 py-5 bg-white text-slate-900 font-bold rounded-full hover:bg-gray-100 transition-all duration-300 shadow-2xl hover:shadow-xl text-lg focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-slate-900"
           >
             {t.closingCTA.button}
-            <HiArrowRight className="w-6 h-6" aria-hidden="true" />
+            <HiArrowRight className="w-6 h-6 " aria-hidden="true" />
           </motion.button>
         </motion.div>
       </div>

@@ -17,6 +17,8 @@ import { Contact } from './components/sections/Contact.tsx';
 import { Hero } from './components/sections/Hero.tsx';
 import { Portfolio } from './components/sections/Portfolio.tsx';
 import { Services } from './components/sections/Services.tsx';
+import { ProcessTimeline } from './components/sections/ProcessTimeline.tsx';
+import { ValueProposition } from './components/sections/ValueProposition.tsx';
 import { AnimatedBackground } from './components/ui/AnimatedBackground';
 import { CursorSpotlight } from './components/ui/CursorSpotlight';
 import { ScrollProgress } from './components/ui/ScrollProgress';
@@ -33,6 +35,8 @@ const MarketingHomePage = () => {
         <main className="relative z-10 overflow-hidden">
           <Hero />
           <Services />
+          <ValueProposition />
+          <ProcessTimeline />
           <Portfolio />
           <Contact />
         </main>

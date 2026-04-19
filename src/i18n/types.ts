@@ -10,6 +10,7 @@ export interface Translations {
     process: string;
     about: string;
     contact: string;
+    toggleMenu: string;
   };
 
   // Hero Section
@@ -35,6 +36,7 @@ export interface Translations {
       modernStack: string;
     };
     availability: string;
+    hiddenGem: string;
     visual: {
       fileName: string;
       engineeringFocus: string;
@@ -48,6 +50,18 @@ export interface Translations {
       scalable: string;
       builtToLast: string;
       reliable: string;
+    };
+    delivery: {
+      frameworkTitle: string;
+      frameworkSubtitle: string;
+      steps: string[];
+      stats: {
+        typicalLaunch: string;
+        response: string;
+        uptimeTarget: string;
+        codeQuality: string;
+      };
+      timelineNote: string;
     };
   };
 
@@ -81,6 +95,7 @@ export interface Translations {
     learnMore: string;
     viewDetails: string;
     hideDetails: string;
+    serviceLabel: string;
     customSolutions: string;
     contactCTA: string;
     specialized: string;
@@ -94,9 +109,39 @@ export interface Translations {
     viewAll: string;
     allProjects: string;
     viewCaseStudy: string;
+    livePreview: string;
+    hiddenProjectNote: string;
+    hiddenProjectNoteAria: string;
+    highImpactLabel: string;
+    items: Array<{
+      title: string;
+      category: string;
+      description: string;
+    }>;
     projectCTA: string;
     projectCTADesc: string;
     startProject: string;
+  };
+
+  valueProposition: {
+    kicker: string;
+    title: string;
+    subtitle: string;
+    table: {
+      comparison: string;
+      staticProject: string;
+      fullStackProject: string;
+      rows: Array<{
+        feature: string;
+        staticProject: string;
+        fullStackProject: string;
+      }>;
+    };
+    cards: Array<{
+      title: string;
+      description: string;
+      icon: string;
+    }>;
   };
 
   // About Section
@@ -121,6 +166,15 @@ export interface Translations {
     philosophy: string;
     engagementModel: string;
     engagementModelList: string[];
+    performance: {
+      badge: string;
+      title: string;
+      metrics: Array<{
+        metric: string;
+        label: string;
+        desc: string;
+      }>;
+    };
   };
 
   // Stats Section
@@ -152,6 +206,12 @@ export interface Translations {
     availabilityTitle: string;
     availabilityDesc: string;
     availableNow: string;
+    responseTimeLabel: string;
+    responseTimeValue: string;
+    locationValue: string;
+    trustNote: string;
+    errorFixFields: string;
+    errorGeneric: string;
     helpfulTips: string;
     tips: string[];
   };
@@ -167,6 +227,15 @@ export interface Translations {
       clients: string;
       experience: string;
     };
+    controls: {
+      previousSlide: string;
+      nextSlide: string;
+    };
+    items: Array<{
+      role: string;
+      company: string;
+      content: string;
+    }>;
   };
 
   // Skills Section
@@ -184,27 +253,33 @@ export interface Translations {
   process: {
     title: string;
     subtitle: string;
+    kicker: string;
+    phaseLabel: string;
     disclaimer: string;
     steps: {
       discovery: {
         title: string;
         description: string;
         duration: string;
+        benefits: string[];
       };
       design: {
         title: string;
         description: string;
         duration: string;
+        benefits: string[];
       };
       development: {
         title: string;
         description: string;
         duration: string;
+        benefits: string[];
       };
       deployment: {
         title: string;
         description: string;
         duration: string;
+        benefits: string[];
       };
     };
   };
@@ -213,6 +288,8 @@ export interface Translations {
   footer: {
     tagline: string;
     rights: string;
+    basedIn: string;
+    emailAria: string;
   };
 
   // Closing CTA
@@ -220,5 +297,6 @@ export interface Translations {
     title: string;
     subtitle: string;
     button: string;
+    buttonAria: string;
   };
 }

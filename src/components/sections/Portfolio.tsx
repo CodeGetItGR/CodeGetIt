@@ -41,7 +41,13 @@ export const Portfolio = () => {
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-          {featuredProjects.map((project, index) => (
+          {featuredProjects.map((project, index) => {
+            const localized = t.portfolio.items[index];
+            const title = localized?.title ?? project.title;
+            const category = localized?.category ?? project.category;
+            const description = localized?.description ?? project.description;
+
+            return (
             <motion.article
               key={project.id}
               initial={{ opacity: 0, y: 16 }}
@@ -54,7 +60,7 @@ export const Portfolio = () => {
                 <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(115deg,transparent_22%,rgba(255,255,255,0.14)_52%,transparent_82%)] opacity-40 transition-opacity duration-300 group-hover:opacity-60" />
                 <div className="flex items-start justify-between gap-3 mb-8">
                   <span className="text-xs font-semibold text-white/90 uppercase tracking-[0.08em]">
-                    {project.category}
+                    {category}
                   </span>
                   <button
                     type="button"
@@ -64,23 +70,23 @@ export const Portfolio = () => {
                       }
                     }}
                     className="text-xs font-medium text-white/80 transition-colors duration-200 hover:text-white"
-                    aria-label={`Reveal hidden project note for ${project.title}`}
+                    aria-label={`${t.portfolio.hiddenProjectNoteAria} ${title}`}
                   >
                     {project.id.toString().padStart(2, '0')}
                   </button>
                 </div>
-                <p className="text-white/80 text-sm leading-relaxed">High-impact digital product</p>
+                <p className="text-white/80 text-sm leading-relaxed">{t.portfolio.highImpactLabel}</p>
               </div>
 
               <div className="p-6">
-                <h3 className="text-2xl font-bold text-gray-900 tracking-tight mb-3">{project.title}</h3>
-                <p className="text-gray-600 leading-relaxed mb-6">{project.description}</p>
+                <h3 className="text-2xl font-bold text-gray-900 tracking-tight mb-3">{title}</h3>
+                <p className="text-gray-600 leading-relaxed mb-6">{description}</p>
 
                 <p className="text-sm text-gray-500 mb-6">{project.tags.slice(0, 4).join(' • ')}</p>
 
                 {revealedProjectId === project.id && (
                   <span className="hidden-gem mb-5">
-                    Blueprint note unlocked
+                    {t.portfolio.hiddenProjectNote}
                   </span>
                 )}
 
@@ -96,14 +102,15 @@ export const Portfolio = () => {
                       rel="noopener noreferrer"
                       className="group inline-flex items-center gap-2 text-sm font-medium text-gray-600 transition-colors duration-200 hover:text-gray-900"
                     >
-                      Live Preview
+                      {t.portfolio.livePreview}
                       <HiExternalLink className="w-4 h-4 opacity-80 transition-opacity duration-200 group-hover:opacity-100" />
                     </a>
                   )}
                 </div>
               </div>
             </motion.article>
-          ))}
+            );
+          })}
         </div>
 
         <motion.div
@@ -120,7 +127,7 @@ export const Portfolio = () => {
             </div>
             <MagneticButton
               onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
-              className="cta-polish inline-flex items-center gap-2 rounded-full border border-gray-900 bg-gray-900 px-7 py-3.5 font-semibold text-white transition-colors duration-300 hover:bg-black"
+              className="cursor-pointer hover:opacity-75 cta-polish inline-flex items-center gap-2 rounded-full border border-gray-900 bg-gray-900 px-7 py-3.5 font-semibold text-white transition-colors duration-300 hover:bg-black"
             >
               {t.portfolio.startProject}
               <HiArrowRight className="w-5 h-5" />

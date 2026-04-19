@@ -115,7 +115,7 @@ export const Hero = () => {
                 animate={{ opacity: 1, y: 0 }}
                 className="hidden-gem mb-6"
               >
-                Precision mode activated
+                {t.hero.hiddenGem}
               </motion.span>
             )}
 
@@ -127,7 +127,7 @@ export const Hero = () => {
             >
               <MagneticButton
                 onClick={() => scrollToSection('contact')}
-                className="cta-polish group inline-flex items-center gap-3 rounded-full border border-gray-900 bg-gray-900 px-8 py-4 text-base font-semibold text-white shadow-lg shadow-gray-900/20 transition-all duration-300 hover:bg-black"
+                className="cta-polish group inline-flex items-center gap-3 rounded-full border border-gray-900 bg-gray-900 px-8 py-4 text-base font-semibold text-white shadow-lg shadow-gray-900/20 transition-all duration-300 hover:bg-black cursor-pointer hover:opacity-75"
               >
                 {t.hero.startProject}
                 <HiArrowRight className="w-5 h-5 opacity-90 transition-opacity duration-200 group-hover:opacity-100" />
@@ -135,24 +135,11 @@ export const Hero = () => {
 
               <button
                 onClick={() => scrollToSection('portfolio')}
-                className="group inline-flex items-center gap-2 text-base font-semibold text-gray-700 transition-colors duration-200 hover:text-gray-900"
+                className="cursor-pointer hover:opacity-75 group inline-flex items-center gap-2 text-base font-semibold text-gray-700 transition-colors duration-200 hover:text-gray-900"
               >
                 {t.hero.viewWork}
                 <span className="block h-px w-10 bg-gray-400 transition-all duration-300 group-hover:w-14 group-hover:bg-gray-700" />
               </button>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: premiumMotion.normal, delay: 0.28, ease: premiumEase }}
-              className="flex flex-wrap items-center gap-3 text-sm text-gray-600"
-            >
-              {[t.hero.proofBar.seniorEngineering, t.hero.proofBar.builtForScale, t.hero.proofBar.modernStack].map((item) => (
-                <span key={item} className="inline-flex items-center rounded-full border border-slate-300/70 bg-white/70 px-3.5 py-1.5 text-xs font-medium uppercase tracking-[0.08em] text-slate-600">
-                  {item}
-                </span>
-              ))}
             </motion.div>
           </div>
 
@@ -171,20 +158,13 @@ export const Hero = () => {
 
               <div className="mb-7 flex items-center justify-between">
                 <div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.1em] text-gray-500">Delivery Framework</p>
-                  <p className="mt-1 text-lg font-bold text-gray-900">From strategy to launch</p>
+                  <p className="text-xs font-semibold uppercase tracking-[0.1em] text-gray-500">{t.hero.delivery.frameworkTitle}</p>
+                  <p className="mt-1 text-lg font-bold text-gray-900">{t.hero.delivery.frameworkSubtitle}</p>
                 </div>
-                <span className="rounded-full border border-slate-300/80 bg-white/70 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.1em] text-slate-600">
-                  Direct collaboration
-                </span>
               </div>
 
               <div className="space-y-4">
-                {[
-                  'Discovery and technical scope',
-                  'Design and implementation',
-                  'Launch, QA, and optimization',
-                ].map((step, index) => (
+                {t.hero.delivery.steps.map((step, index) => (
                   <motion.div
                     key={step}
                     className="premium-panel flex items-start gap-3 rounded-2xl bg-white/75 px-4 py-3"
@@ -201,10 +181,10 @@ export const Hero = () => {
 
               <div className="mt-6 grid grid-cols-2 gap-3">
                 {[
-                  { label: 'Typical launch', value: '2-4 wks' },
-                  { label: 'Response', value: '<24h' },
-                  { label: 'Uptime target', value: '99.9%' },
-                  { label: 'Code quality', value: 'Type-safe' },
+                  { label: t.hero.delivery.stats.typicalLaunch, value: '2-4 weeks' },
+                  { label: t.hero.delivery.stats.response, value: '<24h' },
+                  { label: t.hero.delivery.stats.uptimeTarget, value: '99.9%' },
+                  { label: t.hero.delivery.stats.codeQuality, value: t.hero.visual.typeSafe },
                 ].map((item) => (
                   <div key={item.label} className="rounded-xl border border-slate-200/80 bg-white/80 px-3 py-3 backdrop-blur-sm">
                     <p className="text-xs text-gray-500 mb-1">{item.label}</p>
@@ -212,6 +192,10 @@ export const Hero = () => {
                   </div>
                 ))}
               </div>
+
+              <p className="mt-3 text-xs text-gray-500">
+                {t.hero.delivery.timelineNote}
+              </p>
             </div>
           </motion.div>
         </div>
