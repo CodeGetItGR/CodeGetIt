@@ -68,7 +68,7 @@ const SETTING_DEFINITIONS: SettingDefinition[] = [
     label: 'Primary CTA URL',
     group: 'CTA',
     type: 'STRING',
-    defaultValue: '/contact',
+    defaultValue: '#contact',
     description: 'Use /path, #section-id, or a full https:// URL.',
   },
   {

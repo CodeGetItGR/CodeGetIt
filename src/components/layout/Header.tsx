@@ -46,6 +46,11 @@ export const Header = () => {
     const target = ctaPrimaryUrl.trim();
     setIsMobileMenuOpen(false);
 
+    if (target === '/contact' || target === '/#contact') {
+      scrollToSection('contact');
+      return;
+    }
+
     if (target.startsWith('#')) {
       scrollToSection(target.slice(1));
       return;

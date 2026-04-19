@@ -35,6 +35,11 @@ export const Hero = () => {
   const handlePrimaryCta = useCallback(() => {
     const target = ctaPrimaryUrl.trim();
 
+    if (target === '/contact' || target === '/#contact') {
+      scrollToSection('contact');
+      return;
+    }
+
     if (target.startsWith('#')) {
       scrollToSection(target.slice(1));
       return;

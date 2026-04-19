@@ -26,6 +26,11 @@ export const Portfolio = () => {
   const handlePrimaryCta = useCallback(() => {
     const target = ctaPrimaryUrl.trim();
 
+    if (target === '/contact' || target === '/#contact') {
+      document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+      return;
+    }
+
     if (target.startsWith('#')) {
       document.getElementById(target.slice(1))?.scrollIntoView({ behavior: 'smooth' });
       return;
