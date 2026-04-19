@@ -23,7 +23,7 @@ export const AdminLayout = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="mx-auto grid min-h-screen max-w-[1440px] grid-cols-1 lg:grid-cols-[260px_1fr]">
+      <div className="mx-auto grid min-h-screen max-w-360 grid-cols-1 lg:grid-cols-[260px_1fr]">
         <aside className="border-r border-gray-200 bg-white p-6">
           <div className="mb-8">
             <p className="text-xs uppercase tracking-[0.2em] text-gray-500">CodeGetIt</p>
