@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { contactMessageApi, type ContactMessageListQuery } from '@/admin/api/contactMessages';
 import { PaginationControls } from '@/admin/components/PaginationControls';
@@ -16,6 +16,10 @@ export const ContactMessagesPage = () => {
     queryKey: ['contact-messages', queryParams],
     queryFn: () => contactMessageApi.list(queryParams),
   });
+
+  const handleNextPage = useCallback(() => {
+    goToNextPage(messagesQuery.data?.totalPages ?? 0);
+  }, [goToNextPage, messagesQuery.data?.totalPages]);
 
   return (
     <div>
@@ -84,7 +88,7 @@ export const ContactMessagesPage = () => {
           page={page}
           totalPages={messagesQuery.data?.totalPages ?? 0}
           onPrevious={goToPreviousPage}
-          onNext={() => goToNextPage(messagesQuery.data?.totalPages ?? 0)}
+          onNext={handleNextPage}
         />
       </div>
     </div>

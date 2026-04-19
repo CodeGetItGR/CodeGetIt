@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState, type FormEvent } from 'react';
+import { useCallback, useEffect, useState, type ChangeEvent, type FormEvent } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/admin/auth/useAuth';
 import { useApiErrorState } from '@/admin/hooks/useApiErrorState';
@@ -38,6 +38,14 @@ export const LoginPage = () => {
     [clearError, location.state?.from, login, navigate, password, setApiError, username],
   );
 
+  const handleUsernameChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    setUsername(event.target.value);
+  }, []);
+
+  const handlePasswordChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    setPassword(event.target.value);
+  }, []);
+
   return (
     <div className="min-h-screen bg-gray-50 px-4 py-10 md:grid md:place-items-center">
       <div className="w-full max-w-md rounded-3xl border border-gray-200 bg-white p-8 shadow-sm">
@@ -50,7 +58,7 @@ export const LoginPage = () => {
             id="username"
             label="Username"
             value={username}
-            onChange={(event) => setUsername(event.target.value)}
+            onChange={handleUsernameChange}
             className="rounded-xl px-4 py-2.5 text-sm"
             autoComplete="username"
             required
@@ -61,7 +69,7 @@ export const LoginPage = () => {
             type="password"
             label="Password"
             value={password}
-            onChange={(event) => setPassword(event.target.value)}
+            onChange={handlePasswordChange}
             className="rounded-xl px-4 py-2.5 text-sm"
             autoComplete="current-password"
             required

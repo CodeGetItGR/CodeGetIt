@@ -1,4 +1,4 @@
-import { useCallback, useState, type FormEvent } from 'react';
+import { useCallback, useState, type ChangeEvent, type FormEvent } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { requestApi, type SubmitRequestPayload } from '@/admin/api/requests';
 import { SlideSheet } from '@/admin/components/SlideSheet';
@@ -62,6 +62,30 @@ export const CreateRequestSheet = ({ isOpen, onClose, onCreated }: CreateRequest
     onClose();
   }, [clearError, onClose]);
 
+  const handleTitleChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    setField('title', event.target.value);
+  }, [setField]);
+
+  const handleRequesterNameChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    setField('requesterName', event.target.value);
+  }, [setField]);
+
+  const handleRequesterEmailChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    setField('requesterEmail', event.target.value);
+  }, [setField]);
+
+  const handleRequesterPhoneChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    setField('requesterPhone', event.target.value);
+  }, [setField]);
+
+  const handleDescriptionChange = useCallback((event: ChangeEvent<HTMLTextAreaElement>) => {
+    setField('description', event.target.value);
+  }, [setField]);
+
+  const handlePriorityChange = useCallback((event: ChangeEvent<HTMLSelectElement>) => {
+    setField('priority', event.target.value as Priority);
+  }, [setField]);
+
   return (
     <SlideSheet
       isOpen={isOpen}
@@ -73,7 +97,7 @@ export const CreateRequestSheet = ({ isOpen, onClose, onCreated }: CreateRequest
         <Input
           label="Title"
           value={form.title}
-          onChange={(e) => setField('title', e.target.value)}
+          onChange={handleTitleChange}
           placeholder="e.g. Landing page redesign"
           required
         />
@@ -81,7 +105,7 @@ export const CreateRequestSheet = ({ isOpen, onClose, onCreated }: CreateRequest
         <Input
           label="Requester name"
           value={form.requesterName}
-          onChange={(e) => setField('requesterName', e.target.value)}
+          onChange={handleRequesterNameChange}
           required
         />
 
@@ -89,7 +113,7 @@ export const CreateRequestSheet = ({ isOpen, onClose, onCreated }: CreateRequest
           label="Requester email"
           type="email"
           value={form.requesterEmail}
-          onChange={(e) => setField('requesterEmail', e.target.value)}
+          onChange={handleRequesterEmailChange}
           required
         />
 
@@ -97,14 +121,14 @@ export const CreateRequestSheet = ({ isOpen, onClose, onCreated }: CreateRequest
           label="Requester phone"
           type="tel"
           value={form.requesterPhone}
-          onChange={(e) => setField('requesterPhone', e.target.value)}
+          onChange={handleRequesterPhoneChange}
           required
         />
 
         <Textarea
           label="Description (optional)"
           value={form.description ?? ''}
-          onChange={(e) => setField('description', e.target.value)}
+          onChange={handleDescriptionChange}
           rows={3}
           placeholder="Brief context about the project..."
         />
@@ -113,7 +137,7 @@ export const CreateRequestSheet = ({ isOpen, onClose, onCreated }: CreateRequest
           <label className="mb-1 block text-sm text-gray-600">Priority</label>
           <select
             value={form.priority}
-            onChange={(e) => setField('priority', e.target.value as Priority)}
+            onChange={handlePriorityChange}
             className="w-full rounded-xl border border-gray-300 px-3 py-2 text-sm"
           >
             {priorities.map((p) => (

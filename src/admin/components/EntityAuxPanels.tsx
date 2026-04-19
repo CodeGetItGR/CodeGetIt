@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { AuditPanel } from '@/admin/components/AuditPanel';
 import { NotesPanel } from '@/admin/components/NotesPanel';
 import type { EntityType, UUID } from '@/admin/types';
@@ -14,12 +14,20 @@ interface EntityAuxPanelsProps {
 export const EntityAuxPanels = ({ entityType, entityId }: EntityAuxPanelsProps) => {
   const [activeTab, setActiveTab] = useState<TabKey>('notes');
 
+  const handleShowNotes = useCallback(() => {
+    setActiveTab('notes');
+  }, []);
+
+  const handleShowHistory = useCallback(() => {
+    setActiveTab('history');
+  }, []);
+
   return (
     <section>
       <div className="mb-3 flex gap-2">
         <button
           type="button"
-          onClick={() => setActiveTab('notes')}
+          onClick={handleShowNotes}
           className={cn(
             'rounded-lg px-3 py-1.5 text-sm',
             activeTab === 'notes' ? 'bg-gray-900 text-white' : 'bg-gray-200 text-gray-700',
@@ -29,7 +37,7 @@ export const EntityAuxPanels = ({ entityType, entityId }: EntityAuxPanelsProps) 
         </button>
         <button
           type="button"
-          onClick={() => setActiveTab('history')}
+          onClick={handleShowHistory}
           className={cn(
             'rounded-lg px-3 py-1.5 text-sm',
             activeTab === 'history' ? 'bg-gray-900 text-white' : 'bg-gray-200 text-gray-700',

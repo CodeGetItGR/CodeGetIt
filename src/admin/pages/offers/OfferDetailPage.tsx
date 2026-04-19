@@ -1,4 +1,4 @@
-import { useCallback, useMemo, type FormEvent } from 'react';
+import { useCallback, useMemo, type ChangeEvent, type FormEvent, type MouseEvent } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { offerApi } from '@/admin/api/offers';
@@ -133,6 +133,42 @@ export const OfferDetailPage = () => {
     [updateMutation],
   );
 
+  const handleTitleChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    handleFieldChange('title', event.target.value);
+  }, [handleFieldChange]);
+
+  const handleCurrencyChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    handleFieldChange('currency', event.target.value.toUpperCase());
+  }, [handleFieldChange]);
+
+  const handlePriceAmountChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    handleFieldChange('priceAmount', event.target.value);
+  }, [handleFieldChange]);
+
+  const handleValidUntilChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    handleFieldChange('validUntil', event.target.value);
+  }, [handleFieldChange]);
+
+  const handleDescriptionChange = useCallback((event: ChangeEvent<HTMLTextAreaElement>) => {
+    handleFieldChange('description', event.target.value);
+  }, [handleFieldChange]);
+
+  const handleAcceptOffer = useCallback(() => {
+    acceptMutation.mutate();
+  }, [acceptMutation]);
+
+  const handleCancelOffer = useCallback(() => {
+    cancelMutation.mutate();
+  }, [cancelMutation]);
+
+  const handleStatusTransition = useCallback((event: MouseEvent<HTMLButtonElement>) => {
+    const targetStatus = event.currentTarget.dataset.targetStatus as OfferStatus | undefined;
+    if (!targetStatus) {
+      return;
+    }
+    statusMutation.mutate({ targetStatus });
+  }, [statusMutation]);
+
   if (offerQuery.isLoading) {
     return <p className="text-sm text-gray-500">Loading offer...</p>;
   }
@@ -168,7 +204,7 @@ export const OfferDetailPage = () => {
           <Input
             label="Title"
             value={formState.title}
-            onChange={(event) => handleFieldChange('title', event.target.value)}
+            onChange={handleTitleChange}
             className="rounded-xl px-3 py-2"
             required
           />
@@ -176,7 +212,7 @@ export const OfferDetailPage = () => {
           <Input
             label="Currency"
             value={formState.currency}
-            onChange={(event) => handleFieldChange('currency', event.target.value.toUpperCase())}
+            onChange={handleCurrencyChange}
             className="rounded-xl px-3 py-2"
             maxLength={5}
           />
@@ -186,7 +222,7 @@ export const OfferDetailPage = () => {
             type="number"
             step="0.01"
             value={formState.priceAmount}
-            onChange={(event) => handleFieldChange('priceAmount', event.target.value)}
+            onChange={handlePriceAmountChange}
             className="rounded-xl px-3 py-2"
           />
 
@@ -194,7 +230,7 @@ export const OfferDetailPage = () => {
             label="Valid until"
             type="date"
             value={formState.validUntil}
-            onChange={(event) => handleFieldChange('validUntil', event.target.value)}
+            onChange={handleValidUntilChange}
             className="rounded-xl px-3 py-2"
           />
 
@@ -202,7 +238,7 @@ export const OfferDetailPage = () => {
             <Textarea
               label="Description"
               value={formState.description}
-              onChange={(event) => handleFieldChange('description', event.target.value)}
+              onChange={handleDescriptionChange}
               rows={4}
               className="rounded-xl px-3 py-2"
             />
@@ -219,7 +255,7 @@ export const OfferDetailPage = () => {
 
             <button
               type="button"
-              onClick={() => acceptMutation.mutate()}
+              onClick={handleAcceptOffer}
               disabled={acceptMutation.isPending || !offer.active || offer.status !== 'SUBMITTED'}
               className="rounded-xl border border-emerald-300 bg-emerald-50 px-4 py-2 text-sm font-medium text-emerald-800 disabled:opacity-60"
             >
@@ -228,7 +264,7 @@ export const OfferDetailPage = () => {
 
             <button
               type="button"
-              onClick={() => cancelMutation.mutate()}
+              onClick={handleCancelOffer}
               disabled={cancelMutation.isPending || !offer.active}
               className="rounded-xl border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 disabled:opacity-60"
             >
@@ -248,7 +284,8 @@ export const OfferDetailPage = () => {
             <button
               key={target}
               type="button"
-              onClick={() => statusMutation.mutate({ targetStatus: target })}
+              data-target-status={target}
+              onClick={handleStatusTransition}
               disabled={statusMutation.isPending}
               className="rounded-lg border border-gray-300 px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-50"
             >

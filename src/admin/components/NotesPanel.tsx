@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState, type ChangeEvent } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { noteApi } from '@/admin/api/notes';
 import { queryKeys } from '@/admin/api/queryKeys';
@@ -51,6 +51,14 @@ export const NotesPanel = ({ entityType, entityId }: NotesPanelProps) => {
     addNoteMutation.mutate({ content: trimmedContent });
   }, [addNoteMutation, content]);
 
+  const handleContentChange = useCallback((event: ChangeEvent<HTMLTextAreaElement>) => {
+    setContent(event.target.value);
+  }, []);
+
+  const handleNextPage = useCallback(() => {
+    goToNextPage(notesQuery.data?.totalPages ?? 0);
+  }, [goToNextPage, notesQuery.data?.totalPages]);
+
   return (
     <section className="rounded-2xl border border-gray-200 bg-white p-6">
       <h3 className="text-lg font-semibold text-gray-900">Notes</h3>
@@ -59,7 +67,7 @@ export const NotesPanel = ({ entityType, entityId }: NotesPanelProps) => {
       <div className="mt-4 space-y-3">
         <Textarea
           value={content}
-          onChange={(event) => setContent(event.target.value)}
+          onChange={handleContentChange}
           rows={3}
           label="Add a note"
           placeholder="Add context, feedback, blockers..."
@@ -94,7 +102,7 @@ export const NotesPanel = ({ entityType, entityId }: NotesPanelProps) => {
           page={page}
           totalPages={notesQuery.data?.totalPages ?? 0}
           onPrevious={goToPreviousPage}
-          onNext={() => goToNextPage(notesQuery.data?.totalPages ?? 0)}
+          onNext={handleNextPage}
         />
       </div>
     </section>

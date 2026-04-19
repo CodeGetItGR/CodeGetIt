@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
 import { useAuth } from '@/admin/auth/useAuth';
 
@@ -12,6 +13,13 @@ const links = [
 
 export const AdminLayout = () => {
   const { auth, logout } = useAuth();
+
+  const resolveNavLinkClassName = useCallback(({ isActive }: { isActive: boolean }) =>
+    `block rounded-xl px-3 py-2 text-sm transition ${
+      isActive
+        ? 'bg-gray-900 text-white shadow-sm'
+        : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
+    }`, []);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -28,13 +36,7 @@ export const AdminLayout = () => {
                 key={link.to}
                 to={link.to}
                 end={link.end}
-                className={({ isActive }) =>
-                  `block rounded-xl px-3 py-2 text-sm transition ${
-                    isActive
-                      ? 'bg-gray-900 text-white shadow-sm'
-                      : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
-                  }`
-                }
+                className={resolveNavLinkClassName}
               >
                 {link.label}
               </NavLink>

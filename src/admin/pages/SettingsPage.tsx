@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState, type ChangeEvent } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { queryKeys } from '@/admin/api/queryKeys';
 import { settingsApi, type AppSettingType } from '@/admin/api/settings';
@@ -154,9 +154,21 @@ export const SettingsPage = () => {
     },
   });
 
-  const updateValue = (key: string, nextValue: string) => {
+  const updateValue = useCallback((key: string, nextValue: string) => {
     setDraftValues((prev) => ({ ...prev, [key]: nextValue }));
-  };
+  }, []);
+
+  const handleSave = useCallback(() => {
+    saveMutation.mutate();
+  }, [saveMutation]);
+
+  const handleSettingValueChange = useCallback((event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const key = event.currentTarget.dataset.settingKey;
+    if (!key) {
+      return;
+    }
+    updateValue(key, event.currentTarget.value);
+  }, [updateValue]);
 
   return (
     <div>
@@ -168,7 +180,7 @@ export const SettingsPage = () => {
         </div>
         <button
           type="button"
-          onClick={() => saveMutation.mutate()}
+          onClick={handleSave}
           disabled={saveMutation.isPending || settingsQuery.isLoading}
           className="rounded-xl border border-gray-900 bg-gray-900 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-black disabled:cursor-not-allowed disabled:opacity-50"
         >
@@ -203,7 +215,8 @@ export const SettingsPage = () => {
                       {item.type === 'BOOLEAN' ? (
                         <select
                           value={value.toLowerCase() === 'true' ? 'true' : 'false'}
-                          onChange={(event) => updateValue(item.key, event.target.value)}
+                          data-setting-key={item.key}
+                          onChange={handleSettingValueChange}
                           className="mt-3 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900"
                         >
                           <option value="true">true</option>
@@ -212,7 +225,8 @@ export const SettingsPage = () => {
                       ) : item.key === 'marketing.bannerSeverity' ? (
                         <select
                           value={value || 'info'}
-                          onChange={(event) => updateValue(item.key, event.target.value)}
+                          data-setting-key={item.key}
+                          onChange={handleSettingValueChange}
                           className="mt-3 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900"
                         >
                           <option value="info">info</option>
@@ -224,7 +238,8 @@ export const SettingsPage = () => {
                         <input
                           type="text"
                           value={value}
-                          onChange={(event) => updateValue(item.key, event.target.value)}
+                          data-setting-key={item.key}
+                          onChange={handleSettingValueChange}
                           className="mt-3 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900"
                         />
                       )}
@@ -253,5 +268,6 @@ export const SettingsPage = () => {
     </div>
   );
 };
+
 
 

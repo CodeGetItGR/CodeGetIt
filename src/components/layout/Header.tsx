@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, type MouseEvent } from 'react';
 import { motion } from 'framer-motion';
 import { useLocale } from '@/i18n/UseLocale';
 import { MagneticButton } from '@/components/ui/MagneticButton';
@@ -59,6 +59,30 @@ export const Header = () => {
     window.open(target, '_blank', 'noopener,noreferrer');
   }, [ctaPrimaryUrl, scrollToSection]);
 
+  const handleLogoClick = useCallback(() => {
+    scrollToSection('hero');
+    setLogoTapStreak(prev => {
+      const next = prev + 1;
+      if (next >= 5) {
+        triggerGem();
+        return 0;
+      }
+      return next;
+    });
+  }, [scrollToSection, triggerGem]);
+
+  const handleNavItemClick = useCallback((event: MouseEvent<HTMLButtonElement>) => {
+    const sectionId = event.currentTarget.dataset.sectionId;
+    if (!sectionId) {
+      return;
+    }
+    scrollToSection(sectionId);
+  }, [scrollToSection]);
+
+  const handleMobileMenuToggle = useCallback(() => {
+    setIsMobileMenuOpen(prev => !prev);
+  }, []);
+
   const navItems = [
     { label: t.nav.services, id: 'services' },
     { label: t.nav.portfolio, id: 'portfolio' },
@@ -79,24 +103,14 @@ export const Header = () => {
               : 'translate-y-0.5 bg-white/74'
           }`}
         >
-          <div className="pointer-events-none absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-white/90 to-transparent" />
+          <div className="pointer-events-none absolute inset-x-6 top-0 h-px bg-linear-to-r from-transparent via-white/90 to-transparent" />
 
           <button
-            onClick={() => {
-              scrollToSection('hero');
-              setLogoTapStreak(prev => {
-                const next = prev + 1;
-                if (next >= 5) {
-                  triggerGem();
-                  return 0;
-                }
-                return next;
-              });
-            }}
-            className="group inline-flex items-center gap-2 text-lg sm:text-xl font-extrabold tracking-tight text-gray-900 transition-opacity duration-300 hover:opacity-85"
+            onClick={handleLogoClick}
+            className="group inline-flex items-center gap-4 text-lg sm:text-xl font-extrabold tracking-tight text-gray-900 transition-opacity duration-300 hover:opacity-85"
           >
             <span className="h-2 w-2 rounded-full bg-gray-900/70 shadow-[0_0_0_6px_rgba(15,23,42,0.08)] transition-transform duration-300 group-hover:scale-110" />
-            CodeGetIt
+            <span>CodeGetIt</span>
           </button>
 
           {showGem && (
@@ -114,7 +128,8 @@ export const Header = () => {
             {navItems.map((item) => (
               <button
                 key={item.id}
-                onClick={() => scrollToSection(item.id)}
+                data-section-id={item.id}
+                onClick={handleNavItemClick}
                 className="cursor-pointer hover:opacity-75 relative text-sm font-medium text-gray-600 transition-colors duration-300 hover:text-gray-900 after:absolute after:left-0 after:bottom-[-0.45rem] after:h-[2px] after:w-0 after:bg-gray-900 after:transition-all after:duration-300 hover:after:w-full"
               >
                 {item.label}
@@ -131,7 +146,7 @@ export const Header = () => {
           </nav>
 
           <button
-            onClick={() => setIsMobileMenuOpen(prev => !prev)}
+            onClick={handleMobileMenuToggle}
             className="cursor-pointer hover:opacity-75 md:hidden rounded-xl border border-slate-200/80 bg-white/70 p-2 text-gray-700 transition-colors duration-200 hover:bg-white"
             aria-label={t.nav.toggleMenu}
           >
@@ -149,7 +164,8 @@ export const Header = () => {
             {navItems.map((item) => (
               <button
                 key={item.id}
-                onClick={() => scrollToSection(item.id)}
+                data-section-id={item.id}
+                onClick={handleNavItemClick}
                 className="block w-full rounded-xl px-3 py-2.5 text-left text-base font-medium text-gray-700 transition-colors duration-200 hover:bg-white/60 hover:text-gray-900"
               >
                 {item.label}

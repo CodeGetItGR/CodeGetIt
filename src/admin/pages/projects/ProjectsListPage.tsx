@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState, type ChangeEvent } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { projectApi, type ProjectListQuery } from '@/admin/api/projects';
@@ -33,6 +33,14 @@ export const ProjectsListPage = () => {
     resetPage();
   }, [resetPage]);
 
+  const handleStatusFilterChange = useCallback((event: ChangeEvent<HTMLSelectElement>) => {
+    handleStatusChange(event.target.value);
+  }, [handleStatusChange]);
+
+  const handleNextPage = useCallback(() => {
+    goToNextPage(projectsQuery.data?.totalPages ?? 0);
+  }, [goToNextPage, projectsQuery.data?.totalPages]);
+
   return (
     <div>
       <div className="mb-6">
@@ -45,7 +53,7 @@ export const ProjectsListPage = () => {
         <div className="mb-4 max-w-xs">
           <select
             value={statusFilter}
-            onChange={(event) => handleStatusChange(event.target.value)}
+            onChange={handleStatusFilterChange}
             className="w-full rounded-xl border border-gray-300 px-3 py-2 text-sm"
           >
             <option value="">All statuses</option>
@@ -100,7 +108,7 @@ export const ProjectsListPage = () => {
             page={page}
             totalPages={projectsQuery.data?.totalPages ?? 0}
             onPrevious={goToPreviousPage}
-            onNext={() => goToNextPage(projectsQuery.data?.totalPages ?? 0)}
+            onNext={handleNextPage}
           />
         </div>
       </section>

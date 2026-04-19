@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState, type FormEvent } from 'react';
+import { useCallback, useMemo, useState, type ChangeEvent, type FormEvent, type MouseEvent } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { queryKeys } from '@/admin/api/queryKeys';
@@ -101,6 +101,42 @@ export const RequestDetailPage = () => {
     [formState, updateMutation],
   );
 
+  const handleOpenCreateOffer = useCallback(() => {
+    setShowCreateOffer(true);
+  }, []);
+
+  const handleCloseCreateOffer = useCallback(() => {
+    setShowCreateOffer(false);
+  }, []);
+
+  const handleOfferCreated = useCallback(() => {
+    void queryClient.invalidateQueries({ queryKey: queryKeys.offers.root });
+  }, [queryClient]);
+
+  const handleTitleChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    handleFieldChange('title', event.target.value);
+  }, [handleFieldChange]);
+
+  const handleRequesterNameChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    handleFieldChange('requesterName', event.target.value);
+  }, [handleFieldChange]);
+
+  const handleDescriptionChange = useCallback((event: ChangeEvent<HTMLTextAreaElement>) => {
+    handleFieldChange('description', event.target.value);
+  }, [handleFieldChange]);
+
+  const handlePriorityChange = useCallback((event: ChangeEvent<HTMLSelectElement>) => {
+    handleFieldChange('priority', event.target.value as Priority);
+  }, [handleFieldChange]);
+
+  const handleStatusTransition = useCallback((event: MouseEvent<HTMLButtonElement>) => {
+    const targetStatus = event.currentTarget.dataset.targetStatus as RequestStatus | undefined;
+    if (!targetStatus) {
+      return;
+    }
+    statusMutation.mutate({ targetStatus });
+  }, [statusMutation]);
+
   if (requestQuery.isLoading) {
     return <p className="text-sm text-gray-500">Loading request...</p>;
   }
@@ -126,7 +162,7 @@ export const RequestDetailPage = () => {
           {request.status === 'APPROVED' && (
             <button
               type="button"
-              onClick={() => setShowCreateOffer(true)}
+              onClick={handleOpenCreateOffer}
               className="rounded-xl bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800"
             >
               + Create offer
@@ -148,7 +184,7 @@ export const RequestDetailPage = () => {
           <Input
             label="Title"
             value={formState.title}
-            onChange={(event) => handleFieldChange('title', event.target.value)}
+            onChange={handleTitleChange}
             className="rounded-xl px-3 py-2"
             required
           />
@@ -156,7 +192,7 @@ export const RequestDetailPage = () => {
           <Input
             label="Requester name"
             value={formState.requesterName}
-            onChange={(event) => handleFieldChange('requesterName', event.target.value)}
+            onChange={handleRequesterNameChange}
             className="rounded-xl px-3 py-2"
           />
 
@@ -164,7 +200,7 @@ export const RequestDetailPage = () => {
             <Textarea
               label="Description"
               value={formState.description}
-              onChange={(event) => handleFieldChange('description', event.target.value)}
+              onChange={handleDescriptionChange}
               rows={4}
               className="rounded-xl px-3 py-2"
             />
@@ -174,7 +210,7 @@ export const RequestDetailPage = () => {
             <span className="mb-1 block text-gray-600">Priority</span>
             <select
               value={formState.priority}
-              onChange={(event) => handleFieldChange('priority', event.target.value as Priority)}
+              onChange={handlePriorityChange}
               className="w-full rounded-xl border border-gray-300 px-3 py-2"
             >
               {priorities.map((priority) => (
@@ -211,7 +247,8 @@ export const RequestDetailPage = () => {
             <button
               key={target}
               type="button"
-              onClick={() => statusMutation.mutate({ targetStatus: target })}
+              data-target-status={target}
+              onClick={handleStatusTransition}
               disabled={statusMutation.isPending}
               className="rounded-lg border border-gray-300 px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-50"
             >
@@ -227,9 +264,9 @@ export const RequestDetailPage = () => {
 
       <CreateOfferSheet
         isOpen={showCreateOffer}
-        onClose={() => setShowCreateOffer(false)}
+        onClose={handleCloseCreateOffer}
         defaultRequestId={request.id}
-        onCreated={() => queryClient.invalidateQueries({ queryKey: queryKeys.offers.root })}
+        onCreated={handleOfferCreated}
       />
     </div>
   );

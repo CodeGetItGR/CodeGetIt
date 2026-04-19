@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState, type ChangeEvent } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { offerApi, type OfferListQuery } from '@/admin/api/offers';
@@ -47,6 +47,26 @@ export const OffersListPage = () => {
     resetPage();
   }, [resetPage]);
 
+  const handleOpenCreate = useCallback(() => {
+    setShowCreate(true);
+  }, []);
+
+  const handleCloseCreate = useCallback(() => {
+    setShowCreate(false);
+  }, []);
+
+  const handleFilterTypeSelectChange = useCallback((event: ChangeEvent<HTMLSelectElement>) => {
+    handleFilterTypeChange(event.target.value as FilterType);
+  }, [handleFilterTypeChange]);
+
+  const handleFilterValueChangeEvent = useCallback((event: ChangeEvent<HTMLSelectElement | HTMLInputElement>) => {
+    handleFilterValueChange(event.target.value);
+  }, [handleFilterValueChange]);
+
+  const handleNextPage = useCallback(() => {
+    goToNextPage(offersQuery.data?.totalPages ?? 0);
+  }, [goToNextPage, offersQuery.data?.totalPages]);
+
   return (
     <div>
       <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
@@ -57,7 +77,7 @@ export const OffersListPage = () => {
         </div>
         <button
           type="button"
-          onClick={() => setShowCreate(true)}
+          onClick={handleOpenCreate}
           className="rounded-xl bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800"
         >
           + New offer
@@ -68,7 +88,7 @@ export const OffersListPage = () => {
         <div className="mb-4 grid gap-3 md:grid-cols-[160px_1fr]">
           <select
             value={filterType}
-            onChange={(event) => handleFilterTypeChange(event.target.value as FilterType)}
+            onChange={handleFilterTypeSelectChange}
             className="rounded-xl border border-gray-300 px-3 py-2 text-sm"
           >
             <option value="status">Status</option>
@@ -78,7 +98,7 @@ export const OffersListPage = () => {
           {filterType === 'status' ? (
             <select
               value={filterValue}
-              onChange={(event) => handleFilterValueChange(event.target.value)}
+              onChange={handleFilterValueChangeEvent}
               className="rounded-xl border border-gray-300 px-3 py-2 text-sm"
             >
               <option value="">All statuses</option>
@@ -91,7 +111,7 @@ export const OffersListPage = () => {
           ) : (
             <input
               value={filterValue}
-              onChange={(event) => handleFilterValueChange(event.target.value)}
+              onChange={handleFilterValueChangeEvent}
               placeholder="Request UUID"
               className="rounded-xl border border-gray-300 px-3 py-2 text-sm"
             />
@@ -143,12 +163,12 @@ export const OffersListPage = () => {
             page={page}
             totalPages={offersQuery.data?.totalPages ?? 0}
             onPrevious={goToPreviousPage}
-            onNext={() => goToNextPage(offersQuery.data?.totalPages ?? 0)}
+            onNext={handleNextPage}
           />
         </div>
       </section>
 
-      <CreateOfferSheet isOpen={showCreate} onClose={() => setShowCreate(false)} />
+      <CreateOfferSheet isOpen={showCreate} onClose={handleCloseCreate} />
     </div>
   );
 };

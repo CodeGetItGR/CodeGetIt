@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState, type ChangeEvent } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { queryKeys } from '@/admin/api/queryKeys';
@@ -64,6 +64,26 @@ export const RequestsListPage = () => {
     resetPage();
   }, [resetPage]);
 
+  const handleOpenCreate = useCallback(() => {
+    setShowCreate(true);
+  }, []);
+
+  const handleCloseCreate = useCallback(() => {
+    setShowCreate(false);
+  }, []);
+
+  const handleFilterTypeSelectChange = useCallback((event: ChangeEvent<HTMLSelectElement>) => {
+    handleFilterTypeChange(event.target.value);
+  }, [handleFilterTypeChange]);
+
+  const handleFilterValueChangeEvent = useCallback((event: ChangeEvent<HTMLSelectElement | HTMLInputElement>) => {
+    handleFilterValueChange(event.target.value);
+  }, [handleFilterValueChange]);
+
+  const handleNextPage = useCallback(() => {
+    goToNextPage(requestsQuery.data?.totalPages ?? 0);
+  }, [goToNextPage, requestsQuery.data?.totalPages]);
+
   return (
     <div>
       <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
@@ -74,7 +94,7 @@ export const RequestsListPage = () => {
         </div>
         <button
           type="button"
-          onClick={() => setShowCreate(true)}
+          onClick={handleOpenCreate}
           className="rounded-xl bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800"
         >
           + New request
@@ -85,7 +105,7 @@ export const RequestsListPage = () => {
         <div className="mb-4 grid gap-3 md:grid-cols-[190px_1fr]">
           <select
             value={filterType}
-            onChange={(event) => handleFilterTypeChange(event.target.value)}
+            onChange={handleFilterTypeSelectChange}
             className="rounded-xl border border-gray-300 px-3 py-2 text-sm"
           >
             {filterTypeOptions.map((option) => (
@@ -98,7 +118,7 @@ export const RequestsListPage = () => {
           {filterType === 'status' ? (
             <select
               value={filterValue}
-              onChange={(event) => handleFilterValueChange(event.target.value)}
+              onChange={handleFilterValueChangeEvent}
               className="rounded-xl border border-gray-300 px-3 py-2 text-sm"
             >
               <option value="">All statuses</option>
@@ -111,7 +131,7 @@ export const RequestsListPage = () => {
           ) : filterType === 'priority' ? (
             <select
               value={filterValue}
-              onChange={(event) => handleFilterValueChange(event.target.value)}
+              onChange={handleFilterValueChangeEvent}
               className="rounded-xl border border-gray-300 px-3 py-2 text-sm"
             >
               <option value="">All priorities</option>
@@ -124,7 +144,7 @@ export const RequestsListPage = () => {
           ) : (
             <input
               value={filterValue}
-              onChange={(event) => handleFilterValueChange(event.target.value)}
+              onChange={handleFilterValueChangeEvent}
               placeholder={filterType === 'requesterEmail' ? 'e.g. jane@example.com' : 'User UUID'}
               className="rounded-xl border border-gray-300 px-3 py-2 text-sm"
             />
@@ -176,12 +196,12 @@ export const RequestsListPage = () => {
             page={page}
             totalPages={requestsQuery.data?.totalPages ?? 0}
             onPrevious={goToPreviousPage}
-            onNext={() => goToNextPage(requestsQuery.data?.totalPages ?? 0)}
+            onNext={handleNextPage}
           />
         </div>
       </section>
 
-      <CreateRequestSheet isOpen={showCreate} onClose={() => setShowCreate(false)} />
+      <CreateRequestSheet isOpen={showCreate} onClose={handleCloseCreate} />
     </div>
   );
 };

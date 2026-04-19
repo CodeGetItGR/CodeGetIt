@@ -1,4 +1,4 @@
-import { useCallback, useState, type FormEvent } from 'react';
+import { useCallback, useState, type ChangeEvent, type FormEvent } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { offerApi, type CreateOfferPayload } from '@/admin/api/offers';
 import { SlideSheet } from '@/admin/components/SlideSheet';
@@ -83,6 +83,30 @@ export const CreateOfferSheet = ({
     onClose();
   }, [clearError, defaultRequestId, onClose]);
 
+  const handleRequestIdChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    setField('requestId', event.target.value);
+  }, [setField]);
+
+  const handleTitleChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    setField('title', event.target.value);
+  }, [setField]);
+
+  const handlePriceInputChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    setPriceInput(event.target.value);
+  }, []);
+
+  const handleCurrencyChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    setField('currency', event.target.value.toUpperCase());
+  }, [setField]);
+
+  const handleValidUntilChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    setValidUntilInput(event.target.value);
+  }, []);
+
+  const handleDescriptionChange = useCallback((event: ChangeEvent<HTMLTextAreaElement>) => {
+    setField('description', event.target.value);
+  }, [setField]);
+
   return (
     <SlideSheet
       isOpen={isOpen}
@@ -94,7 +118,7 @@ export const CreateOfferSheet = ({
         <Input
           label="Request ID"
           value={form.requestId}
-          onChange={(e) => setField('requestId', e.target.value)}
+          onChange={handleRequestIdChange}
           placeholder="UUID of the target request"
           disabled={Boolean(defaultRequestId)}
           className={defaultRequestId ? 'bg-gray-100 border-gray-200' : ''}
@@ -104,7 +128,7 @@ export const CreateOfferSheet = ({
         <Input
           label="Offer title"
           value={form.title}
-          onChange={(e) => setField('title', e.target.value)}
+          onChange={handleTitleChange}
           placeholder="e.g. Full website redesign – Phase 1"
           required
         />
@@ -116,13 +140,13 @@ export const CreateOfferSheet = ({
             step="0.01"
             min="0"
             value={priceInput}
-            onChange={(e) => setPriceInput(e.target.value)}
+            onChange={handlePriceInputChange}
             placeholder="1200.00"
           />
           <Input
             label="Currency"
             value={form.currency ?? ''}
-            onChange={(e) => setField('currency', e.target.value.toUpperCase())}
+            onChange={handleCurrencyChange}
             maxLength={5}
           />
         </div>
@@ -131,13 +155,13 @@ export const CreateOfferSheet = ({
           label="Valid until"
           type="date"
           value={validUntilInput}
-          onChange={(e) => setValidUntilInput(e.target.value)}
+          onChange={handleValidUntilChange}
         />
 
         <Textarea
           label="Description (optional)"
           value={form.description ?? ''}
-          onChange={(e) => setField('description', e.target.value)}
+          onChange={handleDescriptionChange}
           rows={4}
           placeholder="Scope, deliverables, terms..."
         />

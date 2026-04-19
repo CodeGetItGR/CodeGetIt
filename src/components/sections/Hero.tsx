@@ -48,6 +48,22 @@ export const Hero = () => {
     window.open(target, '_blank', 'noopener,noreferrer');
   }, [ctaPrimaryUrl, scrollToSection]);
 
+  const handleAvailabilityTap = useCallback(() => {
+    setAvailabilityTapCount(prev => {
+      const next = prev + 1;
+      if (next >= 4) {
+        setShowHeroGem(true);
+        window.setTimeout(() => setShowHeroGem(false), 3500);
+        return 0;
+      }
+      return next;
+    });
+  }, []);
+
+  const handleViewWorkClick = useCallback(() => {
+    scrollToSection('portfolio');
+  }, [scrollToSection]);
+
   useEffect(() => {
     if (availabilityTapCount === 0) {
       return;
@@ -85,17 +101,7 @@ export const Hero = () => {
             {/* Elegant Availability Badge */}
             <motion.button
               type="button"
-              onClick={() => {
-                setAvailabilityTapCount(prev => {
-                  const next = prev + 1;
-                  if (next >= 4) {
-                    setShowHeroGem(true);
-                    window.setTimeout(() => setShowHeroGem(false), 3500);
-                    return 0;
-                  }
-                  return next;
-                });
-              }}
+              onClick={handleAvailabilityTap}
               className="mb-4 inline-block"
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -177,7 +183,7 @@ export const Hero = () => {
               )}
 
               <button
-                onClick={() => scrollToSection('portfolio')}
+                onClick={handleViewWorkClick}
                 className="cursor-pointer hover:opacity-75 group inline-flex items-center gap-2 text-base font-semibold text-gray-700 transition-colors duration-200 hover:text-gray-900"
               >
                 {t.hero.viewWork}

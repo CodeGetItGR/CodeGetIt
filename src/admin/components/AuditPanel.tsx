@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { historyApi } from '@/admin/api/history';
 import { queryKeys } from '@/admin/api/queryKeys';
@@ -26,6 +26,10 @@ export const AuditPanel = ({ entityType, entityId }: AuditPanelProps) => {
     queryFn: () => historyApi.list({ entityType, entityId, page, size: HISTORY_PAGE_SIZE }),
     enabled: historyScopeQueryKey.length > 0,
   });
+
+  const handleNextPage = useCallback(() => {
+    goToNextPage(historyQuery.data?.totalPages ?? 0);
+  }, [goToNextPage, historyQuery.data?.totalPages]);
 
   return (
     <section className="rounded-2xl border border-gray-200 bg-white p-6">
@@ -60,7 +64,7 @@ export const AuditPanel = ({ entityType, entityId }: AuditPanelProps) => {
           page={page}
           totalPages={historyQuery.data?.totalPages ?? 0}
           onPrevious={goToPreviousPage}
-          onNext={() => goToNextPage(historyQuery.data?.totalPages ?? 0)}
+          onNext={handleNextPage}
         />
       </div>
     </section>

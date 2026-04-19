@@ -1,4 +1,4 @@
-import { useCallback, useMemo, type FormEvent } from 'react';
+import { useCallback, useMemo, type ChangeEvent, type FormEvent, type MouseEvent } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { projectApi } from '@/admin/api/projects';
@@ -101,6 +101,26 @@ export const ProjectDetailPage = () => {
     [updateMutation],
   );
 
+  const handleNameChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    handleFieldChange('name', event.target.value);
+  }, [handleFieldChange]);
+
+  const handleOwnerUserIdChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    handleFieldChange('ownerUserId', event.target.value);
+  }, [handleFieldChange]);
+
+  const handleDescriptionChange = useCallback((event: ChangeEvent<HTMLTextAreaElement>) => {
+    handleFieldChange('description', event.target.value);
+  }, [handleFieldChange]);
+
+  const handleStatusTransition = useCallback((event: MouseEvent<HTMLButtonElement>) => {
+    const targetStatus = event.currentTarget.dataset.targetStatus as ProjectStatus | undefined;
+    if (!targetStatus) {
+      return;
+    }
+    statusMutation.mutate({ targetStatus });
+  }, [statusMutation]);
+
   if (projectQuery.isLoading) {
     return <p className="text-sm text-gray-500">Loading project...</p>;
   }
@@ -135,7 +155,7 @@ export const ProjectDetailPage = () => {
           <Input
             label="Name"
             value={formState.name}
-            onChange={(event) => handleFieldChange('name', event.target.value)}
+            onChange={handleNameChange}
             className="rounded-xl px-3 py-2"
             required
           />
@@ -143,7 +163,7 @@ export const ProjectDetailPage = () => {
           <Input
             label="Owner user ID"
             value={formState.ownerUserId}
-            onChange={(event) => handleFieldChange('ownerUserId', event.target.value)}
+            onChange={handleOwnerUserIdChange}
             className="rounded-xl px-3 py-2"
           />
 
@@ -151,7 +171,7 @@ export const ProjectDetailPage = () => {
             <Textarea
               label="Description"
               value={formState.description}
-              onChange={(event) => handleFieldChange('description', event.target.value)}
+              onChange={handleDescriptionChange}
               rows={4}
               className="rounded-xl px-3 py-2"
             />
@@ -177,7 +197,8 @@ export const ProjectDetailPage = () => {
             <button
               key={target}
               type="button"
-              onClick={() => statusMutation.mutate({ targetStatus: target })}
+              data-target-status={target}
+              onClick={handleStatusTransition}
               disabled={statusMutation.isPending}
               className="rounded-lg border border-gray-300 px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-50"
             >

@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import {useCallback, useState} from 'react';
+import { useCallback, useState, type MouseEvent } from 'react';
 import { HiArrowRight, HiExternalLink } from 'react-icons/hi';
 import { projects } from '@/data/projects';
 import { useLocale } from '@/i18n/UseLocale';
@@ -38,6 +38,17 @@ export const Portfolio = () => {
 
     window.open(target, '_blank', 'noopener,noreferrer');
   }, [ctaPrimaryUrl]);
+
+  const handleProjectBadgeClick = useCallback((event: MouseEvent<HTMLButtonElement>) => {
+    if (!event.shiftKey) {
+      return;
+    }
+
+    const projectId = Number(event.currentTarget.dataset.projectId);
+    if (!Number.isNaN(projectId)) {
+      revealGem(projectId);
+    }
+  }, [revealGem]);
 
   return (
     <section id="portfolio" className="section-depth section-divider relative py-28 lg:py-36">
@@ -86,11 +97,8 @@ export const Portfolio = () => {
                   </span>
                   <button
                     type="button"
-                    onClick={(event) => {
-                      if (event.shiftKey) {
-                        revealGem(project.id);
-                      }
-                    }}
+                    data-project-id={project.id}
+                    onClick={handleProjectBadgeClick}
                     className="text-xs font-medium text-white/80 transition-colors duration-200 hover:text-white"
                     aria-label={`${t.portfolio.hiddenProjectNoteAria} ${title}`}
                   >
