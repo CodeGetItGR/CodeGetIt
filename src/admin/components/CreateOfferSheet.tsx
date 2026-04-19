@@ -60,8 +60,11 @@ const blankForm = (): CreateOfferPayload => ({
   requestId: '',
   title: '',
   description: '',
+  recipientEmail: '',
+  recipientName: '',
   priceAmount: undefined,
-  currency: 'USD',
+  taxRate: undefined,
+  currency: 'EUR',
   validUntil: undefined,
 });
 
@@ -167,9 +170,11 @@ export const CreateOfferSheet = ({
       onClose={handleClose}
       title="New offer"
       description="Create a commercial offer for an approved request."
+      className="max-w-3xl"
     >
       <form className="space-y-4" onSubmit={handleSubmit}>
-        <Input
+        <div className="grid gap-4 md:grid-cols-2">
+          <Input
           label="Request ID"
           value={form.requestId}
           onChange={handleRequestIdChange}
@@ -177,59 +182,87 @@ export const CreateOfferSheet = ({
           disabled={Boolean(defaultRequestId)}
           className={defaultRequestId ? 'bg-gray-100 border-gray-200' : ''}
           required
-        />
-
-        <Input
-          label="Offer title"
-          value={form.title}
-          onChange={handleTitleChange}
-          placeholder="e.g. Full website redesign – Phase 1"
-          required
-        />
-
-        <div className="grid grid-cols-2 gap-3">
-          <Input
-            label="Price amount"
-            type="number"
-            step="0.01"
-            min="0"
-            value={priceInput}
-            onChange={handlePriceInputChange}
-            placeholder="1200.00"
           />
-          <Input
-            label="Currency"
-            value={form.currency ?? ''}
-            onChange={handleCurrencyChange}
-            maxLength={5}
-          />
-        </div>
 
-        {pricingTips && (
-          <div className="rounded-xl border border-blue-100 bg-blue-50 px-3 py-2 text-sm text-blue-800">
-            <p className="font-medium">Pricing tip from request context</p>
-            <p className="mt-1">Requested budget range: {pricingTips.budgetLabel}</p>
-            <p className="mt-1">{pricingTips.flexibilityText}</p>
-            {pricingTips.showRangeTip && (
-              <p className="mt-1 text-blue-700">Try anchoring this offer close to the stated range, then justify any deviations in the description.</p>
-            )}
+          <Input
+           label="Offer title"
+           value={form.title}
+           onChange={handleTitleChange}
+           placeholder="e.g. Full website redesign – Phase 1"
+           required
+           />
+
+           <Input
+           label="Recipient Email *"
+           type="email"
+           value={form.recipientEmail ?? ''}
+           onChange={(e) => setField('recipientEmail', e.target.value)}
+           placeholder="client@example.com"
+           required
+           />
+
+           <Input
+           label="Recipient Name"
+           value={form.recipientName ?? ''}
+           onChange={(e) => setField('recipientName', e.target.value)}
+           placeholder="e.g. John Doe"
+           />
+
+          <div className="grid grid-cols-2 gap-3 md:col-span-2">
+            <Input
+              label="Price amount"
+              type="number"
+              step="0.01"
+              min="0"
+              value={priceInput}
+              onChange={handlePriceInputChange}
+              placeholder="1200.00"
+            />
+            <Input
+              label="Currency"
+              value={form.currency ?? ''}
+              onChange={handleCurrencyChange}
+              maxLength={5}
+            />
           </div>
-        )}
 
-        <Input
-          label="Valid until"
-          type="date"
-          value={validUntilInput}
-          onChange={handleValidUntilChange}
-        />
+          <Input
+           label="Tax Rate (%)"
+           type="number"
+           step="0.01"
+           value={form.taxRate ?? ''}
+           onChange={(e) => setField('taxRate', e.target.value ? Number(e.target.value) : undefined)}
+           placeholder="20"
+          />
 
-        <Textarea
-          label="Description (optional)"
-          value={form.description ?? ''}
-          onChange={handleDescriptionChange}
-          rows={4}
-          placeholder="Scope, deliverables, terms..."
-        />
+          {pricingTips && (
+            <div className="rounded-xl border border-blue-100 bg-blue-50 px-3 py-2 text-sm text-blue-800 md:col-span-2">
+              <p className="font-medium">Pricing tip from request context</p>
+              <p className="mt-1">Requested budget range: {pricingTips.budgetLabel}</p>
+              <p className="mt-1">{pricingTips.flexibilityText}</p>
+              {pricingTips.showRangeTip && (
+                <p className="mt-1 text-blue-700">Try anchoring this offer close to the stated range, then justify any deviations in the description.</p>
+              )}
+            </div>
+          )}
+
+          <Input
+            label="Valid until"
+            type="date"
+            value={validUntilInput}
+            onChange={handleValidUntilChange}
+          />
+
+          <div className="md:col-span-2">
+            <Textarea
+              label="Description (optional)"
+              value={form.description ?? ''}
+              onChange={handleDescriptionChange}
+              rows={4}
+              placeholder="Scope, deliverables, terms..."
+            />
+          </div>
+        </div>
 
         {errorMessage && (
           <p className="rounded-xl bg-rose-50 px-3 py-2 text-sm text-rose-700">{errorMessage}</p>

@@ -1,21 +1,29 @@
-import { useCallback, useMemo, type ChangeEvent, type FormEvent, type MouseEvent } from 'react';
+import {
+  useCallback,
+  useMemo,
+  type ChangeEvent,
+  type FormEvent,
+  useState,
+} from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { offerApi } from '@/admin/api/offers';
+import { offerApi, type CreateLineItemPayload, type UpdateLineItemPayload } from '@/admin/api/offers';
 import { queryKeys } from '@/admin/api/queryKeys';
 import { EntityAuxPanels } from '@/admin/components/EntityAuxPanels';
 import { StatusBadge } from '@/admin/components/StatusBadge';
-import { offerTransitions } from '@/admin/config/workflows';
 import { useApiErrorState } from '@/admin/hooks/useApiErrorState';
 import { useEntityDraftState } from '@/admin/hooks/useEntityDraftState';
-import type { OfferStatus } from '@/admin/types';
+import type { OfferLineItemResponse } from '@/admin/types';
 import { Input } from '@/components/ui/Input';
 import { Textarea } from '@/components/ui/Textarea';
 
 interface OfferFormState {
   title: string;
   description: string;
+  recipientName: string;
+  recipientEmail: string;
   priceAmount: string;
+  taxRate: string;
   currency: string;
   validUntil: string;
 }
@@ -23,26 +31,56 @@ interface OfferFormState {
 const defaultFormState: OfferFormState = {
   title: '',
   description: '',
+  recipientName: '',
+  recipientEmail: '',
   priceAmount: '',
-  currency: '',
+  taxRate: '',
+  currency: 'EUR',
   validUntil: '',
 };
 
-function toIsoDateInput(value?: string): string {
-  if (!value) {
-    return '';
-  }
+function toIsoDateInput(value?: string | null): string {
+  if (!value) return '';
   return value.slice(0, 10);
 }
+
+interface LineItemFormState {
+  description: string;
+  quantity: string;
+  unitPrice: string;
+  taxRate: string;
+  sortOrder: string;
+}
+
+const defaultLineItemFormState: LineItemFormState = {
+  description: '',
+  quantity: '1',
+  unitPrice: '',
+  taxRate: '',
+  sortOrder: '',
+};
 
 export const OfferDetailPage = () => {
   const { id = '' } = useParams();
   const queryClient = useQueryClient();
   const { errorMessage, setApiError, clearError } = useApiErrorState();
+  const [showLineItemForm, setShowLineItemForm] = useState(false);
+  const [editingLineItemId, setEditingLineItemId] = useState<string | null>(null);
+  const [lineItemFormState, setLineItemFormState] = useState<LineItemFormState>(defaultLineItemFormState);
+  const [showReviseReason, setShowReviseReason] = useState(false);
+  const [reviseReason, setReviseReason] = useState('');
+  const [showCancelReason, setShowCancelReason] = useState(false);
+  const [cancelReason, setCancelReason] = useState('');
 
   const offerQuery = useQuery({
     queryKey: queryKeys.offers.detail(id),
     queryFn: () => offerApi.getById(id),
+    enabled: Boolean(id),
+  });
+
+  const submissionsQuery = useQuery({
+    queryKey: ['offer-submissions', id],
+    queryFn: () => offerApi.getSubmissions(id),
     enabled: Boolean(id),
   });
 
@@ -52,8 +90,11 @@ export const OfferDetailPage = () => {
       ...defaultFormState,
       title: offer?.title ?? '',
       description: offer?.description || '',
+      recipientName: offer?.recipientName || '',
+      recipientEmail: offer?.recipientEmail ?? '',
       priceAmount: typeof offer?.priceAmount === 'number' ? String(offer.priceAmount) : '',
-      currency: offer?.currency || 'USD',
+      taxRate: typeof offer?.taxRate === 'number' ? String(offer.taxRate) : '',
+      currency: offer?.currency || 'EUR',
       validUntil: toIsoDateInput(offer?.validUntil),
     };
   }, [offerQuery.data]);
@@ -68,7 +109,7 @@ export const OfferDetailPage = () => {
     await Promise.all([
       queryClient.invalidateQueries({ queryKey: queryKeys.offers.detail(id) }),
       queryClient.invalidateQueries({ queryKey: queryKeys.offers.root }),
-      queryClient.invalidateQueries({ queryKey: queryKeys.projects.root }),
+      queryClient.invalidateQueries({ queryKey: ['offer-submissions', id] }),
     ]);
   }, [id, queryClient]);
 
@@ -77,7 +118,10 @@ export const OfferDetailPage = () => {
       offerApi.update(id, {
         title: formState.title,
         description: formState.description || undefined,
+        recipientName: formState.recipientName || undefined,
+        recipientEmail: formState.recipientEmail,
         priceAmount: formState.priceAmount ? Number(formState.priceAmount) : undefined,
+        taxRate: formState.taxRate ? Number(formState.taxRate) : undefined,
         currency: formState.currency || undefined,
         validUntil: formState.validUntil ? new Date(formState.validUntil).toISOString() : undefined,
       }),
@@ -89,9 +133,8 @@ export const OfferDetailPage = () => {
     onError: (error) => setApiError(error),
   });
 
-  const statusMutation = useMutation({
-    mutationFn: ({ targetStatus, reason }: { targetStatus: OfferStatus; reason?: string }) =>
-      offerApi.changeStatus(id, { targetStatus, reason }),
+  const sendMutation = useMutation({
+    mutationFn: () => offerApi.send(id),
     onSuccess: async () => {
       clearError();
       await refreshOfferData();
@@ -99,17 +142,31 @@ export const OfferDetailPage = () => {
     onError: (error) => setApiError(error),
   });
 
-  const acceptMutation = useMutation({
-    mutationFn: () => offerApi.accept(id),
+  const reviseMutation = useMutation({
+    mutationFn: () => offerApi.revise(id, reviseReason ? { reason: reviseReason } : undefined),
     onSuccess: async () => {
       clearError();
+      setReviseReason('');
+      setShowReviseReason(false);
       await refreshOfferData();
     },
     onError: (error) => setApiError(error),
   });
 
   const cancelMutation = useMutation({
-    mutationFn: () => offerApi.cancel(id),
+    mutationFn: () => offerApi.cancel(id, cancelReason ? { reason: cancelReason } : undefined),
+    onSuccess: async () => {
+      clearError();
+      setCancelReason('');
+      setShowCancelReason(false);
+      await refreshOfferData();
+    },
+    onError: (error) => setApiError(error),
+  });
+
+  const rejectStatusMutation = useMutation({
+    mutationFn: () =>
+      offerApi.changeStatus(id, { targetStatus: 'REJECTED', reason: 'Discarded before sending' }),
     onSuccess: async () => {
       clearError();
       await refreshOfferData();
@@ -117,14 +174,39 @@ export const OfferDetailPage = () => {
     onError: (error) => setApiError(error),
   });
 
-  const availableTransitions = useMemo(() => {
-    const current = offerQuery.data?.status;
-    if (!current) {
-      return [] as OfferStatus[];
-    }
-    return offerTransitions[current];
-  }, [offerQuery.data?.status]);
+  const createLineItemMutation = useMutation({
+    mutationFn: (payload: CreateLineItemPayload) => offerApi.createLineItem(id, payload),
+    onSuccess: async () => {
+      clearError();
+      setLineItemFormState(defaultLineItemFormState);
+      setShowLineItemForm(false);
+      await refreshOfferData();
+    },
+    onError: (error) => setApiError(error),
+  });
 
+  const updateLineItemMutation = useMutation({
+    mutationFn: (payload: UpdateLineItemPayload) =>
+      offerApi.updateLineItem(id, editingLineItemId || '', payload),
+    onSuccess: async () => {
+      clearError();
+      setLineItemFormState(defaultLineItemFormState);
+      setEditingLineItemId(null);
+      await refreshOfferData();
+    },
+    onError: (error) => setApiError(error),
+  });
+
+  const deleteLineItemMutation = useMutation({
+    mutationFn: (itemId: string) => offerApi.deleteLineItem(id, itemId),
+    onSuccess: async () => {
+      clearError();
+      await refreshOfferData();
+    },
+    onError: (error) => setApiError(error),
+  });
+
+  // Handlers
   const handleUpdate = useCallback(
     async (event: FormEvent<HTMLFormElement>) => {
       event.preventDefault();
@@ -137,12 +219,24 @@ export const OfferDetailPage = () => {
     handleFieldChange('title', event.target.value);
   }, [handleFieldChange]);
 
+  const handleRecipientNameChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    handleFieldChange('recipientName', event.target.value);
+  }, [handleFieldChange]);
+
+  const handleRecipientEmailChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    handleFieldChange('recipientEmail', event.target.value);
+  }, [handleFieldChange]);
+
   const handleCurrencyChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
     handleFieldChange('currency', event.target.value.toUpperCase());
   }, [handleFieldChange]);
 
   const handlePriceAmountChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
     handleFieldChange('priceAmount', event.target.value);
+  }, [handleFieldChange]);
+
+  const handleTaxRateChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    handleFieldChange('taxRate', event.target.value);
   }, [handleFieldChange]);
 
   const handleValidUntilChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
@@ -153,21 +247,75 @@ export const OfferDetailPage = () => {
     handleFieldChange('description', event.target.value);
   }, [handleFieldChange]);
 
-  const handleAcceptOffer = useCallback(() => {
-    acceptMutation.mutate();
-  }, [acceptMutation]);
+  const handleSend = useCallback(() => {
+    sendMutation.mutate();
+  }, [sendMutation]);
 
-  const handleCancelOffer = useCallback(() => {
+  const handleLineItemFieldChange = useCallback((field: keyof LineItemFormState, value: string) => {
+    setLineItemFormState((prev) => ({ ...prev, [field]: value }));
+  }, []);
+
+  const handleAddLineItem = useCallback(() => {
+    setEditingLineItemId(null);
+    setLineItemFormState(defaultLineItemFormState);
+    setShowLineItemForm(true);
+  }, []);
+
+  const handleEditLineItem = useCallback((item: OfferLineItemResponse) => {
+    setEditingLineItemId(item.id);
+    setLineItemFormState({
+      description: item.description,
+      quantity: String(item.quantity),
+      unitPrice: String(item.unitPrice),
+      taxRate: item.taxRate ? String(item.taxRate) : '',
+      sortOrder: String(item.sortOrder),
+    });
+    setShowLineItemForm(true);
+  }, []);
+
+  const handleSaveLineItem = useCallback(() => {
+    const payload: CreateLineItemPayload = {
+      description: lineItemFormState.description,
+      quantity: Number(lineItemFormState.quantity),
+      unitPrice: Number(lineItemFormState.unitPrice),
+      taxRate: lineItemFormState.taxRate ? Number(lineItemFormState.taxRate) : undefined,
+      sortOrder: lineItemFormState.sortOrder ? Number(lineItemFormState.sortOrder) : undefined,
+    };
+
+    if (editingLineItemId) {
+      updateLineItemMutation.mutate(payload as UpdateLineItemPayload);
+    } else {
+      createLineItemMutation.mutate(payload);
+    }
+  }, [lineItemFormState, editingLineItemId, createLineItemMutation, updateLineItemMutation]);
+
+  const handleDeleteLineItem = useCallback((itemId: string) => {
+    if (confirm('Are you sure you want to delete this line item?')) {
+      deleteLineItemMutation.mutate(itemId);
+    }
+  }, [deleteLineItemMutation]);
+
+  const handleCancel = useCallback(() => {
+    setShowCancelReason(true);
+  }, []);
+
+  const handleRevise = useCallback(() => {
+    setShowReviseReason(true);
+  }, []);
+
+  const handleConfirmRevise = useCallback(() => {
+    reviseMutation.mutate();
+  }, [reviseMutation]);
+
+  const handleConfirmCancel = useCallback(() => {
     cancelMutation.mutate();
   }, [cancelMutation]);
 
-  const handleStatusTransition = useCallback((event: MouseEvent<HTMLButtonElement>) => {
-    const targetStatus = event.currentTarget.dataset.targetStatus as OfferStatus | undefined;
-    if (!targetStatus) {
-      return;
+  const handleRejectStatus = useCallback(() => {
+    if (confirm('Discard this draft offer?')) {
+      rejectStatusMutation.mutate();
     }
-    statusMutation.mutate({ targetStatus });
-  }, [statusMutation]);
+  }, [rejectStatusMutation]);
 
   if (offerQuery.isLoading) {
     return <p className="text-sm text-gray-500">Loading offer...</p>;
@@ -178,6 +326,10 @@ export const OfferDetailPage = () => {
   }
 
   const offer = offerQuery.data;
+  const isDraft = offer.status === 'DRAFT';
+  const isSent = offer.status === 'SENT';
+  const isRejected = offer.status === 'REJECTED_BY_CLIENT';
+  const isEditable = isDraft;
 
   return (
     <div className="space-y-6">
@@ -187,6 +339,9 @@ export const OfferDetailPage = () => {
           <h2 className="text-3xl font-bold tracking-tight text-gray-900">{offer.title}</h2>
           <div className="mt-2 flex items-center gap-2">
             <StatusBadge value={offer.status} />
+            {offer.revisionNumber > 0 && (
+              <span className="text-sm text-gray-600">Rev {offer.revisionNumber}</span>
+            )}
           </div>
         </div>
         <Link to="/admin/offers" className="text-sm font-medium text-gray-700 underline">
@@ -194,18 +349,47 @@ export const OfferDetailPage = () => {
         </Link>
       </div>
 
-      {errorMessage && <p className="rounded-xl bg-rose-50 px-3 py-2 text-sm text-rose-700">{errorMessage}</p>}
+      {errorMessage && (
+        <p className="rounded-xl bg-rose-50 px-3 py-2 text-sm text-rose-700">{errorMessage}</p>
+      )}
 
+      {/* Rejection note display */}
+      {offer.rejectionNote && (
+        <div className="rounded-xl bg-orange-50 border border-orange-200 p-4">
+          <p className="text-sm font-semibold text-orange-900">Client feedback:</p>
+          <p className="text-sm text-orange-800 mt-2">{offer.rejectionNote}</p>
+        </div>
+      )}
+
+      {/* Offer Details */}
       <section className="rounded-2xl border border-gray-200 bg-white p-6">
         <h3 className="text-lg font-semibold text-gray-900">Offer details</h3>
-        <p className="mt-1 text-sm text-gray-600">Only active offers can be updated or canceled.</p>
+        <p className="mt-1 text-sm text-gray-600">
+          {isEditable ? 'DRAFT offers can be edited and sent.' : 'View-only mode.'}
+        </p>
 
         <form className="mt-5 grid gap-4 md:grid-cols-2" onSubmit={handleUpdate}>
           <Input
-            label="Title"
+            label="Title *"
             value={formState.title}
             onChange={handleTitleChange}
-            className="rounded-xl px-3 py-2"
+            disabled={!isEditable}
+            required
+          />
+
+          <Input
+            label="Recipient Name"
+            value={formState.recipientName}
+            onChange={handleRecipientNameChange}
+            disabled={!isEditable}
+          />
+
+          <Input
+            label="Recipient Email *"
+            type="email"
+            value={formState.recipientEmail}
+            onChange={handleRecipientEmailChange}
+            disabled={!isEditable}
             required
           />
 
@@ -213,7 +397,7 @@ export const OfferDetailPage = () => {
             label="Currency"
             value={formState.currency}
             onChange={handleCurrencyChange}
-            className="rounded-xl px-3 py-2"
+            disabled={!isEditable}
             maxLength={5}
           />
 
@@ -223,7 +407,16 @@ export const OfferDetailPage = () => {
             step="0.01"
             value={formState.priceAmount}
             onChange={handlePriceAmountChange}
-            className="rounded-xl px-3 py-2"
+            disabled={!isEditable}
+          />
+
+          <Input
+            label="Tax rate (%)"
+            type="number"
+            step="0.01"
+            value={formState.taxRate}
+            onChange={handleTaxRateChange}
+            disabled={!isEditable}
           />
 
           <Input
@@ -231,7 +424,7 @@ export const OfferDetailPage = () => {
             type="date"
             value={formState.validUntil}
             onChange={handleValidUntilChange}
-            className="rounded-xl px-3 py-2"
+            disabled={!isEditable}
           />
 
           <div className="md:col-span-2">
@@ -239,62 +432,316 @@ export const OfferDetailPage = () => {
               label="Description"
               value={formState.description}
               onChange={handleDescriptionChange}
+              disabled={!isEditable}
               rows={4}
-              className="rounded-xl px-3 py-2"
             />
           </div>
 
-          <div className="md:col-span-2 flex flex-wrap gap-2">
-            <button
-              type="submit"
-              disabled={updateMutation.isPending || !offer.active}
-              className="rounded-xl bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800 disabled:opacity-60"
-            >
-              {updateMutation.isPending ? 'Saving...' : 'Save changes'}
-            </button>
-
-            <button
-              type="button"
-              onClick={handleAcceptOffer}
-              disabled={acceptMutation.isPending || !offer.active || offer.status !== 'SUBMITTED'}
-              className="rounded-xl border border-emerald-300 bg-emerald-50 px-4 py-2 text-sm font-medium text-emerald-800 disabled:opacity-60"
-            >
-              Accept offer (creates project)
-            </button>
-
-            <button
-              type="button"
-              onClick={handleCancelOffer}
-              disabled={cancelMutation.isPending || !offer.active}
-              className="rounded-xl border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 disabled:opacity-60"
-            >
-              Cancel offer
-            </button>
-          </div>
+          {isEditable && (
+            <div className="md:col-span-2 flex flex-wrap gap-2">
+              <button
+                type="submit"
+                disabled={updateMutation.isPending}
+                className="rounded-xl bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800 disabled:opacity-60"
+              >
+                {updateMutation.isPending ? 'Saving...' : 'Save changes'}
+              </button>
+            </div>
+          )}
         </form>
       </section>
 
+      {/* Line Items */}
+      {isEditable && (
+        <section className="rounded-2xl border border-gray-200 bg-white p-6">
+          <div className="flex justify-between items-center mb-4">
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900">Line Items</h3>
+              <p className="mt-1 text-sm text-gray-600">Add tasks/deliverables to this offer.</p>
+            </div>
+            <button
+              onClick={handleAddLineItem}
+              className="rounded-lg bg-blue-600 text-white px-3 py-1.5 text-sm font-medium hover:bg-blue-700"
+            >
+              + Add item
+            </button>
+          </div>
+
+          {showLineItemForm && (
+            <div className="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
+              <h4 className="font-semibold text-gray-900 mb-3">
+                {editingLineItemId ? 'Edit line item' : 'New line item'}
+              </h4>
+              <div className="grid gap-3 md:grid-cols-2">
+                <Input
+                  label="Description *"
+                  value={lineItemFormState.description}
+                  onChange={(e) => handleLineItemFieldChange('description', e.target.value)}
+                  required
+                />
+                <Input
+                  label="Quantity"
+                  type="number"
+                  step="0.01"
+                  value={lineItemFormState.quantity}
+                  onChange={(e) => handleLineItemFieldChange('quantity', e.target.value)}
+                  required
+                />
+                <Input
+                  label="Unit Price"
+                  type="number"
+                  step="0.01"
+                  value={lineItemFormState.unitPrice}
+                  onChange={(e) => handleLineItemFieldChange('unitPrice', e.target.value)}
+                  required
+                />
+                <Input
+                  label="Tax Rate (%)"
+                  type="number"
+                  step="0.01"
+                  value={lineItemFormState.taxRate}
+                  onChange={(e) => handleLineItemFieldChange('taxRate', e.target.value)}
+                />
+                <Input
+                  label="Sort Order"
+                  type="number"
+                  value={lineItemFormState.sortOrder}
+                  onChange={(e) => handleLineItemFieldChange('sortOrder', e.target.value)}
+                />
+              </div>
+              <div className="flex gap-2 mt-4">
+                <button
+                  onClick={handleSaveLineItem}
+                  disabled={createLineItemMutation.isPending || updateLineItemMutation.isPending}
+                  className="rounded-lg bg-emerald-600 text-white px-3 py-2 text-sm font-medium hover:bg-emerald-700 disabled:opacity-60"
+                >
+                  {createLineItemMutation.isPending || updateLineItemMutation.isPending
+                    ? 'Saving...'
+                    : 'Save'}
+                </button>
+                <button
+                  onClick={() => {
+                    setShowLineItemForm(false);
+                    setLineItemFormState(defaultLineItemFormState);
+                  }}
+                  className="rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          )}
+
+          {offer.lineItems.length === 0 ? (
+            <p className="text-sm text-gray-500">No line items yet.</p>
+          ) : (
+            <div className="overflow-x-auto rounded-lg border border-gray-200">
+              <table className="min-w-full divide-y divide-gray-200 text-sm">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700">Description</th>
+                    <th className="px-4 py-3 text-right text-xs font-semibold text-gray-700">Qty</th>
+                    <th className="px-4 py-3 text-right text-xs font-semibold text-gray-700">Unit Price</th>
+                    <th className="px-4 py-3 text-right text-xs font-semibold text-gray-700">Total</th>
+                    <th className="px-4 py-3 text-center text-xs font-semibold text-gray-700">Action</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200 bg-white">
+                  {offer.lineItems.map((item) => (
+                    <tr key={item.id} className="hover:bg-gray-50">
+                      <td className="px-4 py-3 text-gray-900">{item.description}</td>
+                      <td className="px-4 py-3 text-right text-gray-600">{item.quantity}</td>
+                      <td className="px-4 py-3 text-right text-gray-600">
+                        {item.unitPrice.toFixed(2)} {offer.currency}
+                      </td>
+                      <td className="px-4 py-3 text-right font-medium text-gray-900">
+                        {item.lineTotal.toFixed(2)} {offer.currency}
+                      </td>
+                      <td className="px-4 py-3 text-center">
+                        <button
+                          onClick={() => handleEditLineItem(item)}
+                          className="text-sm text-blue-600 hover:text-blue-800 mr-2"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => handleDeleteLineItem(item.id)}
+                          disabled={deleteLineItemMutation.isPending}
+                          className="text-sm text-red-600 hover:text-red-800"
+                        >
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+
+          {/* Totals Display */}
+          {offer.lineItems.length > 0 && (
+            <div className="mt-4 bg-gray-50 rounded-lg p-4 max-w-xs ml-auto">
+              <div className="flex justify-between text-sm mb-2">
+                <span className="text-gray-600">Subtotal:</span>
+                <span className="font-medium">{(offer.subtotalAmount || 0).toFixed(2)} {offer.currency}</span>
+              </div>
+              {typeof offer.taxAmount === 'number' && offer.taxAmount > 0 && (
+                <div className="flex justify-between text-sm mb-2">
+                  <span className="text-gray-600">Tax ({offer.taxRate}%):</span>
+                  <span className="font-medium">{offer.taxAmount.toFixed(2)} {offer.currency}</span>
+                </div>
+              )}
+              <div className="flex justify-between font-semibold pt-2 border-t border-gray-300">
+                <span>Total:</span>
+                <span>{(offer.totalAmount || 0).toFixed(2)} {offer.currency}</span>
+              </div>
+            </div>
+          )}
+        </section>
+      )}
+
+      {/* Actions by Status */}
       <section className="rounded-2xl border border-gray-200 bg-white p-6">
-        <h3 className="text-lg font-semibold text-gray-900">Status actions</h3>
-        <p className="mt-1 text-sm text-gray-600">Use for standard transitions. Prefer accept endpoint for accepted flow.</p>
+        <h3 className="text-lg font-semibold text-gray-900">Actions</h3>
 
         <div className="mt-4 flex flex-wrap gap-2">
-          {availableTransitions.length === 0 && <p className="text-sm text-gray-500">No further transitions available.</p>}
-          {availableTransitions.map((target) => (
+          {isDraft && (
+            <>
+              <button
+                onClick={handleSend}
+                disabled={sendMutation.isPending}
+                className="rounded-lg bg-emerald-600 text-white px-4 py-2 text-sm font-medium hover:bg-emerald-700 disabled:opacity-60"
+              >
+                {sendMutation.isPending ? 'Sending...' : '✓ Send to client'}
+              </button>
+
+              <button
+                onClick={handleCancel}
+                className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+              >
+                Cancel offer
+              </button>
+
+              <button
+                onClick={handleRejectStatus}
+                className="rounded-lg border border-orange-300 bg-orange-50 px-4 py-2 text-sm font-medium text-orange-700 hover:bg-orange-100"
+              >
+                Discard draft
+              </button>
+            </>
+          )}
+
+          {isSent && (
             <button
-              key={target}
-              type="button"
-              data-target-status={target}
-              onClick={handleStatusTransition}
-              disabled={statusMutation.isPending}
-              className="rounded-lg border border-gray-300 px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-50"
+              onClick={handleCancel}
+              className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
             >
-              Move to {target}
+              Cancel offer
             </button>
-          ))}
+          )}
+
+          {isRejected && (
+            <button
+              onClick={handleRevise}
+              className="rounded-lg bg-blue-600 text-white px-4 py-2 text-sm font-medium hover:bg-blue-700"
+            >
+              ↻ Revise to draft
+            </button>
+          )}
         </div>
+
+        {/* Reason inputs */}
+        {showCancelReason && (
+          <div className="mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
+            <label className="block text-sm font-medium text-gray-700 mb-2">Cancel reason (optional)</label>
+            <Textarea
+              value={cancelReason}
+              onChange={(e) => setCancelReason(e.target.value)}
+              rows={3}
+              className="w-full mb-3"
+            />
+            <div className="flex gap-2">
+              <button
+                onClick={handleConfirmCancel}
+                disabled={cancelMutation.isPending}
+                className="rounded-lg bg-red-600 text-white px-3 py-2 text-sm font-medium hover:bg-red-700 disabled:opacity-60"
+              >
+                Confirm cancel
+              </button>
+              <button
+                onClick={() => setShowCancelReason(false)}
+                className="rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50"
+              >
+                Back
+              </button>
+            </div>
+          </div>
+        )}
+
+        {showReviseReason && (
+          <div className="mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
+            <label className="block text-sm font-medium text-gray-700 mb-2">Revision reason (optional)</label>
+            <Textarea
+              value={reviseReason}
+              onChange={(e) => setReviseReason(e.target.value)}
+              placeholder="e.g., Adjusted pricing based on client feedback"
+              rows={3}
+              className="w-full mb-3"
+            />
+            <div className="flex gap-2">
+              <button
+                onClick={handleConfirmRevise}
+                disabled={reviseMutation.isPending}
+                className="rounded-lg bg-blue-600 text-white px-3 py-2 text-sm font-medium hover:bg-blue-700 disabled:opacity-60"
+              >
+                Confirm revise
+              </button>
+              <button
+                onClick={() => setShowReviseReason(false)}
+                className="rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50"
+              >
+                Back
+              </button>
+            </div>
+          </div>
+        )}
       </section>
 
+      {/* Submission History */}
+      {submissionsQuery.data && submissionsQuery.data.length > 0 && (
+        <section className="rounded-2xl border border-gray-200 bg-white p-6">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">Submission history</h3>
+          <div className="space-y-3">
+            {submissionsQuery.data.map((submission) => (
+              <div key={submission.id} className="flex gap-4 py-3 border-b border-gray-200 last:border-b-0">
+                <div className="flex-shrink-0">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-200">
+                    <span className="text-xs font-semibold text-gray-700">
+                      {submission.revisionNumber}
+                    </span>
+                  </div>
+                </div>
+                <div className="flex-grow">
+                  <p className="text-sm font-medium text-gray-900">{submission.action}</p>
+                  {submission.note && (
+                    <p className="text-sm text-gray-600 mt-1">{submission.note}</p>
+                  )}
+                  <p className="text-xs text-gray-500 mt-1">
+                    {new Date(submission.createdAt || '').toLocaleDateString()} at{' '}
+                    {new Date(submission.createdAt || '').toLocaleTimeString([], {
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    })}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Aux panels */}
       <section>
         <EntityAuxPanels entityType="OFFER" entityId={offer.id} />
       </section>

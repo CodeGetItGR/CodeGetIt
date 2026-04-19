@@ -8,9 +8,10 @@ export const requestTransitions: Record<RequestStatus, RequestStatus[]> = {
 };
 
 export const offerTransitions: Record<OfferStatus, OfferStatus[]> = {
-  DRAFT: ['SUBMITTED', 'CANCELLED'],
-  SUBMITTED: ['CANCELLED', 'REJECTED'],
-  ACCEPTED: [],
+  DRAFT: ['SENT', 'CANCELLED', 'REJECTED'],
+  SENT: ['ACCEPTED_BY_CLIENT', 'REJECTED_BY_CLIENT', 'CANCELLED'],
+  ACCEPTED_BY_CLIENT: [],
+  REJECTED_BY_CLIENT: ['DRAFT'],
   CANCELLED: [],
   REJECTED: [],
 };

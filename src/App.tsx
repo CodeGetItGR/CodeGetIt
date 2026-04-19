@@ -5,13 +5,14 @@ import { DashboardPage } from '@/admin/pages/DashboardPage';
 import { LoginPage } from '@/admin/pages/LoginPage';
 import { OfferDetailPage } from '@/admin/pages/offers/OfferDetailPage';
 import { OffersListPage } from '@/admin/pages/offers/OffersListPage';
+import { PublicOfferPage } from '@/pages/PublicOfferPage';
 import { ProjectDetailPage } from '@/admin/pages/projects/ProjectDetailPage';
 import { ProjectsListPage } from '@/admin/pages/projects/ProjectsListPage';
 import { RequestDetailPage } from '@/admin/pages/requests/RequestDetailPage';
 import { RequestsListPage } from '@/admin/pages/requests/RequestsListPage';
 import { ContactMessagesPage } from '@/admin/pages/ContactMessagesPage';
 import { SettingsPage } from '@/admin/pages/SettingsPage';
-import { SEO } from './components/SEO';
+import { SEO } from '@/components/SEO';
 import { Footer } from './components/layout/Footer';
 import { Header } from './components/layout/Header';
 import { AnnouncementBanner } from './components/sections/AnnouncementBanner';
@@ -56,8 +57,8 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<MarketingHomePage />} />
+      <Route path="/offers/:token" element={<PublicOfferPage />} />
       <Route path="/admin/login" element={<LoginPage />} />
-
       <Route element={<RequireAuth requireAdmin />}>
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<DashboardPage />} />
@@ -68,7 +69,7 @@ function App() {
           <Route path="projects" element={<ProjectsListPage />} />
           <Route path="projects/:id" element={<ProjectDetailPage />} />
           <Route path="messages" element={<ContactMessagesPage />} />
-            <Route path="settings" element={<SettingsPage />} />
+          <Route path="settings" element={<SettingsPage />} />
         </Route>
       </Route>
 

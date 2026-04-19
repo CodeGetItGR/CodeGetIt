@@ -3,7 +3,8 @@ export type UUID = string;
 export type Role = 'ROLE_USER' | 'ROLE_ADMIN';
 
 export type RequestStatus = 'DRAFT' | 'SUBMITTED' | 'APPROVED' | 'COMPLETED';
-export type OfferStatus = 'DRAFT' | 'SUBMITTED' | 'ACCEPTED' | 'CANCELLED' | 'REJECTED';
+export type OfferStatus = 'DRAFT' | 'SENT' | 'ACCEPTED_BY_CLIENT' | 'REJECTED_BY_CLIENT' | 'CANCELLED' | 'REJECTED';
+export type OfferSubmissionAction = 'SENT' | 'ACCEPTED_BY_CLIENT' | 'REJECTED_BY_CLIENT' | 'REVISED_TO_DRAFT' | 'CANCELLED';
 export type ProjectStatus = 'PLANNING' | 'IN_PROGRESS' | 'ON_HOLD' | 'COMPLETED' | 'CANCELLED';
 export type GithubRepoStatus = 'NOT_CREATED' | 'CREATED' | 'FAILED';
 
@@ -67,18 +68,82 @@ export interface RequestResponse {
   updatedAt: string;
 }
 
+export interface OfferLineItemResponse {
+  id: UUID;
+  description: string;
+  quantity: number;
+  unitPrice: number;
+  taxRate: number | null;
+  lineSubtotal: number;
+  lineTaxAmount: number;
+  lineTotal: number;
+  sortOrder: number;
+  createdAt: string | null;
+  updatedAt: string | null;
+}
+
 export interface OfferResponse {
   id: UUID;
   requestId: UUID;
   title: string;
-  description?: string;
+  description: string | null;
+  priceAmount: number | null;
+  taxRate: number | null;
+  currency: string | null;
+  subtotalAmount: number | null;
+  taxAmount: number | null;
+  totalAmount: number | null;
+  recipientEmail: string;
+  recipientName: string | null;
+  publicToken: string;
+  revisionNumber: number;
+  sentAt: string | null;
+  respondedAt: string | null;
+  rejectionNote: string | null;
   status: OfferStatus;
   active: boolean;
-  priceAmount?: number;
-  currency?: string;
-  validUntil?: string;
-  createdAt: string;
-  updatedAt: string;
+  validUntil: string | null;
+  lineItems: OfferLineItemResponse[];
+  createdAt: string | null;
+  updatedAt: string | null;
+}
+
+export interface OfferSubmissionResponse {
+  id: UUID;
+  offerId: UUID;
+  revisionNumber: number;
+  action: OfferSubmissionAction;
+  note: string | null;
+  recipientEmail: string | null;
+  createdAt: string | null;
+  createdBy: UUID | null;
+}
+
+export interface PublicOfferResponse {
+  token: string;
+  status: OfferStatus;
+  expired: boolean;
+  revisionNumber: number;
+  recipientName: string | null;
+  sentAt: string | null;
+  respondedAt: string | null;
+  rejectionNote: string | null;
+  offer: {
+    title: string;
+    description: string | null;
+    priceAmount: number | null;
+    currency: string | null;
+    subtotalAmount: number | null;
+    taxRate: number | null;
+    taxAmount: number | null;
+    totalAmount: number | null;
+    validUntil: string | null;
+    lineItems: OfferLineItemResponse[];
+  };
+  project: {
+    name: string;
+    description: string | null;
+  };
 }
 
 export interface ProjectResponse {
@@ -134,4 +199,3 @@ export interface ContactMessageResponse {
   message: string;
   createdAt: string;
 }
-
