@@ -5,9 +5,8 @@ import { projectApi, type ProjectListQuery } from '@/admin/api/projects';
 import { PaginationControls } from '@/admin/components/PaginationControls';
 import { StatusBadge } from '@/admin/components/StatusBadge';
 import { usePaginationState } from '@/admin/hooks/usePaginationState';
+import { useSettingsOptions } from '@/admin/hooks/useSettingsOptions';
 import type { ProjectStatus } from '@/admin/types';
-
-const statusOptions: readonly ProjectStatus[] = ['PLANNING', 'IN_PROGRESS', 'ON_HOLD', 'COMPLETED', 'CANCELLED'];
 
 export const ProjectsListPage = () => {
   const { page, resetPage, goToNextPage, goToPreviousPage } = usePaginationState();
@@ -41,6 +40,8 @@ export const ProjectsListPage = () => {
     goToNextPage(projectsQuery.data?.totalPages ?? 0);
   }, [goToNextPage, projectsQuery.data?.totalPages]);
 
+  const { options: projectStatusOptions } = useSettingsOptions({ groupKey: 'project.status', scope: 'admin' });
+
   return (
     <div>
       <div className="mb-6">
@@ -57,9 +58,9 @@ export const ProjectsListPage = () => {
             className="w-full rounded-xl border border-gray-300 px-3 py-2 text-sm"
           >
             <option value="">All statuses</option>
-            {statusOptions.map((status) => (
-              <option key={status} value={status}>
-                {status}
+            {projectStatusOptions.map((status) => (
+              <option key={status.value} value={status.value as ProjectStatus}>
+                {status.label}
               </option>
             ))}
           </select>

@@ -9,16 +9,39 @@ import { StatusBadge } from '@/admin/components/StatusBadge';
 import { requestTransitions } from '@/admin/config/workflows';
 import { useApiErrorState } from '@/admin/hooks/useApiErrorState';
 import { useEntityDraftState } from '@/admin/hooks/useEntityDraftState';
-import type { Priority, RequestStatus } from '@/admin/types';
+import { useSettingsOptions } from '@/admin/hooks/useSettingsOptions';
+import type {
+  BudgetFlexibility,
+  BudgetRange,
+  CommunicationPreference,
+  DataSensitivity,
+  DecisionMakerRole,
+  DesiredStartWindow,
+  Priority,
+  ProjectType,
+  RequestStatus,
+} from '@/admin/types';
 import { Input } from '@/components/ui/Input';
 import { Textarea } from '@/components/ui/Textarea';
-
-const priorities: readonly Priority[] = ['LOW', 'MEDIUM', 'HIGH', 'URGENT'];
 
 interface RequestFormState {
   title: string;
   description: string;
   requesterName: string;
+  projectType: ProjectType;
+  businessGoal: string;
+  organizationName: string;
+  industry: string;
+  targetAudience: string;
+  desiredStartWindow: DesiredStartWindow;
+  targetLaunchWindow: string;
+  budgetRange: BudgetRange;
+  budgetFlexibility: BudgetFlexibility;
+  decisionMakerRole: DecisionMakerRole;
+  stakeholderCount?: number;
+  communicationPreference: CommunicationPreference;
+  legalOrBrandConstraints: string;
+  dataSensitivity: DataSensitivity;
   priority: Priority;
 }
 
@@ -26,6 +49,20 @@ const defaultFormState: RequestFormState = {
   title: '',
   description: '',
   requesterName: '',
+  projectType: 'WEBSITE',
+  businessGoal: '',
+  organizationName: '',
+  industry: '',
+  targetAudience: '',
+  desiredStartWindow: 'WITHIN_1_MONTH',
+  targetLaunchWindow: '',
+  budgetRange: 'UNKNOWN',
+  budgetFlexibility: 'UNKNOWN',
+  decisionMakerRole: 'OTHER',
+  stakeholderCount: undefined,
+  communicationPreference: 'EMAIL',
+  legalOrBrandConstraints: '',
+  dataSensitivity: 'NONE',
   priority: 'MEDIUM',
 };
 
@@ -48,6 +85,20 @@ export const RequestDetailPage = () => {
       title: request?.title ?? '',
       description: request?.description || '',
       requesterName: request?.requesterName ?? '',
+      projectType: request?.projectType ?? 'WEBSITE',
+      businessGoal: request?.businessGoal ?? '',
+      organizationName: request?.organizationName ?? '',
+      industry: request?.industry ?? '',
+      targetAudience: request?.targetAudience ?? '',
+      desiredStartWindow: request?.desiredStartWindow ?? 'WITHIN_1_MONTH',
+      targetLaunchWindow: request?.targetLaunchWindow ?? '',
+      budgetRange: request?.budgetRange ?? 'UNKNOWN',
+      budgetFlexibility: request?.budgetFlexibility ?? 'UNKNOWN',
+      decisionMakerRole: request?.decisionMakerRole ?? 'OTHER',
+      stakeholderCount: request?.stakeholderCount,
+      communicationPreference: request?.communicationPreference ?? 'EMAIL',
+      legalOrBrandConstraints: request?.legalOrBrandConstraints ?? '',
+      dataSensitivity: request?.dataSensitivity ?? 'NONE',
       priority: request?.priority ?? 'MEDIUM',
     };
   }, [requestQuery.data]);
@@ -129,6 +180,63 @@ export const RequestDetailPage = () => {
     handleFieldChange('priority', event.target.value as Priority);
   }, [handleFieldChange]);
 
+  const handleProjectTypeChange = useCallback((event: ChangeEvent<HTMLSelectElement>) => {
+    handleFieldChange('projectType', event.target.value as ProjectType);
+  }, [handleFieldChange]);
+
+  const handleBusinessGoalChange = useCallback((event: ChangeEvent<HTMLTextAreaElement>) => {
+    handleFieldChange('businessGoal', event.target.value);
+  }, [handleFieldChange]);
+
+  const handleOrganizationNameChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    handleFieldChange('organizationName', event.target.value);
+  }, [handleFieldChange]);
+
+  const handleIndustryChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    handleFieldChange('industry', event.target.value);
+  }, [handleFieldChange]);
+
+  const handleTargetAudienceChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    handleFieldChange('targetAudience', event.target.value);
+  }, [handleFieldChange]);
+
+  const handleDesiredStartWindowChange = useCallback((event: ChangeEvent<HTMLSelectElement>) => {
+    handleFieldChange('desiredStartWindow', event.target.value as DesiredStartWindow);
+  }, [handleFieldChange]);
+
+  const handleTargetLaunchWindowChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    handleFieldChange('targetLaunchWindow', event.target.value);
+  }, [handleFieldChange]);
+
+  const handleBudgetRangeChange = useCallback((event: ChangeEvent<HTMLSelectElement>) => {
+    handleFieldChange('budgetRange', event.target.value as BudgetRange);
+  }, [handleFieldChange]);
+
+  const handleBudgetFlexibilityChange = useCallback((event: ChangeEvent<HTMLSelectElement>) => {
+    handleFieldChange('budgetFlexibility', event.target.value as BudgetFlexibility);
+  }, [handleFieldChange]);
+
+  const handleDecisionMakerRoleChange = useCallback((event: ChangeEvent<HTMLSelectElement>) => {
+    handleFieldChange('decisionMakerRole', event.target.value as DecisionMakerRole);
+  }, [handleFieldChange]);
+
+  const handleStakeholderCountChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    const parsed = Number(event.target.value);
+    handleFieldChange('stakeholderCount', Number.isFinite(parsed) && parsed > 0 ? parsed : undefined);
+  }, [handleFieldChange]);
+
+  const handleCommunicationPreferenceChange = useCallback((event: ChangeEvent<HTMLSelectElement>) => {
+    handleFieldChange('communicationPreference', event.target.value as CommunicationPreference);
+  }, [handleFieldChange]);
+
+  const handleLegalConstraintsChange = useCallback((event: ChangeEvent<HTMLTextAreaElement>) => {
+    handleFieldChange('legalOrBrandConstraints', event.target.value);
+  }, [handleFieldChange]);
+
+  const handleDataSensitivityChange = useCallback((event: ChangeEvent<HTMLSelectElement>) => {
+    handleFieldChange('dataSensitivity', event.target.value as DataSensitivity);
+  }, [handleFieldChange]);
+
   const handleStatusTransition = useCallback((event: MouseEvent<HTMLButtonElement>) => {
     const targetStatus = event.currentTarget.dataset.targetStatus as RequestStatus | undefined;
     if (!targetStatus) {
@@ -136,6 +244,15 @@ export const RequestDetailPage = () => {
     }
     statusMutation.mutate({ targetStatus });
   }, [statusMutation]);
+
+  const { options: projectTypeOptions } = useSettingsOptions({ groupKey: 'request.projectType', scope: 'admin' });
+  const { options: desiredStartWindowOptions } = useSettingsOptions({ groupKey: 'request.desiredStartWindow', scope: 'admin' });
+  const { options: budgetRangeOptions } = useSettingsOptions({ groupKey: 'request.budgetRange', scope: 'admin' });
+  const { options: budgetFlexibilityOptions } = useSettingsOptions({ groupKey: 'request.budgetFlexibility', scope: 'admin' });
+  const { options: decisionMakerRoleOptions } = useSettingsOptions({ groupKey: 'request.decisionMakerRole', scope: 'admin' });
+  const { options: communicationPreferenceOptions } = useSettingsOptions({ groupKey: 'request.communicationPreference', scope: 'admin' });
+  const { options: dataSensitivityOptions } = useSettingsOptions({ groupKey: 'request.dataSensitivity', scope: 'admin' });
+  const { options: priorityOptions } = useSettingsOptions({ groupKey: 'request.priority', scope: 'admin' });
 
   if (requestQuery.isLoading) {
     return <p className="text-sm text-gray-500">Loading request...</p>;
@@ -207,15 +324,113 @@ export const RequestDetailPage = () => {
           </div>
 
           <label className="text-sm">
+            <span className="mb-1 block text-gray-600">Project type</span>
+            <select value={formState.projectType} onChange={handleProjectTypeChange} className="w-full rounded-xl border border-gray-300 px-3 py-2">
+              {projectTypeOptions.map((item) => (
+                <option key={item.value} value={item.value}>{item.label}</option>
+              ))}
+            </select>
+          </label>
+
+          <div className="md:col-span-2">
+            <Textarea
+              label="Business goal"
+              value={formState.businessGoal}
+              onChange={handleBusinessGoalChange}
+              rows={3}
+              className="rounded-xl px-3 py-2"
+            />
+          </div>
+
+          <Input label="Organization name" value={formState.organizationName} onChange={handleOrganizationNameChange} className="rounded-xl px-3 py-2" />
+          <Input label="Industry" value={formState.industry} onChange={handleIndustryChange} className="rounded-xl px-3 py-2" />
+          <Input label="Target audience" value={formState.targetAudience} onChange={handleTargetAudienceChange} className="rounded-xl px-3 py-2" />
+          <Input label="Target launch window" value={formState.targetLaunchWindow} onChange={handleTargetLaunchWindowChange} className="rounded-xl px-3 py-2" />
+
+          <label className="text-sm">
+            <span className="mb-1 block text-gray-600">Desired start window</span>
+            <select value={formState.desiredStartWindow} onChange={handleDesiredStartWindowChange} className="w-full rounded-xl border border-gray-300 px-3 py-2">
+              {desiredStartWindowOptions.map((item) => (
+                <option key={item.value} value={item.value}>{item.label}</option>
+              ))}
+            </select>
+          </label>
+
+          <label className="text-sm">
+            <span className="mb-1 block text-gray-600">Budget range</span>
+            <select value={formState.budgetRange} onChange={handleBudgetRangeChange} className="w-full rounded-xl border border-gray-300 px-3 py-2">
+              {budgetRangeOptions.map((item) => (
+                <option key={item.value} value={item.value}>{item.label}</option>
+              ))}
+            </select>
+          </label>
+
+          <label className="text-sm">
+            <span className="mb-1 block text-gray-600">Budget flexibility</span>
+            <select value={formState.budgetFlexibility} onChange={handleBudgetFlexibilityChange} className="w-full rounded-xl border border-gray-300 px-3 py-2">
+              {budgetFlexibilityOptions.map((item) => (
+                <option key={item.value} value={item.value}>{item.label}</option>
+              ))}
+            </select>
+          </label>
+
+          <label className="text-sm">
+            <span className="mb-1 block text-gray-600">Decision-maker role</span>
+            <select value={formState.decisionMakerRole} onChange={handleDecisionMakerRoleChange} className="w-full rounded-xl border border-gray-300 px-3 py-2">
+              {decisionMakerRoleOptions.map((item) => (
+                <option key={item.value} value={item.value}>{item.label}</option>
+              ))}
+            </select>
+          </label>
+
+          <Input
+            label="Stakeholder count"
+            type="number"
+            min={1}
+            max={1000}
+            value={formState.stakeholderCount?.toString() ?? ''}
+            onChange={handleStakeholderCountChange}
+            className="rounded-xl px-3 py-2"
+          />
+
+          <label className="text-sm">
+            <span className="mb-1 block text-gray-600">Communication preference</span>
+            <select value={formState.communicationPreference} onChange={handleCommunicationPreferenceChange} className="w-full rounded-xl border border-gray-300 px-3 py-2">
+              {communicationPreferenceOptions.map((item) => (
+                <option key={item.value} value={item.value}>{item.label}</option>
+              ))}
+            </select>
+          </label>
+
+          <label className="text-sm">
+            <span className="mb-1 block text-gray-600">Data sensitivity</span>
+            <select value={formState.dataSensitivity} onChange={handleDataSensitivityChange} className="w-full rounded-xl border border-gray-300 px-3 py-2">
+              {dataSensitivityOptions.map((item) => (
+                <option key={item.value} value={item.value}>{item.label}</option>
+              ))}
+            </select>
+          </label>
+
+          <div className="md:col-span-2">
+            <Textarea
+              label="Legal or brand constraints"
+              value={formState.legalOrBrandConstraints}
+              onChange={handleLegalConstraintsChange}
+              rows={3}
+              className="rounded-xl px-3 py-2"
+            />
+          </div>
+
+          <label className="text-sm">
             <span className="mb-1 block text-gray-600">Priority</span>
             <select
               value={formState.priority}
               onChange={handlePriorityChange}
               className="w-full rounded-xl border border-gray-300 px-3 py-2"
             >
-              {priorities.map((priority) => (
-                <option key={priority} value={priority}>
-                  {priority}
+              {priorityOptions.map((item) => (
+                <option key={item.value} value={item.value}>
+                  {item.label}
                 </option>
               ))}
             </select>

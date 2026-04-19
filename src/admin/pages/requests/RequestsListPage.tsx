@@ -7,10 +7,8 @@ import { CreateRequestSheet } from '@/admin/components/CreateRequestSheet';
 import { PaginationControls } from '@/admin/components/PaginationControls';
 import { StatusBadge } from '@/admin/components/StatusBadge';
 import { usePaginationState } from '@/admin/hooks/usePaginationState';
+import { useSettingsOptions } from '@/admin/hooks/useSettingsOptions';
 import type { Priority, RequestStatus } from '@/admin/types';
-
-const statusOptions: readonly RequestStatus[] = ['DRAFT', 'SUBMITTED', 'APPROVED', 'COMPLETED'];
-const priorityOptions: readonly Priority[] = ['LOW', 'MEDIUM', 'HIGH', 'URGENT'];
 
 type FilterType = 'status' | 'priority' | 'requesterEmail' | 'submittedByUserId';
 
@@ -84,6 +82,9 @@ export const RequestsListPage = () => {
     goToNextPage(requestsQuery.data?.totalPages ?? 0);
   }, [goToNextPage, requestsQuery.data?.totalPages]);
 
+  const { options: requestStatusOptions } = useSettingsOptions({ groupKey: 'request.status', scope: 'admin' });
+  const { options: requestPriorityOptions } = useSettingsOptions({ groupKey: 'request.priority', scope: 'admin' });
+
   return (
     <div>
       <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
@@ -122,9 +123,9 @@ export const RequestsListPage = () => {
               className="rounded-xl border border-gray-300 px-3 py-2 text-sm"
             >
               <option value="">All statuses</option>
-              {statusOptions.map((item) => (
-                <option key={item} value={item}>
-                  {item}
+              {requestStatusOptions.map((item) => (
+                <option key={item.value} value={item.value as RequestStatus}>
+                  {item.label}
                 </option>
               ))}
             </select>
@@ -135,9 +136,9 @@ export const RequestsListPage = () => {
               className="rounded-xl border border-gray-300 px-3 py-2 text-sm"
             >
               <option value="">All priorities</option>
-              {priorityOptions.map((item) => (
-                <option key={item} value={item}>
-                  {item}
+              {requestPriorityOptions.map((item) => (
+                <option key={item.value} value={item.value as Priority}>
+                  {item.label}
                 </option>
               ))}
             </select>

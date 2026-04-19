@@ -30,6 +30,8 @@ interface QueryKeys {
     root: readonly [string];
     list: readonly [string, string];
     public: readonly [string, string];
+    options: readonly [string, string];
+    optionsPublic: readonly [string, string];
   };
 }
 
@@ -70,6 +72,8 @@ export const queryKeys: QueryKeys = {
     root: ['settings'] as const,
     list: ['settings', 'list'] as const,
     public: ['settings', 'public'] as const,
+    options: ['settings', 'options'] as const,
+    optionsPublic: ['settings', 'options-public'] as const,
   },
 };
 

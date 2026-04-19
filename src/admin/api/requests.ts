@@ -1,5 +1,18 @@
 import { apiClient } from '@/admin/api/client';
-import type { PagedResponse, Priority, RequestResponse, RequestStatus, UUID } from '@/admin/types';
+import type {
+  BudgetFlexibility,
+  BudgetRange,
+  CommunicationPreference,
+  DataSensitivity,
+  DecisionMakerRole,
+  DesiredStartWindow,
+  PagedResponse,
+  Priority,
+  ProjectType,
+  RequestResponse,
+  RequestStatus,
+  UUID,
+} from '@/admin/types';
 
 export interface RequestListQuery {
   page?: number;
@@ -16,6 +29,20 @@ export interface UpdateRequestPayload {
   description?: string;
   priority?: Priority;
   requesterName?: string;
+  projectType?: ProjectType;
+  businessGoal?: string;
+  organizationName?: string;
+  industry?: string;
+  targetAudience?: string;
+  desiredStartWindow?: DesiredStartWindow;
+  targetLaunchWindow?: string;
+  budgetRange?: BudgetRange;
+  budgetFlexibility?: BudgetFlexibility;
+  decisionMakerRole?: DecisionMakerRole;
+  stakeholderCount?: number;
+  communicationPreference?: CommunicationPreference;
+  legalOrBrandConstraints?: string;
+  dataSensitivity?: DataSensitivity;
 }
 
 export interface ChangeStatusPayload<TStatus extends string> {
@@ -29,6 +56,20 @@ export interface SubmitRequestPayload {
   requesterName: string;
   requesterEmail: string;
   requesterPhone: string;
+  projectType: ProjectType;
+  businessGoal: string;
+  organizationName?: string;
+  industry?: string;
+  targetAudience?: string;
+  desiredStartWindow: DesiredStartWindow;
+  targetLaunchWindow?: string;
+  budgetRange: BudgetRange;
+  budgetFlexibility?: BudgetFlexibility;
+  decisionMakerRole: DecisionMakerRole;
+  stakeholderCount?: number;
+  communicationPreference?: CommunicationPreference;
+  legalOrBrandConstraints?: string;
+  dataSensitivity?: DataSensitivity;
   priority?: Priority;
 }
 

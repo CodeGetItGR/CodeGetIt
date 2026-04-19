@@ -9,6 +9,13 @@ export type ProjectStatus = 'PLANNING' | 'IN_PROGRESS' | 'ON_HOLD' | 'COMPLETED'
 export type Priority = 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT';
 export type EntityType = 'REQUEST' | 'OFFER' | 'PROJECT';
 export type ActionType = 'CREATE' | 'UPDATE' | 'DELETE' | 'STATUS_CHANGE' | 'NOTE_ADDED';
+export type ProjectType = 'WEBSITE' | 'WEB_APP' | 'MOBILE_APP' | 'ECOMMERCE' | 'INTERNAL_TOOL' | 'AUTOMATION' | 'INTEGRATION' | 'OTHER';
+export type DesiredStartWindow = 'ASAP' | 'WITHIN_1_MONTH' | 'WITHIN_3_MONTHS' | 'WITHIN_6_MONTHS' | 'FLEXIBLE';
+export type BudgetRange = 'UNDER_2K' | 'FROM_2K_TO_5K' | 'FROM_5K_TO_10K' | 'FROM_10K_TO_25K' | 'ABOVE_25K' | 'UNKNOWN';
+export type BudgetFlexibility = 'FIXED' | 'SOMEWHAT_FLEXIBLE' | 'FLEXIBLE' | 'UNKNOWN';
+export type DecisionMakerRole = 'FOUNDER_OWNER' | 'EXECUTIVE' | 'MANAGER' | 'TEAM_LEAD' | 'PROCUREMENT' | 'OTHER';
+export type CommunicationPreference = 'EMAIL' | 'PHONE' | 'VIDEO_CALL' | 'MESSAGING_APP';
+export type DataSensitivity = 'NONE' | 'BASIC_PERSONAL_DATA' | 'SENSITIVE_PERSONAL_DATA' | 'FINANCIAL_DATA' | 'HEALTHCARE_DATA' | 'OTHER';
 
 export interface PagedResponse<T> {
   content: T[];
@@ -40,6 +47,20 @@ export interface RequestResponse {
   requesterName: string;
   requesterEmail: string;
   requesterPhone: string;
+  projectType: ProjectType;
+  businessGoal: string;
+  organizationName?: string;
+  industry?: string;
+  targetAudience?: string;
+  desiredStartWindow: DesiredStartWindow;
+  targetLaunchWindow?: string;
+  budgetRange: BudgetRange;
+  budgetFlexibility?: BudgetFlexibility;
+  decisionMakerRole: DecisionMakerRole;
+  stakeholderCount?: number;
+  communicationPreference?: CommunicationPreference;
+  legalOrBrandConstraints?: string;
+  dataSensitivity?: DataSensitivity;
   status: RequestStatus;
   priority: Priority;
   submittedByUserId: UUID | null;

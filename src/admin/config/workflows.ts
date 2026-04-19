@@ -9,7 +9,7 @@ export const requestTransitions: Record<RequestStatus, RequestStatus[]> = {
 
 export const offerTransitions: Record<OfferStatus, OfferStatus[]> = {
   DRAFT: ['SUBMITTED', 'CANCELLED'],
-  SUBMITTED: ['ACCEPTED', 'CANCELLED', 'REJECTED'],
+  SUBMITTED: ['CANCELLED', 'REJECTED'],
   ACCEPTED: [],
   CANCELLED: [],
   REJECTED: [],

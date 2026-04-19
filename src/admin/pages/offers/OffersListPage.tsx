@@ -7,9 +7,8 @@ import { CreateOfferSheet } from '@/admin/components/CreateOfferSheet';
 import { PaginationControls } from '@/admin/components/PaginationControls';
 import { StatusBadge } from '@/admin/components/StatusBadge';
 import { usePaginationState } from '@/admin/hooks/usePaginationState';
+import { useSettingsOptions } from '@/admin/hooks/useSettingsOptions';
 import type { OfferStatus } from '@/admin/types';
-
-const statusOptions: readonly OfferStatus[] = ['DRAFT', 'SUBMITTED', 'ACCEPTED', 'CANCELLED', 'REJECTED'];
 
 type FilterType = 'status' | 'requestId';
 
@@ -67,6 +66,8 @@ export const OffersListPage = () => {
     goToNextPage(offersQuery.data?.totalPages ?? 0);
   }, [goToNextPage, offersQuery.data?.totalPages]);
 
+  const { options: offerStatusOptions } = useSettingsOptions({ groupKey: 'offer.status', scope: 'admin' });
+
   return (
     <div>
       <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
@@ -102,9 +103,9 @@ export const OffersListPage = () => {
               className="rounded-xl border border-gray-300 px-3 py-2 text-sm"
             >
               <option value="">All statuses</option>
-              {statusOptions.map((status) => (
-                <option key={status} value={status}>
-                  {status}
+              {offerStatusOptions.map((status) => (
+                <option key={status.value} value={status.value as OfferStatus}>
+                  {status.label}
                 </option>
               ))}
             </select>

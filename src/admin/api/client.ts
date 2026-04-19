@@ -12,6 +12,7 @@ const PUBLIC_ENDPOINTS: { path: string; method?: string }[] = [
   { path: '/requests/submit', method: 'POST' },
   { path: '/contact-messages', method: 'POST' },
   { path: '/settings/public', method: 'GET' },
+  { path: '/settings/options/public', method: 'GET' },
 ];
 
 function isPublicEndpoint(config: AxiosRequestConfig): boolean {

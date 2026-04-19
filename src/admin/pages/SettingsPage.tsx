@@ -2,6 +2,7 @@ import { useCallback, useMemo, useState, type ChangeEvent } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { queryKeys } from '@/admin/api/queryKeys';
 import { settingsApi, type AppSettingType } from '@/admin/api/settings';
+import { useSettingsOptions } from '@/admin/hooks/useSettingsOptions';
 
 interface SettingDefinition {
   key: string;
@@ -111,6 +112,11 @@ export const SettingsPage = () => {
     queryFn: () => settingsApi.listAll(),
   });
 
+  const optionsQuery = useQuery({
+    queryKey: queryKeys.settings.options,
+    queryFn: () => settingsApi.listOptions(),
+  });
+
   const serverValues = useMemo(() => {
     const merged = SETTING_DEFINITIONS.reduce<Record<string, string>>((acc, definition) => {
       acc[definition.key] = definition.defaultValue;
@@ -154,6 +160,17 @@ export const SettingsPage = () => {
     },
   });
 
+  const updateDisabledOptionsMutation = useMutation({
+    mutationFn: ({ groupKey, disabledValues }: { groupKey: string; disabledValues: string[] }) =>
+      settingsApi.updateDisabledOptions(groupKey, { disabledValues }),
+    onSuccess: async () => {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: queryKeys.settings.options }),
+        queryClient.invalidateQueries({ queryKey: queryKeys.settings.optionsPublic }),
+      ]);
+    },
+  });
+
   const updateValue = useCallback((key: string, nextValue: string) => {
     setDraftValues((prev) => ({ ...prev, [key]: nextValue }));
   }, []);
@@ -169,6 +186,37 @@ export const SettingsPage = () => {
     }
     updateValue(key, event.currentTarget.value);
   }, [updateValue]);
+
+  const { options: bannerSeverityOptions } = useSettingsOptions({
+    groupKey: 'settings.marketing.bannerSeverity',
+    scope: 'admin',
+  });
+
+  const configurableOptionGroups = useMemo(
+    () => (optionsQuery.data?.groups ?? []).filter((group) => group.configurable),
+    [optionsQuery.data?.groups],
+  );
+
+  const handleOptionToggle = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    const groupKey = event.currentTarget.dataset.groupKey;
+    const optionValue = event.currentTarget.dataset.optionValue;
+    if (!groupKey || !optionValue) {
+      return;
+    }
+
+    const group = configurableOptionGroups.find((item) => item.key === groupKey);
+    if (!group) {
+      return;
+    }
+
+    const currentlyDisabled = group.items.filter((item) => !item.enabled).map((item) => item.value);
+    const shouldEnable = event.currentTarget.checked;
+    const nextDisabled = shouldEnable
+      ? currentlyDisabled.filter((value) => value !== optionValue)
+      : Array.from(new Set([...currentlyDisabled, optionValue]));
+
+    updateDisabledOptionsMutation.mutate({ groupKey, disabledValues: nextDisabled });
+  }, [configurableOptionGroups, updateDisabledOptionsMutation]);
 
   return (
     <div>
@@ -229,10 +277,9 @@ export const SettingsPage = () => {
                           onChange={handleSettingValueChange}
                           className="mt-3 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900"
                         >
-                          <option value="info">info</option>
-                          <option value="success">success</option>
-                          <option value="warning">warning</option>
-                          <option value="error">error</option>
+                          {bannerSeverityOptions.map((option) => (
+                            <option key={option.value} value={option.value}>{option.label}</option>
+                          ))}
                         </select>
                       ) : (
                         <input
@@ -263,6 +310,49 @@ export const SettingsPage = () => {
               Settings saved successfully.
             </div>
           )}
+
+          <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+            <h3 className="text-lg font-semibold text-gray-900">Request option availability</h3>
+            <p className="mt-1 text-sm text-gray-600">Enable or disable selectable values shown in request forms.</p>
+
+            {optionsQuery.isLoading && <p className="mt-4 text-sm text-gray-500">Loading option groups...</p>}
+
+            {!optionsQuery.isLoading && configurableOptionGroups.length === 0 && (
+              <p className="mt-4 text-sm text-gray-500">No configurable option groups available.</p>
+            )}
+
+            <div className="mt-5 space-y-5">
+              {configurableOptionGroups.map((group) => (
+                <div key={group.key} className="rounded-xl border border-gray-200 p-4">
+                  <p className="text-sm font-semibold text-gray-900">{group.label}</p>
+                  <p className="mt-1 text-xs text-gray-500">{group.key}</p>
+
+                  <div className="mt-3 grid gap-2 md:grid-cols-2">
+                    {group.items.map((item) => (
+                      <label key={item.value} className="flex items-center gap-2 text-sm text-gray-700">
+                        <input
+                          type="checkbox"
+                          checked={item.enabled}
+                          data-group-key={group.key}
+                          data-option-value={item.value}
+                          onChange={handleOptionToggle}
+                          disabled={updateDisabledOptionsMutation.isPending}
+                        />
+                        <span>{item.label}</span>
+                        <span className="text-xs text-gray-500">({item.value})</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {updateDisabledOptionsMutation.isError && (
+              <p className="mt-4 rounded-xl border border-rose-200 bg-rose-50 px-3 py-2 text-sm text-rose-700">
+                Failed to update option availability. Please try again.
+              </p>
+            )}
+          </section>
         </div>
       )}
     </div>
