@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, type MouseEvent } from 'react';
+import { useState, useEffect, useCallback, useMemo, type MouseEvent } from 'react';
 import { motion } from 'framer-motion';
 import { useLocale } from '@/i18n/UseLocale';
 import { MagneticButton } from '@/components/ui/MagneticButton';
@@ -88,11 +88,11 @@ export const Header = () => {
     setIsMobileMenuOpen(prev => !prev);
   }, []);
 
-  const navItems = [
+  const navItems = useMemo(() => [
     { label: t.nav.services, id: 'services' },
     { label: t.nav.portfolio, id: 'portfolio' },
     { label: t.nav.contact, id: 'contact' },
-  ];
+  ], [t.nav.contact, t.nav.portfolio, t.nav.services]);
 
   return (
     <header
@@ -148,6 +148,7 @@ export const Header = () => {
                 {ctaPrimaryText}
               </MagneticButton>
             )}
+            {/* Language switcher intentionally disabled for now. */}
           </nav>
 
           <button
@@ -184,6 +185,7 @@ export const Header = () => {
                 {ctaPrimaryText}
               </MagneticButton>
             )}
+            {/* Language switcher intentionally disabled for now. */}
           </nav>
         )}
       </div>

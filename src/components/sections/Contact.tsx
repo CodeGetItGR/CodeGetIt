@@ -58,7 +58,7 @@ const blankDetailedRequest: DetailedRequestFormState = {
 };
 
 export const Contact = () => {
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
   const { getBool, getString } = usePublicSettings();
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
   const [detailedRequest, setDetailedRequest] = useState<DetailedRequestFormState>(blankDetailedRequest);
@@ -83,6 +83,84 @@ export const Contact = () => {
     projectTypeOptions.length > 0 &&
     desiredStartWindowOptions.length > 0 &&
     budgetRangeOptions.length > 0;
+
+  const detailedCopy = useMemo(
+    () =>
+      locale === 'el'
+        ? {
+            detailedToggleTitle: 'Γνωριζω το scope του project και θελω να υποβαλω αναλυτικο αιτημα τωρα.',
+            detailedToggleHint: 'Θα χρησιμοποιησουμε αυτα τα στοιχεια για να δημιουργησουμε απευθειας το αιτημα σας στη ροη παραδοσης.',
+            contactInfo: 'Στοιχεια επικοινωνιας',
+            projectEssentials: 'Βασικα στοιχεια project',
+            extraContext: 'Επιπλεον πληροφοριες',
+            projectTitle: 'Τιτλος project',
+            phone: 'Τηλεφωνο',
+            enterpriseInquiry: 'Αυτο ειναι εταιρικο αιτημα - προτιμω απευθειας επικοινωνια.',
+            enterpriseHint: 'Σημειωσατε εταιρικο αιτημα. Μοιραστειτε τα βασικα τωρα και θα επικοινωνησουμε απευθειας για τη λεπτομερη διαμορφωση.',
+            businessGoal: 'Επιχειρηματικος στοχος',
+            projectType: 'Τυπος project',
+            selectProjectType: 'Επιλεξτε τυπο project',
+            desiredStart: 'Εναρξη',
+            selectStartWindow: 'Επιλεξτε παραθυρο εναρξης',
+            budgetRange: 'Ευρος budget',
+            selectBudgetRange: 'Επιλεξτε ευρος budget',
+            budgetFlexibility: 'Ευελιξια budget',
+            selectFlexibility: 'Επιλεξτε ευελιξια',
+            communicationPreference: 'Προτιμηση επικοινωνιας',
+            selectPreference: 'Επιλεξτε προτιμηση',
+            dataSensitivity: 'Ευαισθησια δεδομενων',
+            selectSensitivity: 'Επιλεξτε επιπεδο ευαισθησιας',
+            priority: 'Προτεραιοτητα',
+            organizationNameOptional: 'Ονομα οργανισμου (προαιρετικο)',
+            industryOptional: 'Κλαδος (προαιρετικο)',
+            targetAudienceOptional: 'Κοινο στοχος (προαιρετικο)',
+            targetLaunchWindowOptional: 'Στοχος λανσαρισματος (προαιρετικο)',
+            legalConstraintsOptional: 'Νομικοι η brand περιορισμοι (προαιρετικο)',
+            optionsLoadingHint: 'Οι επιλογες αιτηματος φορτωνουν ακομη. Μπορειτε να στειλετε απλο μηνυμα τωρα.',
+            projectDescriptionOptional: 'Περιγραφη project (προαιρετικο)',
+            back: 'Πισω',
+            nextStep: 'Επομενο βημα',
+            submitProjectRequest: 'Υποβολη αιτηματος project',
+            submittedWithId: '✓ Το αιτημα project υποβληθηκε επιτυχως. Κωδικος αναφορας:',
+          }
+        : {
+            detailedToggleTitle: 'I know the project scope and want to submit a detailed project request now.',
+            detailedToggleHint: 'We will use these details to create your project request directly in our delivery pipeline.',
+            contactInfo: 'Contact info',
+            projectEssentials: 'Project essentials',
+            extraContext: 'Extra context',
+            projectTitle: 'Project title',
+            phone: 'Phone',
+            enterpriseInquiry: 'This is an enterprise inquiry - I prefer direct communication.',
+            enterpriseHint: 'You marked this as an enterprise inquiry. Share the core details now and we will follow up directly to refine the full scope.',
+            businessGoal: 'Business goal',
+            projectType: 'Project type',
+            selectProjectType: 'Select project type',
+            desiredStart: 'Desired start',
+            selectStartWindow: 'Select start window',
+            budgetRange: 'Budget range',
+            selectBudgetRange: 'Select budget range',
+            budgetFlexibility: 'Budget flexibility',
+            selectFlexibility: 'Select flexibility',
+            communicationPreference: 'Communication preference',
+            selectPreference: 'Select preference',
+            dataSensitivity: 'Data sensitivity',
+            selectSensitivity: 'Select sensitivity',
+            priority: 'Priority',
+            organizationNameOptional: 'Organization name (optional)',
+            industryOptional: 'Industry (optional)',
+            targetAudienceOptional: 'Target audience (optional)',
+            targetLaunchWindowOptional: 'Target launch window (optional)',
+            legalConstraintsOptional: 'Legal or brand constraints (optional)',
+            optionsLoadingHint: 'Request options are still loading. You can still send a simple message now.',
+            projectDescriptionOptional: 'Project description (optional)',
+            back: 'Back',
+            nextStep: 'Next step',
+            submitProjectRequest: 'Submit project request',
+            submittedWithId: '✓ Project request submitted successfully. Reference ID:',
+          },
+    [locale],
+  );
 
   const resetMessages = useCallback(() => {
     setSubmitState('idle');
@@ -170,10 +248,10 @@ export const Contact = () => {
   }, [detailedRequest, formData.email, formData.message, formData.name]);
 
   const detailedSteps = useMemo(() => [
-    { title: 'Contact info' },
-    { title: 'Project essentials' },
-    ...(!detailedRequest.enterpriseInquiry ? [{ title: 'Extra context' }] : []),
-  ] as const, [detailedRequest.enterpriseInquiry]);
+    { title: detailedCopy.contactInfo },
+    { title: detailedCopy.projectEssentials },
+    ...(!detailedRequest.enterpriseInquiry ? [{ title: detailedCopy.extraContext }] : []),
+  ] as const, [detailedCopy.contactInfo, detailedCopy.extraContext, detailedCopy.projectEssentials, detailedRequest.enterpriseInquiry]);
 
   const detailedStepFields = useMemo<ReadonlyArray<ReadonlyArray<string>>>(() => [
     ['requesterName', 'requesterEmail', 'title', 'requesterPhone'],
@@ -375,12 +453,12 @@ export const Contact = () => {
                     className="mt-0.5 h-4 w-4 rounded border-gray-300"
                   />
                   <span>
-                    I know the project scope and want to submit a detailed project request now.
+                    {detailedCopy.detailedToggleTitle}
                   </span>
                 </label>
                 {useDetailedRequest && (
                   <p className="mt-2 text-xs text-gray-500">
-                    We will use these details to create your project request directly in our delivery pipeline.
+                    {detailedCopy.detailedToggleHint}
                   </p>
                 )}
               </div>
@@ -441,7 +519,7 @@ export const Contact = () => {
                   {currentStep === 0 && (
                   <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <div>
-                      <label className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-3 block">Project title</label>
+                      <label className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-3 block">{detailedCopy.projectTitle}</label>
                       <input
                         type="text"
                         value={detailedRequest.title}
@@ -455,7 +533,7 @@ export const Contact = () => {
                     </div>
 
                     <div>
-                      <label className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-3 block">Phone</label>
+                      <label className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-3 block">{detailedCopy.phone}</label>
                       <input
                         type="tel"
                         value={detailedRequest.requesterPhone}
@@ -475,12 +553,12 @@ export const Contact = () => {
                         onChange={handleEnterpriseInquiryToggle}
                         className="mt-0.5"
                       />
-                      <span>This is an enterprise inquiry - I prefer direct communication.</span>
+                      <span>{detailedCopy.enterpriseInquiry}</span>
                     </label>
 
                     {detailedRequest.enterpriseInquiry && (
                       <p className="rounded-xl border border-blue-100 bg-blue-50 px-3 py-2 text-sm text-blue-700 md:col-span-2">
-                        You marked this as an enterprise inquiry. Share the core details now and we will follow up directly to refine the full scope.
+                        {detailedCopy.enterpriseHint}
                       </p>
                     )}
                   </div>
@@ -488,7 +566,7 @@ export const Contact = () => {
 
                   {currentStep === 1 && (
                   <div>
-                    <label className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-3 block">Business goal</label>
+                    <label className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-3 block">{detailedCopy.businessGoal}</label>
                     <textarea
                       value={detailedRequest.businessGoal}
                       data-request-field="businessGoal"
@@ -505,7 +583,7 @@ export const Contact = () => {
                   {currentStep === 1 && (
                   <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <div>
-                      <label className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-3 block">Project type</label>
+                      <label className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-3 block">{detailedCopy.projectType}</label>
                       <select
                         value={detailedRequest.projectType}
                         data-request-field="projectType"
@@ -513,7 +591,7 @@ export const Contact = () => {
                         className="w-full rounded-xl border border-gray-200 bg-white/85 px-4 py-3 text-base text-gray-900"
                         required={useDetailedRequest}
                       >
-                        <option value="">Select project type</option>
+                        <option value="">{detailedCopy.selectProjectType}</option>
                         {projectTypeOptions.map((item) => (
                           <option key={item.value} value={item.value}>{item.label}</option>
                         ))}
@@ -522,7 +600,7 @@ export const Contact = () => {
                     </div>
 
                     <div>
-                      <label className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-3 block">Desired start</label>
+                      <label className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-3 block">{detailedCopy.desiredStart}</label>
                       <select
                         value={detailedRequest.desiredStartWindow}
                         data-request-field="desiredStartWindow"
@@ -530,7 +608,7 @@ export const Contact = () => {
                         className="w-full rounded-xl border border-gray-200 bg-white/85 px-4 py-3 text-base text-gray-900"
                         required={useDetailedRequest}
                       >
-                        <option value="">Select start window</option>
+                        <option value="">{detailedCopy.selectStartWindow}</option>
                         {desiredStartWindowOptions.map((item) => (
                           <option key={item.value} value={item.value}>{item.label}</option>
                         ))}
@@ -539,7 +617,7 @@ export const Contact = () => {
                     </div>
 
                     <div>
-                      <label className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-3 block">Budget range</label>
+                      <label className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-3 block">{detailedCopy.budgetRange}</label>
                       <select
                         value={detailedRequest.budgetRange}
                         data-request-field="budgetRange"
@@ -547,7 +625,7 @@ export const Contact = () => {
                         className="w-full rounded-xl border border-gray-200 bg-white/85 px-4 py-3 text-base text-gray-900"
                         required={useDetailedRequest}
                       >
-                        <option value="">Select budget range</option>
+                        <option value="">{detailedCopy.selectBudgetRange}</option>
                         {budgetRangeOptions.map((item) => (
                           <option key={item.value} value={item.value}>{item.label}</option>
                         ))}
@@ -558,14 +636,14 @@ export const Contact = () => {
                     {!detailedRequest.enterpriseInquiry && (
                       <>
                         <div>
-                          <label className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-3 block">Budget flexibility</label>
+                          <label className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-3 block">{detailedCopy.budgetFlexibility}</label>
                           <select
                             value={detailedRequest.budgetFlexibility}
                             data-request-field="budgetFlexibility"
                             onChange={handleDetailedFieldChange}
                             className="w-full rounded-xl border border-gray-200 bg-white/85 px-4 py-3 text-base text-gray-900"
                           >
-                            <option value="">Select flexibility</option>
+                            <option value="">{detailedCopy.selectFlexibility}</option>
                             {budgetFlexibilityOptions.map((item) => (
                               <option key={item.value} value={item.value}>{item.label}</option>
                             ))}
@@ -573,14 +651,14 @@ export const Contact = () => {
                         </div>
 
                         <div>
-                          <label className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-3 block">Communication preference</label>
+                          <label className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-3 block">{detailedCopy.communicationPreference}</label>
                           <select
                             value={detailedRequest.communicationPreference}
                             data-request-field="communicationPreference"
                             onChange={handleDetailedFieldChange}
                             className="w-full rounded-xl border border-gray-200 bg-white/85 px-4 py-3 text-base text-gray-900"
                           >
-                            <option value="">Select preference</option>
+                            <option value="">{detailedCopy.selectPreference}</option>
                             {communicationPreferenceOptions.map((item) => (
                               <option key={item.value} value={item.value}>{item.label}</option>
                             ))}
@@ -588,14 +666,14 @@ export const Contact = () => {
                         </div>
 
                         <div>
-                          <label className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-3 block">Data sensitivity</label>
+                          <label className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-3 block">{detailedCopy.dataSensitivity}</label>
                           <select
                             value={detailedRequest.dataSensitivity}
                             data-request-field="dataSensitivity"
                             onChange={handleDetailedFieldChange}
                             className="w-full rounded-xl border border-gray-200 bg-white/85 px-4 py-3 text-base text-gray-900"
                           >
-                            <option value="">Select sensitivity</option>
+                            <option value="">{detailedCopy.selectSensitivity}</option>
                             {dataSensitivityOptions.map((item) => (
                               <option key={item.value} value={item.value}>{item.label}</option>
                             ))}
@@ -603,7 +681,7 @@ export const Contact = () => {
                         </div>
 
                         <div>
-                          <label className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-3 block">Priority</label>
+                          <label className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-3 block">{detailedCopy.priority}</label>
                           <select
                             value={detailedRequest.priority}
                             data-request-field="priority"
@@ -624,7 +702,7 @@ export const Contact = () => {
                   <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <input
                       type="text"
-                      placeholder="Organization name (optional)"
+                      placeholder={detailedCopy.organizationNameOptional}
                       value={detailedRequest.organizationName}
                       data-request-field="organizationName"
                       onChange={handleDetailedFieldChange}
@@ -632,7 +710,7 @@ export const Contact = () => {
                     />
                     <input
                       type="text"
-                      placeholder="Industry (optional)"
+                      placeholder={detailedCopy.industryOptional}
                       value={detailedRequest.industry}
                       data-request-field="industry"
                       onChange={handleDetailedFieldChange}
@@ -640,7 +718,7 @@ export const Contact = () => {
                     />
                     <input
                       type="text"
-                      placeholder="Target audience (optional)"
+                      placeholder={detailedCopy.targetAudienceOptional}
                       value={detailedRequest.targetAudience}
                       data-request-field="targetAudience"
                       onChange={handleDetailedFieldChange}
@@ -648,7 +726,7 @@ export const Contact = () => {
                     />
                     <input
                       type="text"
-                      placeholder="Target launch window (optional)"
+                      placeholder={detailedCopy.targetLaunchWindowOptional}
                       value={detailedRequest.targetLaunchWindow}
                       data-request-field="targetLaunchWindow"
                       onChange={handleDetailedFieldChange}
@@ -659,7 +737,7 @@ export const Contact = () => {
 
                   {currentStep === 2 && !detailedRequest.enterpriseInquiry && (
                   <textarea
-                    placeholder="Legal or brand constraints (optional)"
+                    placeholder={detailedCopy.legalConstraintsOptional}
                     value={detailedRequest.legalOrBrandConstraints}
                     data-request-field="legalOrBrandConstraints"
                     onChange={handleDetailedFieldChange}
@@ -670,7 +748,7 @@ export const Contact = () => {
 
                   {optionNotice && <p className="text-xs text-amber-700">{optionNotice}</p>}
                   {!hasDetailedRequiredOptions && (
-                    <p className="text-xs text-amber-700">Request options are still loading. You can still send a simple message now.</p>
+                    <p className="text-xs text-amber-700">{detailedCopy.optionsLoadingHint}</p>
                   )}
                 </>
               )}
@@ -678,7 +756,7 @@ export const Contact = () => {
               {(!useDetailedRequest || currentStep === 2) && (
               <div>
                 <label className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-3 block">
-                  {useDetailedRequest ? 'Project description (optional)' : t.contact.messageLabel}
+                  {useDetailedRequest ? detailedCopy.projectDescriptionOptional : t.contact.messageLabel}
                 </label>
                 <textarea
                   placeholder={t.contact.messagePlaceholder}
@@ -701,7 +779,7 @@ export const Contact = () => {
                       onClick={handlePreviousStep}
                       className="rounded-full border border-gray-300 bg-white px-6 py-3 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-100"
                     >
-                      Back
+                      {detailedCopy.back}
                     </button>
                   )}
 
@@ -711,7 +789,7 @@ export const Contact = () => {
                       onClick={handleNextStep}
                       className="rounded-full border border-gray-900 bg-gray-900 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-black"
                     >
-                      Next step
+                      {detailedCopy.nextStep}
                     </button>
                   ) : (
                     <MagneticButton
@@ -726,7 +804,7 @@ export const Contact = () => {
                         </>
                       ) : (
                         <>
-                          {useDetailedRequest ? 'Submit project request' : t.contact.sendButton}
+                          {useDetailedRequest ? detailedCopy.submitProjectRequest : t.contact.sendButton}
                           <HiArrowRight className="w-5 h-5 opacity-90 transition-opacity duration-200 group-hover:opacity-100" />
                         </>
                       )}
@@ -742,7 +820,7 @@ export const Contact = () => {
                   className="text-sm font-medium text-gray-900"
                 >
                   {submittedRequestId
-                    ? `✓ Project request submitted successfully. Reference ID: ${submittedRequestId}`
+                    ? `${detailedCopy.submittedWithId} ${submittedRequestId}`
                     : `✓ ${t.contact.success}`}
                 </motion.p>
               )}

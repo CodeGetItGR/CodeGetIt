@@ -1,7 +1,8 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { queryKeys } from '@/admin/api/queryKeys';
 import { settingsApi, type SettingsOptionItem } from '@/admin/api/settings';
+import { useLocale } from '@/i18n/UseLocale';
 
 interface UseSettingsOptionsParams {
   groupKey: string;
@@ -14,13 +15,32 @@ export function useSettingsOptions({
   scope = 'admin',
   onlyEnabled = false,
 }: UseSettingsOptionsParams) {
+  const { locale } = useLocale();
+
+  const queryKey = useMemo(
+    () =>
+      scope === 'public'
+        ? [...queryKeys.settings.optionsPublic, locale]
+        : [...queryKeys.settings.options, locale],
+    [locale, scope],
+  );
+
+  const queryFn = useCallback(
+    () => (scope === 'public' ? settingsApi.getPublicOptions() : settingsApi.listOptions()),
+    [scope],
+  );
+
   const optionsQuery = useQuery({
-    queryKey: scope === 'public' ? queryKeys.settings.optionsPublic : queryKeys.settings.options,
-    queryFn: () => (scope === 'public' ? settingsApi.getPublicOptions() : settingsApi.listOptions()),
+    queryKey,
+    queryFn,
   });
 
+  const group = useMemo(
+    () => optionsQuery.data?.groups.find((item) => item.key === groupKey),
+    [groupKey, optionsQuery.data?.groups],
+  );
+
   const options = useMemo<SettingsOptionItem[]>(() => {
-    const group = optionsQuery.data?.groups.find((item) => item.key === groupKey);
     if (!group) {
       return [];
     }
@@ -30,7 +50,7 @@ export function useSettingsOptions({
     }
 
     return group.items;
-  }, [groupKey, onlyEnabled, optionsQuery.data?.groups]);
+  }, [group, onlyEnabled]);
 
   return {
     options,

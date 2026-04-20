@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { usePublicSettings } from '@/settings/usePublicSettings';
+import { useLocale } from '@/i18n/UseLocale';
 
 type BannerSeverity = 'info' | 'success' | 'warning' | 'error';
 
@@ -11,9 +12,11 @@ const severityClasses: Record<BannerSeverity, string> = {
 };
 
 export const AnnouncementBanner = () => {
+  const { t } = useLocale();
   const { getBool, getString } = usePublicSettings();
   const enabled = getBool('marketing.bannerEnabled', false);
-  const text = getString('marketing.bannerText', '').trim();
+  const text = getString('marketing.bannerText', t.hero.title).trim();
+  console.log(t, text)
   const severity = getString('marketing.bannerSeverity', 'info').toLowerCase() as BannerSeverity;
 
   const palette = useMemo(() => severityClasses[severity] ?? severityClasses.info, [severity]);
@@ -30,5 +33,6 @@ export const AnnouncementBanner = () => {
     </div>
   );
 };
+
 
 

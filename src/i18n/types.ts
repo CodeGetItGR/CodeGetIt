@@ -36,6 +36,7 @@ export interface Translations {
       modernStack: string;
     };
     availability: string;
+    bannerFallback: string;
     hiddenGem: string;
     visual: {
       fileName: string;

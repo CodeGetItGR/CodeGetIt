@@ -1,4 +1,5 @@
 import { apiClient } from '@/admin/api/client';
+import { getCurrentLocale } from '@/i18n/locale-storage';
 
 export type AppSettingType = 'STRING' | 'BOOLEAN' | 'INTEGER';
 
@@ -42,6 +43,67 @@ export interface SettingsOptionsCatalog {
   groups: SettingsOptionGroup[];
 }
 
+interface RawSettingsOptionItem {
+  value: string;
+  label?: string;
+  labels?: Record<string, string>;
+  labelKey?: string;
+  enabled?: boolean;
+}
+
+interface RawSettingsOptionGroup {
+  key: string;
+  label?: string;
+  labels?: Record<string, string>;
+  labelKey?: string;
+  configurable?: boolean;
+  items?: RawSettingsOptionItem[];
+}
+
+interface RawSettingsOptionsCatalog {
+  groups?: RawSettingsOptionGroup[];
+}
+
+function pickLocalizedLabel(
+  localized?: Record<string, string>,
+  fallback?: string,
+  secondaryFallback?: string,
+): string {
+  const locale = getCurrentLocale();
+  if (!localized) {
+    return fallback ?? secondaryFallback ?? '';
+  }
+
+  return (
+    localized[locale] ??
+    localized[locale.toUpperCase()] ??
+    localized.en ??
+    localized.EN ??
+    fallback ??
+    secondaryFallback ??
+    ''
+  );
+}
+
+function normalizeOptionItem(item: RawSettingsOptionItem): SettingsOptionItem {
+  return {
+    value: item.value,
+    label: pickLocalizedLabel(item.labels, item.label, item.labelKey ?? item.value),
+    enabled: item.enabled ?? true,
+  };
+}
+
+function normalizeOptionsCatalog(payload: RawSettingsOptionsCatalog): SettingsOptionsCatalog {
+  return {
+    groups: (payload.groups ?? []).map((group) => ({
+      key: group.key,
+      label: pickLocalizedLabel(group.labels, group.label, group.labelKey ?? group.key),
+      configurable: group.configurable ?? false,
+      items: (group.items ?? []).map(normalizeOptionItem),
+    })),
+  };
+}
+
 export interface UpdateDisabledOptionsPayload {
   disabledValues: string[];
 }
@@ -53,8 +115,8 @@ export const settingsApi = {
   },
 
   getPublicOptions: async () => {
-    const { data } = await apiClient.get<SettingsOptionsCatalog>('/settings/options/public');
-    return data;
+    const { data } = await apiClient.get<RawSettingsOptionsCatalog>('/settings/options/public');
+    return normalizeOptionsCatalog(data);
   },
 
   listAll: async () => {
@@ -63,8 +125,8 @@ export const settingsApi = {
   },
 
   listOptions: async () => {
-    const { data } = await apiClient.get<SettingsOptionsCatalog>('/settings/options');
-    return data;
+    const { data } = await apiClient.get<RawSettingsOptionsCatalog>('/settings/options');
+    return normalizeOptionsCatalog(data);
   },
 
   upsert: async (key: string, payload: AppConfigUpsertPayload) => {
@@ -78,8 +140,13 @@ export const settingsApi = {
   },
 
   updateDisabledOptions: async (groupKey: string, payload: UpdateDisabledOptionsPayload) => {
-    const { data } = await apiClient.put<SettingsOptionGroup>(`/settings/options/${encodeURIComponent(groupKey)}/disabled`, payload);
-    return data;
+    const { data } = await apiClient.put<RawSettingsOptionGroup>(`/settings/options/${encodeURIComponent(groupKey)}/disabled`, payload);
+    return {
+      key: data.key,
+      label: pickLocalizedLabel(data.labels, data.label, data.labelKey ?? data.key),
+      configurable: data.configurable ?? false,
+      items: (data.items ?? []).map(normalizeOptionItem),
+    };
   },
 };
 

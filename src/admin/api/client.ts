@@ -2,6 +2,7 @@ import axios from 'axios';
 import type { AxiosRequestConfig } from 'axios';
 import type { ApiError, ProblemDetail } from '@/admin/types';
 import { AUTH_STORAGE_KEY } from '@/admin/auth/constants';
+import { getCurrentLocale } from '@/i18n/locale-storage';
 
 const baseURL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api';
 
@@ -13,6 +14,7 @@ const PUBLIC_ENDPOINTS: { path: string; method?: string }[] = [
   { path: '/contact-messages', method: 'POST' },
   { path: '/settings/public', method: 'GET' },
   { path: '/settings/options/public', method: 'GET' },
+  { path: '/public/offers' },
 ];
 
 function isPublicEndpoint(config: AxiosRequestConfig): boolean {
@@ -76,6 +78,9 @@ export function normalizeApiError(error: unknown): ApiError {
 }
 
 apiClient.interceptors.request.use((config) => {
+  config.headers = config.headers ?? {};
+  config.headers['Accept-Language'] = getCurrentLocale();
+
   if (isPublicEndpoint(config)) {
     if (config.headers && 'Authorization' in config.headers) {
       delete config.headers.Authorization;

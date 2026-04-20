@@ -33,6 +33,7 @@ export const en: Translations = {
       modernStack: 'Built to grow with you',
     },
     availability: 'Available for a limited number of projects each quarter',
+    bannerFallback: 'Now booking new projects for the upcoming cycle.',
     hiddenGem: 'Precision mode activated',
     visual: {
       fileName: 'your-project.tsx',

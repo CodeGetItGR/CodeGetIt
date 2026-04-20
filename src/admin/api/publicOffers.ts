@@ -1,10 +1,17 @@
 import axios from 'axios';
 import type { PublicOfferResponse } from '@/admin/types';
+import { getCurrentLocale } from '@/i18n/locale-storage';
 
 const baseURL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api';
 
 const publicApiClient = axios.create({
   baseURL,
+});
+
+publicApiClient.interceptors.request.use((config) => {
+  config.headers = config.headers ?? {};
+  config.headers['Accept-Language'] = getCurrentLocale();
+  return config;
 });
 
 export interface RejectOfferPayload {
