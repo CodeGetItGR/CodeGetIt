@@ -300,4 +300,89 @@ export interface Translations {
     button: string;
     buttonAria: string;
   };
+
+  // Admin
+  admin: {
+    detailTabs: {
+      notes: string;
+      history: string;
+    };
+    entityAux: {
+      notes: string;
+      auditHistory: string;
+    };
+    projectDetail: {
+      loading: string;
+      notFound: string;
+      title: string;
+      back: string;
+      noTransitions: string;
+      save: string;
+      saving: string;
+      details: string;
+      name: string;
+      description: string;
+      linkedRequest: string;
+      linkedOffer: string;
+      noRequest: string;
+      noOffer: string;
+      viewRequest: string;
+      viewOffer: string;
+      statusActions: string;
+      status: string;
+      navActions: string;
+      navLinked: string;
+      navDetails: string;
+      cancelTitle: string;
+      cancelBody: string;
+      keep: string;
+      confirmCancel: string;
+      cancelling: string;
+      moveTo: string;
+      statusLabels: {
+        IN_PROGRESS: string;
+        COMPLETED: string;
+        ON_HOLD: string;
+        CANCELLED: string;
+        PLANNING: string;
+      };
+    };
+    projectGithub: {
+      card: {
+        title: string;
+        addRepo: string;
+        createRepo: string;
+        linkRepo: string;
+        linkedRepos: string;
+        provider: string;
+        primaryRepo: string;
+        noRepo: string;
+        noProvider: string;
+        open: string;
+        lastError: string;
+      };
+      sheets: {
+        createTitle: string;
+        createDesc: string;
+        repoNameOptional: string;
+        repoNamePlaceholder: string;
+        privateRepo: string;
+        creating: string;
+        createRepo: string;
+        cancel: string;
+        linkTitle: string;
+        linkDesc: string;
+        repoUrl: string;
+        repoUrlPlaceholder: string;
+        repoNameOverride: string;
+        repoNameOverridePlaceholder: string;
+        linking: string;
+        linkRepo: string;
+      };
+      actions: {
+        success: string;
+        invalidGithubUrl: string;
+      };
+    };
+  };
 }

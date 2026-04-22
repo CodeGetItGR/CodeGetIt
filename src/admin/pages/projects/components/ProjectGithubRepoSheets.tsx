@@ -40,44 +40,8 @@ export const ProjectGithubRepoSheets = ({
   onCreateRepoSubmit,
   onLinkRepoSubmit,
 }: ProjectGithubRepoSheetsProps) => {
-  const { locale } = useLocale();
-  const text = locale === 'el'
-    ? {
-        createTitle: 'Δημιουργια GitHub Repository',
-        createDesc: 'Δημιουργησε νεο αποθετηριο στο ρυθμισμενο GitHub owner και συνδεσε το με αυτο το project.',
-        repoNameOptional: 'Ονομα αποθετηριου (προαιρετικο)',
-        repoNamePlaceholder: 'π.χ. acme-client-portal',
-        privateRepo: 'Ιδιωτικο αποθετηριο',
-        creating: 'Δημιουργια...',
-        createRepo: 'Δημιουργια repo',
-        cancel: 'Ακυρωση',
-        linkTitle: 'Συνδεση Υπαρχοντος GitHub Repository',
-        linkDesc: 'Συνδεσε URL υπαρχοντος αποθετηριου github.com με αυτο το project.',
-        repoUrl: 'URL αποθετηριου',
-        repoUrlPlaceholder: 'https://github.com/org/repo',
-        repoNameOverride: 'Ονομα αποθετηριου override (προαιρετικο)',
-        repoNameOverridePlaceholder: 'repo-name',
-        linking: 'Συνδεση...',
-        linkRepo: 'Συνδεση αποθετηριου',
-      }
-    : {
-        createTitle: 'Create GitHub Repository',
-        createDesc: 'Create a new repository in your configured GitHub owner and attach it to this project.',
-        repoNameOptional: 'Repository name (optional)',
-        repoNamePlaceholder: 'e.g. acme-client-portal',
-        privateRepo: 'Private repository',
-        creating: 'Creating...',
-        createRepo: 'Create repo',
-        cancel: 'Cancel',
-        linkTitle: 'Link Existing GitHub Repository',
-        linkDesc: 'Attach an existing github.com repository URL to this project.',
-        repoUrl: 'Repository URL',
-        repoUrlPlaceholder: 'https://github.com/org/repo',
-        repoNameOverride: 'Repository name override (optional)',
-        repoNameOverridePlaceholder: 'repo-name',
-        linking: 'Linking...',
-        linkRepo: 'Link repository',
-      };
+  const { t } = useLocale();
+  const text = t.admin.projectGithub.sheets;
 
   return (
     <>

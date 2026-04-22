@@ -39,94 +39,13 @@ const statusActionStyles: Record<ProjectStatus, string> = {
 
 export const ProjectDetailPage = () => {
   const { id = '' } = useParams();
-  const { locale } = useLocale();
+  const { t } = useLocale();
   const queryClient = useQueryClient();
   const { errorMessage, setApiError, clearError } = useApiErrorState();
   const [showCancelConfirm, setShowCancelConfirm] = useState(false);
 
-  const statusActionLabels = useMemo<Record<ProjectStatus, string>>(
-    () =>
-      locale === 'el'
-        ? {
-            IN_PROGRESS: '▶ Εναρξη',
-            COMPLETED: '✓ Ολοκληρωση',
-            ON_HOLD: '⏸ Παυση',
-            CANCELLED: '✕ Ακυρωση',
-            PLANNING: '↩ Πισω σε σχεδιασμο',
-          }
-        : {
-            IN_PROGRESS: '▶ Start',
-            COMPLETED: '✓ Complete',
-            ON_HOLD: '⏸ Pause',
-            CANCELLED: '✕ Cancel',
-            PLANNING: '↩ Back to Planning',
-          },
-    [locale],
-  );
-
-  const text = useMemo(
-    () =>
-      locale === 'el'
-        ? {
-            loading: 'Φορτωση project...',
-            notFound: 'Το project δεν βρεθηκε.',
-            title: 'Λεπτομερειες project',
-            back: 'Πισω στα projects',
-            noTransitions: 'Δεν υπαρχουν επιτρεπτες μεταβασεις.',
-            save: 'Αποθηκευση αλλαγων',
-            saving: 'Αποθηκευση...',
-            details: 'Στοιχεια project',
-            name: 'Ονομα',
-            description: 'Περιγραφη',
-            linkedRequest: 'Σχετικο Request',
-            linkedOffer: 'Σχετικη Προσφορα',
-            noRequest: 'Δεν υπαρχει συνδεδεμενο request.',
-            noOffer: 'Δεν υπαρχει συνδεδεμενη προσφορα.',
-            viewRequest: 'Προβολη request',
-            viewOffer: 'Προβολη προσφορας',
-            statusActions: 'Ενεργειες καταστασης',
-            status: 'Κατασταση',
-            navActions: 'Ενεργειες & Repo',
-            navLinked: 'Συνδεδεμενα',
-            navDetails: 'Στοιχεια',
-            cancelTitle: 'Ακυρωση project;',
-            cancelBody: 'Αυτη η ενεργεια ειναι οριστικη και σημαινει το project ως ακυρωμενο.',
-            keep: 'Διατηρηση project',
-            confirmCancel: 'Επιβεβαιωση ακυρωσης',
-            cancelling: 'Ακυρωση...',
-            moveTo: 'Μεταβαση σε',
-          }
-        : {
-            loading: 'Loading project...',
-            notFound: 'Project not found.',
-            title: 'Project detail',
-            back: 'Back to projects',
-            noTransitions: 'No further transitions available.',
-            save: 'Save changes',
-            saving: 'Saving...',
-            details: 'Project details',
-            name: 'Name',
-            description: 'Description',
-            linkedRequest: 'Linked Request',
-            linkedOffer: 'Linked Offer',
-            noRequest: 'No linked request.',
-            noOffer: 'No linked offer.',
-            viewRequest: 'View request',
-            viewOffer: 'View offer',
-            statusActions: 'Status actions',
-            status: 'Status',
-            navActions: 'Actions & Repo',
-            navLinked: 'Linked',
-            navDetails: 'Details',
-            cancelTitle: 'Cancel project?',
-            cancelBody: 'This action is destructive and marks the project as cancelled.',
-            keep: 'Keep project',
-            confirmCancel: 'Confirm cancel',
-            cancelling: 'Cancelling...',
-            moveTo: 'Move to',
-          },
-    [locale],
-  );
+  const text = t.admin.projectDetail;
+  const statusActionLabels = text.statusLabels;
 
   const projectDetailQueryKey = useMemo(() => ['project', id] as const, [id]);
 
@@ -278,7 +197,7 @@ export const ProjectDetailPage = () => {
       {githubRepoActions.githubActionSuccess && <p className="rounded-xl bg-emerald-50 px-3 py-2 text-sm text-emerald-700">{githubRepoActions.githubActionSuccess}</p>}
 
       {/* ── Sticky section nav ── */}
-      <nav className="sticky top-0 z-10 -mx-1 flex gap-1 overflow-x-auto rounded-2xl border border-gray-200 bg-white/90 px-3 py-2 backdrop-blur">
+      <nav className="sticky top-3 z-10 -mx-1 flex gap-1 overflow-x-auto rounded-2xl border border-gray-200 bg-white/90 px-3 py-2 backdrop-blur">
         {[
           { label: text.navActions, href: '#section-actions' },
           { label: text.navLinked, href: '#section-linked' },
@@ -294,40 +213,34 @@ export const ProjectDetailPage = () => {
         ))}
       </nav>
 
-      {/* ── Actions + Repo side by side ── */}
-      <div id="section-actions" className="grid gap-4 md:grid-cols-2">
-        {/* Status actions */}
-        <section className="rounded-2xl border border-gray-200 bg-white p-6">
-          <h3 className="text-lg font-semibold text-gray-900">{text.statusActions}</h3>
-          <p className="mt-0.5 text-sm text-gray-500">
-            {text.status}: <span className="font-medium text-gray-700">{project.status.replace(/_/g, ' ')}</span>
-          </p>
-          <div className="mt-4 flex flex-wrap gap-2">
-            {availableTransitions.length === 0 && (
-              <p className="text-sm text-gray-500">{text.noTransitions}</p>
-            )}
-            {availableTransitions.map((target) => (
-              <button
-                key={target}
-                type="button"
-                data-target-status={target}
-                onClick={handleStatusTransition}
-                disabled={statusMutation.isPending}
-                className={`rounded-lg border px-4 py-2 text-sm font-medium transition-colors disabled:opacity-60 ${statusActionStyles[target] ?? 'border-gray-300 text-gray-700 hover:bg-gray-50'}`}
-              >
-                {statusActionLabels[target] ?? `${text.moveTo} ${target}`}
-              </button>
-            ))}
-          </div>
-        </section>
-
-        {/* GitHub repo */}
-          <ProjectGithubRepoCard
-            project={project}
-            onCreateRepo={githubRepoActions.openCreateRepoSheet}
-            onLinkRepo={githubRepoActions.openLinkRepoSheet}
-          />
+      <div id="section-actions" className="space-y-2">
+        <p className="text-sm text-gray-500">
+          {text.status}: <span className="font-medium text-gray-700">{project.status.replace(/_/g, ' ')}</span>
+        </p>
+        <div className="flex flex-wrap gap-2">
+          {availableTransitions.map((target) => (
+            <button
+              key={target}
+              type="button"
+              data-target-status={target}
+              onClick={handleStatusTransition}
+              disabled={statusMutation.isPending}
+              className={`rounded-lg border px-4 py-2 text-sm font-medium transition-colors disabled:opacity-60 ${statusActionStyles[target] ?? 'border-gray-300 text-gray-700 hover:bg-gray-50'}`}
+            >
+              {statusActionLabels[target] ?? `${text.moveTo} ${target}`}
+            </button>
+          ))}
+        </div>
+        {availableTransitions.length === 0 && (
+          <p className="text-sm text-gray-500">{text.noTransitions}</p>
+        )}
       </div>
+
+      <ProjectGithubRepoCard
+        project={project}
+        onCreateRepo={githubRepoActions.openCreateRepoSheet}
+        onLinkRepo={githubRepoActions.openLinkRepoSheet}
+      />
 
       {/* ── Linked Request & Offer overview ── */}
       <div id="section-linked" className="grid gap-4 md:grid-cols-2">

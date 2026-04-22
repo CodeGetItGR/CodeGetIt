@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { normalizeApiError } from '@/admin/api/client';
 import { projectApi } from '@/admin/api/projects';
 import { queryKeys } from '@/admin/api/queryKeys';
-import { getStoredLocale } from '@/i18n/locale-storage';
+import { useLocale } from '@/i18n/UseLocale';
 
 interface UseProjectGithubRepoActionsParams {
   projectId: string;
@@ -17,16 +17,8 @@ export function useProjectGithubRepoActions({
   onSuccess,
 }: UseProjectGithubRepoActionsParams) {
   const queryClient = useQueryClient();
-  const locale = getStoredLocale();
-  const text = locale === 'el'
-    ? {
-        success: 'Οι ρυθμισεις GitHub repository ενημερωθηκαν επιτυχως.',
-        invalidGithubUrl: 'Δωσε εγκυρο GitHub URL στη μορφη https://github.com/{owner}/{repo}.',
-      }
-    : {
-        success: 'GitHub repository settings updated successfully.',
-        invalidGithubUrl: 'Please provide a valid GitHub URL in the format https://github.com/{owner}/{repo}.',
-      };
+  const { t } = useLocale();
+  const text = t.admin.projectGithub.actions;
   const [showCreateRepoSheet, setShowCreateRepoSheet] = useState(false);
   const [showLinkRepoSheet, setShowLinkRepoSheet] = useState(false);
   const [createRepoName, setCreateRepoName] = useState('');

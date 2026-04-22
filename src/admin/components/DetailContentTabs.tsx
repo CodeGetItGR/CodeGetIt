@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState, type ReactNode } from 'react';
+import { useCallback, useState, type ReactNode } from 'react';
 import { AuditPanel } from '@/admin/components/AuditPanel';
 import { NotesPanel } from '@/admin/components/NotesPanel';
 import type { EntityType, UUID } from '@/admin/types';
@@ -13,27 +13,14 @@ interface DetailContentTabsProps {
 }
 
 export const DetailContentTabs = ({
-  detailsLabel = 'Details',
+  detailsLabel,
   detailsContent,
   entityType,
   entityId,
 }: DetailContentTabsProps) => {
-  const { locale } = useLocale();
+  const { t } = useLocale();
+  const resolvedDetailsLabel = detailsLabel ?? t.admin.projectDetail.navDetails;
   const [activeTab, setActiveTab] = useState<'details' | 'notes' | 'history'>('details');
-
-  const labels = useMemo(
-    () =>
-      locale === 'el'
-        ? {
-            notes: 'Σημειωσεις',
-            history: 'Ιστορικο ενεργειων',
-          }
-        : {
-            notes: 'Notes',
-            history: 'Audit history',
-          },
-    [locale],
-  );
 
   const handleShowDetails = useCallback(() => {
     setActiveTab('details');
@@ -59,7 +46,7 @@ export const DetailContentTabs = ({
             activeTab === 'details' ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200',
           )}
         >
-          {detailsLabel}
+          {resolvedDetailsLabel}
         </button>
         <button
           type="button"
@@ -69,7 +56,7 @@ export const DetailContentTabs = ({
             activeTab === 'notes' ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200',
           )}
         >
-          {labels.notes}
+          {t.admin.detailTabs.notes}
         </button>
         <button
           type="button"
@@ -79,7 +66,7 @@ export const DetailContentTabs = ({
             activeTab === 'history' ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200',
           )}
         >
-          {labels.history}
+          {t.admin.detailTabs.history}
         </button>
         </div>
       </div>
@@ -90,6 +77,9 @@ export const DetailContentTabs = ({
     </section>
   );
 };
+
+
+
 
 
 
