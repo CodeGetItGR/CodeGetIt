@@ -1,7 +1,8 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { AuditPanel } from '@/admin/components/AuditPanel';
 import { NotesPanel } from '@/admin/components/NotesPanel';
 import type { EntityType, UUID } from '@/admin/types';
+import { useLocale } from '@/i18n/UseLocale';
 import { cn } from '@/lib/utils';
 
 type TabKey = 'notes' | 'history';
@@ -12,7 +13,16 @@ interface EntityAuxPanelsProps {
 }
 
 export const EntityAuxPanels = ({ entityType, entityId }: EntityAuxPanelsProps) => {
+  const { locale } = useLocale();
   const [activeTab, setActiveTab] = useState<TabKey>('notes');
+
+  const labels = useMemo(
+    () => ({
+      notes: locale === 'el' ? 'Σημειωσεις' : 'Notes',
+      audit: locale === 'el' ? 'Ιστορικο ενεργειων' : 'Audit history',
+    }),
+    [locale],
+  );
 
   const handleShowNotes = useCallback(() => {
     setActiveTab('notes');
@@ -33,7 +43,7 @@ export const EntityAuxPanels = ({ entityType, entityId }: EntityAuxPanelsProps) 
             activeTab === 'notes' ? 'bg-gray-900 text-white' : 'bg-gray-200 text-gray-700',
           )}
         >
-          Notes
+          {labels.notes}
         </button>
         <button
           type="button"
@@ -43,7 +53,7 @@ export const EntityAuxPanels = ({ entityType, entityId }: EntityAuxPanelsProps) 
             activeTab === 'history' ? 'bg-gray-900 text-white' : 'bg-gray-200 text-gray-700',
           )}
         >
-          Audit history
+          {labels.audit}
         </button>
       </div>
 

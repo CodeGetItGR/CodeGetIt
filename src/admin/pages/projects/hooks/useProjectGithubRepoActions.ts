@@ -3,6 +3,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { normalizeApiError } from '@/admin/api/client';
 import { projectApi } from '@/admin/api/projects';
 import { queryKeys } from '@/admin/api/queryKeys';
+import { getStoredLocale } from '@/i18n/locale-storage';
 
 interface UseProjectGithubRepoActionsParams {
   projectId: string;
@@ -16,6 +17,16 @@ export function useProjectGithubRepoActions({
   onSuccess,
 }: UseProjectGithubRepoActionsParams) {
   const queryClient = useQueryClient();
+  const locale = getStoredLocale();
+  const text = locale === 'el'
+    ? {
+        success: 'Οι ρυθμισεις GitHub repository ενημερωθηκαν επιτυχως.',
+        invalidGithubUrl: 'Δωσε εγκυρο GitHub URL στη μορφη https://github.com/{owner}/{repo}.',
+      }
+    : {
+        success: 'GitHub repository settings updated successfully.',
+        invalidGithubUrl: 'Please provide a valid GitHub URL in the format https://github.com/{owner}/{repo}.',
+      };
   const [showCreateRepoSheet, setShowCreateRepoSheet] = useState(false);
   const [showLinkRepoSheet, setShowLinkRepoSheet] = useState(false);
   const [createRepoName, setCreateRepoName] = useState('');
@@ -36,7 +47,7 @@ export function useProjectGithubRepoActions({
     mutationFn: (payload: Parameters<typeof projectApi.githubRepoAction>[1]) => projectApi.githubRepoAction(projectId, payload),
     onSuccess: async (updatedProject) => {
       setGithubActionError(null);
-      setGithubActionSuccess('GitHub repository settings updated successfully.');
+      setGithubActionSuccess(text.success);
       setShowCreateRepoSheet(false);
       setShowLinkRepoSheet(false);
       resetForms();
@@ -112,7 +123,7 @@ export function useProjectGithubRepoActions({
     const normalizedUrl = linkRepoUrl.trim();
     const githubUrlPattern = /^https?:\/\/(www\.)?github\.com\/[^/]+\/[^/]+\/?$/i;
     if (!githubUrlPattern.test(normalizedUrl)) {
-      setGithubActionError('Please provide a valid GitHub URL in the format https://github.com/{owner}/{repo}.');
+      setGithubActionError(text.invalidGithubUrl);
       return;
     }
 
@@ -121,7 +132,7 @@ export function useProjectGithubRepoActions({
       repoUrl: normalizedUrl,
       repoName: linkRepoName.trim() || undefined,
     });
-  }, [githubRepoMutation, linkRepoName, linkRepoUrl]);
+  }, [githubRepoMutation, linkRepoName, linkRepoUrl, text.invalidGithubUrl]);
 
   return {
     showCreateRepoSheet,

@@ -1,5 +1,6 @@
 import type { ChangeEvent, FormEvent } from 'react';
 import { SlideSheet } from '@/admin/components/SlideSheet';
+import { useLocale } from '@/i18n/UseLocale';
 import { Input } from '@/components/ui/Input';
 
 interface ProjectGithubRepoSheetsProps {
@@ -39,20 +40,59 @@ export const ProjectGithubRepoSheets = ({
   onCreateRepoSubmit,
   onLinkRepoSubmit,
 }: ProjectGithubRepoSheetsProps) => {
+  const { locale } = useLocale();
+  const text = locale === 'el'
+    ? {
+        createTitle: 'Δημιουργια GitHub Repository',
+        createDesc: 'Δημιουργησε νεο αποθετηριο στο ρυθμισμενο GitHub owner και συνδεσε το με αυτο το project.',
+        repoNameOptional: 'Ονομα αποθετηριου (προαιρετικο)',
+        repoNamePlaceholder: 'π.χ. acme-client-portal',
+        privateRepo: 'Ιδιωτικο αποθετηριο',
+        creating: 'Δημιουργια...',
+        createRepo: 'Δημιουργια repo',
+        cancel: 'Ακυρωση',
+        linkTitle: 'Συνδεση Υπαρχοντος GitHub Repository',
+        linkDesc: 'Συνδεσε URL υπαρχοντος αποθετηριου github.com με αυτο το project.',
+        repoUrl: 'URL αποθετηριου',
+        repoUrlPlaceholder: 'https://github.com/org/repo',
+        repoNameOverride: 'Ονομα αποθετηριου override (προαιρετικο)',
+        repoNameOverridePlaceholder: 'repo-name',
+        linking: 'Συνδεση...',
+        linkRepo: 'Συνδεση αποθετηριου',
+      }
+    : {
+        createTitle: 'Create GitHub Repository',
+        createDesc: 'Create a new repository in your configured GitHub owner and attach it to this project.',
+        repoNameOptional: 'Repository name (optional)',
+        repoNamePlaceholder: 'e.g. acme-client-portal',
+        privateRepo: 'Private repository',
+        creating: 'Creating...',
+        createRepo: 'Create repo',
+        cancel: 'Cancel',
+        linkTitle: 'Link Existing GitHub Repository',
+        linkDesc: 'Attach an existing github.com repository URL to this project.',
+        repoUrl: 'Repository URL',
+        repoUrlPlaceholder: 'https://github.com/org/repo',
+        repoNameOverride: 'Repository name override (optional)',
+        repoNameOverridePlaceholder: 'repo-name',
+        linking: 'Linking...',
+        linkRepo: 'Link repository',
+      };
+
   return (
     <>
       <SlideSheet
         isOpen={showCreateRepoSheet}
         onClose={onCloseCreateRepoSheet}
-        title="Create GitHub Repository"
-        description="Create a new repository in your configured GitHub owner and attach it to this project."
+        title={text.createTitle}
+        description={text.createDesc}
       >
         <form className="space-y-4" onSubmit={onCreateRepoSubmit}>
           <Input
-            label="Repository name (optional)"
+            label={text.repoNameOptional}
             value={createRepoName}
             onChange={onCreateRepoNameChange}
-            placeholder="e.g. acme-client-portal"
+            placeholder={text.repoNamePlaceholder}
           />
 
           <label className="flex items-center gap-2 text-sm text-gray-700">
@@ -61,7 +101,7 @@ export const ProjectGithubRepoSheets = ({
               checked={createPrivateRepo}
               onChange={onCreatePrivateRepoChange}
             />
-            <span>Private repository</span>
+            <span>{text.privateRepo}</span>
           </label>
 
           {githubActionError && (
@@ -74,14 +114,14 @@ export const ProjectGithubRepoSheets = ({
               disabled={isPending}
               className="flex-1 rounded-xl bg-gray-900 px-4 py-2.5 text-sm font-medium text-white hover:bg-gray-800 disabled:opacity-60"
             >
-              {isPending ? 'Creating...' : 'Create repo'}
+              {isPending ? text.creating : text.createRepo}
             </button>
             <button
               type="button"
               onClick={onCloseCreateRepoSheet}
               className="rounded-xl border border-gray-300 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50"
             >
-              Cancel
+              {text.cancel}
             </button>
           </div>
         </form>
@@ -90,23 +130,23 @@ export const ProjectGithubRepoSheets = ({
       <SlideSheet
         isOpen={showLinkRepoSheet}
         onClose={onCloseLinkRepoSheet}
-        title="Link Existing GitHub Repository"
-        description="Attach an existing github.com repository URL to this project."
+        title={text.linkTitle}
+        description={text.linkDesc}
       >
         <form className="space-y-4" onSubmit={onLinkRepoSubmit}>
           <Input
-            label="Repository URL"
+            label={text.repoUrl}
             value={linkRepoUrl}
             onChange={onLinkRepoUrlChange}
-            placeholder="https://github.com/org/repo"
+            placeholder={text.repoUrlPlaceholder}
             required
           />
 
           <Input
-            label="Repository name override (optional)"
+            label={text.repoNameOverride}
             value={linkRepoName}
             onChange={onLinkRepoNameChange}
-            placeholder="repo-name"
+            placeholder={text.repoNameOverridePlaceholder}
           />
 
           {githubActionError && (
@@ -119,14 +159,14 @@ export const ProjectGithubRepoSheets = ({
               disabled={isPending}
               className="flex-1 rounded-xl bg-gray-900 px-4 py-2.5 text-sm font-medium text-white hover:bg-gray-800 disabled:opacity-60"
             >
-              {isPending ? 'Linking...' : 'Link repository'}
+              {isPending ? text.linking : text.linkRepo}
             </button>
             <button
               type="button"
               onClick={onCloseLinkRepoSheet}
               className="rounded-xl border border-gray-300 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50"
             >
-              Cancel
+              {text.cancel}
             </button>
           </div>
         </form>

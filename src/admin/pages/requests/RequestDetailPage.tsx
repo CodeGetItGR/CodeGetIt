@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { queryKeys } from '@/admin/api/queryKeys';
 import { requestApi } from '@/admin/api/requests';
 import { CreateOfferSheet } from '@/admin/components/CreateOfferSheet';
-import { EntityAuxPanels } from '@/admin/components/EntityAuxPanels';
+import { DetailContentTabs } from '@/admin/components/DetailContentTabs';
 import { StatusBadge } from '@/admin/components/StatusBadge';
 import { requestTransitions } from '@/admin/config/workflows';
 import { useApiErrorState } from '@/admin/hooks/useApiErrorState';
@@ -20,6 +20,7 @@ import type {
   ProjectType,
   RequestStatus,
 } from '@/admin/types';
+import { useLocale } from '@/i18n/UseLocale';
 import { Input } from '@/components/ui/Input';
 import { Textarea } from '@/components/ui/Textarea';
 
@@ -65,10 +66,89 @@ const defaultFormState: RequestFormState = {
 
 export const RequestDetailPage = () => {
   const { id = '' } = useParams();
+  const { locale } = useLocale();
   const queryClient = useQueryClient();
   const { errorMessage, setApiError, clearError } = useApiErrorState();
   const [showCreateOffer, setShowCreateOffer] = useState(false);
   const [copyState, setCopyState] = useState<'idle' | 'copied' | 'error'>('idle');
+
+  const text = useMemo(
+    () =>
+      locale === 'el'
+        ? {
+            loading: 'Φορτωση request...',
+            notFound: 'Το request δεν βρεθηκε.',
+            title: 'Λεπτομερειες request',
+            copyId: 'Αντιγραφη ID',
+            copied: 'Αντιγραφηκε',
+            copyFailed: 'Αποτυχια αντιγραφης',
+            createOffer: 'Δημιουργια προσφορας',
+            back: 'Πισω στα requests',
+            statusActions: 'Ενεργειες καταστασης',
+            validTransitions: 'Εμφανιζονται μονο επιτρεπτες μεταβασεις.',
+            noTransitions: 'Δεν υπαρχουν επιτρεπτες μεταβασεις.',
+            detailsLabel: 'Επεξεργασιμα στοιχεια',
+            immutable: 'Το email και το τηλεφωνο δεν αλλαζουν απο το backend συμβολαιο.',
+            titleLabel: 'Τιτλος',
+            requesterNameLabel: 'Ονομα αιτουντος',
+            descriptionLabel: 'Περιγραφη',
+            projectType: 'Τυπος project',
+            businessGoal: 'Στοχος',
+            organizationName: 'Ονομα οργανισμου',
+            industry: 'Κλαδος',
+            targetAudience: 'Κοινο στοχος',
+            targetLaunchWindow: 'Χρονικο παραθυρο λανσαρισματος',
+            desiredStartWindow: 'Επιθυμητο ξεκινημα',
+            budgetRange: 'Ευρος budget',
+            budgetFlexibility: 'Ευελιξια budget',
+            enterpriseInquiry: 'Enterprise αιτημα (προτιμα αμεση επικοινωνια και σταδιακο discovery)',
+            communicationPreference: 'Προτιμηση επικοινωνιας',
+            dataSensitivity: 'Ευαισθησια δεδομενων',
+            legalConstraints: 'Νομικοι η brand περιορισμοι',
+            priority: 'Προτεραιοτητα',
+            requesterEmailReadonly: 'Email αιτουντος (μονο αναγνωση)',
+            requesterPhoneReadonly: 'Τηλεφωνο αιτουντος (μονο αναγνωση)',
+            saving: 'Αποθηκευση...',
+            save: 'Αποθηκευση αλλαγων',
+          }
+        : {
+            loading: 'Loading request...',
+            notFound: 'Request not found.',
+            title: 'Request detail',
+            copyId: 'Copy ID',
+            copied: 'Copied',
+            copyFailed: 'Copy failed',
+            createOffer: 'Create offer',
+            back: 'Back to requests',
+            statusActions: 'Status actions',
+            validTransitions: 'Only valid transitions are shown.',
+            noTransitions: 'No further transitions available.',
+            detailsLabel: 'Editable details',
+            immutable: 'Contact email and phone are immutable by backend contract.',
+            titleLabel: 'Title',
+            requesterNameLabel: 'Requester name',
+            descriptionLabel: 'Description',
+            projectType: 'Project type',
+            businessGoal: 'Business goal',
+            organizationName: 'Organization name',
+            industry: 'Industry',
+            targetAudience: 'Target audience',
+            targetLaunchWindow: 'Target launch window',
+            desiredStartWindow: 'Desired start window',
+            budgetRange: 'Budget range',
+            budgetFlexibility: 'Budget flexibility',
+            enterpriseInquiry: 'Enterprise inquiry (prefer direct communication and staged discovery)',
+            communicationPreference: 'Communication preference',
+            dataSensitivity: 'Data sensitivity',
+            legalConstraints: 'Legal or brand constraints',
+            priority: 'Priority',
+            requesterEmailReadonly: 'Requester email (read only)',
+            requesterPhoneReadonly: 'Requester phone (read only)',
+            saving: 'Saving...',
+            save: 'Save changes',
+          },
+    [locale],
+  );
 
   const requestQuery = useQuery({
     queryKey: queryKeys.requests.detail(id),
@@ -271,11 +351,11 @@ export const RequestDetailPage = () => {
   const { options: priorityOptions } = useSettingsOptions({ groupKey: 'request.priority', scope: 'admin' });
 
   if (requestQuery.isLoading) {
-    return <p className="text-sm text-gray-500">Loading request...</p>;
+    return <p className="text-sm text-gray-500">{text.loading}</p>;
   }
 
   if (!requestQuery.data) {
-    return <p className="text-sm text-gray-500">Request not found.</p>;
+    return <p className="text-sm text-gray-500">{text.notFound}</p>;
   }
 
   const request = requestQuery.data;
@@ -284,7 +364,7 @@ export const RequestDetailPage = () => {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <p className="text-sm uppercase tracking-[0.16em] text-gray-500">Request detail</p>
+          <p className="text-sm uppercase tracking-[0.16em] text-gray-500">{text.title}</p>
           <h2 className="text-3xl font-bold tracking-tight text-gray-900">{request.title}</h2>
           <div className="mt-2 flex items-center gap-2">
             <StatusBadge value={request.status} />
@@ -297,10 +377,10 @@ export const RequestDetailPage = () => {
               onClick={handleCopyRequestId}
               className="rounded-lg border border-gray-300 px-2 py-1 text-xs font-medium text-gray-700 hover:bg-gray-50"
             >
-              Copy ID
+              {text.copyId}
             </button>
-            {copyState === 'copied' && <span className="text-xs text-emerald-700">Copied</span>}
-            {copyState === 'error' && <span className="text-xs text-rose-700">Copy failed</span>}
+            {copyState === 'copied' && <span className="text-xs text-emerald-700">{text.copied}</span>}
+            {copyState === 'error' && <span className="text-xs text-rose-700">{text.copyFailed}</span>}
           </div>
         </div>
         <div className="flex items-center gap-3">
@@ -309,10 +389,10 @@ export const RequestDetailPage = () => {
             onClick={handleOpenCreateOffer}
             className="rounded-xl bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800"
           >
-            + Create offer
+            + {text.createOffer}
           </button>
           <Link to="/admin/requests" className="text-sm font-medium text-gray-700 underline">
-            Back to requests
+            {text.back}
           </Link>
         </div>
       </div>
@@ -320,11 +400,11 @@ export const RequestDetailPage = () => {
       {errorMessage && <p className="rounded-xl bg-rose-50 px-3 py-2 text-sm text-rose-700">{errorMessage}</p>}
 
       <section className="rounded-2xl border border-gray-200 bg-white p-6">
-        <h3 className="text-lg font-semibold text-gray-900">Status actions</h3>
-        <p className="mt-1 text-sm text-gray-600">Only valid transitions are shown.</p>
+        <h3 className="text-lg font-semibold text-gray-900">{text.statusActions}</h3>
+        <p className="mt-1 text-sm text-gray-600">{text.validTransitions}</p>
 
         <div className="mt-4 flex flex-wrap gap-2">
-          {availableTransitions.length === 0 && <p className="text-sm text-gray-500">No further transitions available.</p>}
+          {availableTransitions.length === 0 && <p className="text-sm text-gray-500">{text.noTransitions}</p>}
           {availableTransitions.map((target) => (
               <button
                   key={target}
@@ -339,13 +419,16 @@ export const RequestDetailPage = () => {
           ))}
         </div>
       </section>
-      <section className="rounded-2xl border border-gray-200 bg-white p-6">
-        <h3 className="text-lg font-semibold text-gray-900">Editable details</h3>
-        <p className="mt-1 text-sm text-gray-600">Contact email and phone are immutable by backend contract.</p>
-
-        <form className="mt-5 grid gap-4 md:grid-cols-2" onSubmit={handleUpdate}>
+      <DetailContentTabs
+        detailsLabel={text.detailsLabel}
+        entityType="REQUEST"
+        entityId={request.id}
+        detailsContent={(
+          <>
+            <p className="mb-4 text-sm text-gray-600">{text.immutable}</p>
+            <form className="grid gap-4 md:grid-cols-2" onSubmit={handleUpdate}>
           <Input
-            label="Title"
+            label={text.titleLabel}
             value={formState.title}
             onChange={handleTitleChange}
             className="rounded-xl px-3 py-2"
@@ -353,7 +436,7 @@ export const RequestDetailPage = () => {
           />
 
           <Input
-            label="Requester name"
+            label={text.requesterNameLabel}
             value={formState.requesterName}
             onChange={handleRequesterNameChange}
             className="rounded-xl px-3 py-2"
@@ -361,7 +444,7 @@ export const RequestDetailPage = () => {
 
           <div className="md:col-span-2">
             <Textarea
-              label="Description"
+              label={text.descriptionLabel}
               value={formState.description}
               onChange={handleDescriptionChange}
               rows={4}
@@ -370,7 +453,7 @@ export const RequestDetailPage = () => {
           </div>
 
           <label className="text-sm">
-            <span className="mb-1 block text-gray-600">Project type</span>
+            <span className="mb-1 block text-gray-600">{text.projectType}</span>
             <select value={formState.projectType} onChange={handleProjectTypeChange} className="w-full rounded-xl border border-gray-300 px-3 py-2">
               {projectTypeOptions.map((item) => (
                 <option key={item.value} value={item.value}>{item.label}</option>
@@ -380,7 +463,7 @@ export const RequestDetailPage = () => {
 
           <div className="md:col-span-2">
             <Textarea
-              label="Business goal"
+              label={text.businessGoal}
               value={formState.businessGoal}
               onChange={handleBusinessGoalChange}
               rows={3}
@@ -388,13 +471,13 @@ export const RequestDetailPage = () => {
             />
           </div>
 
-          <Input label="Organization name" value={formState.organizationName} onChange={handleOrganizationNameChange} className="rounded-xl px-3 py-2" />
-          <Input label="Industry" value={formState.industry} onChange={handleIndustryChange} className="rounded-xl px-3 py-2" />
-          <Input label="Target audience" value={formState.targetAudience} onChange={handleTargetAudienceChange} className="rounded-xl px-3 py-2" />
-          <Input label="Target launch window" value={formState.targetLaunchWindow} onChange={handleTargetLaunchWindowChange} className="rounded-xl px-3 py-2" />
+          <Input label={text.organizationName} value={formState.organizationName} onChange={handleOrganizationNameChange} className="rounded-xl px-3 py-2" />
+          <Input label={text.industry} value={formState.industry} onChange={handleIndustryChange} className="rounded-xl px-3 py-2" />
+          <Input label={text.targetAudience} value={formState.targetAudience} onChange={handleTargetAudienceChange} className="rounded-xl px-3 py-2" />
+          <Input label={text.targetLaunchWindow} value={formState.targetLaunchWindow} onChange={handleTargetLaunchWindowChange} className="rounded-xl px-3 py-2" />
 
           <label className="text-sm">
-            <span className="mb-1 block text-gray-600">Desired start window</span>
+            <span className="mb-1 block text-gray-600">{text.desiredStartWindow}</span>
             <select value={formState.desiredStartWindow} onChange={handleDesiredStartWindowChange} className="w-full rounded-xl border border-gray-300 px-3 py-2">
               {desiredStartWindowOptions.map((item) => (
                 <option key={item.value} value={item.value}>{item.label}</option>
@@ -403,7 +486,7 @@ export const RequestDetailPage = () => {
           </label>
 
           <label className="text-sm">
-            <span className="mb-1 block text-gray-600">Budget range</span>
+            <span className="mb-1 block text-gray-600">{text.budgetRange}</span>
             <select value={formState.budgetRange} onChange={handleBudgetRangeChange} className="w-full rounded-xl border border-gray-300 px-3 py-2">
               {budgetRangeOptions.map((item) => (
                 <option key={item.value} value={item.value}>{item.label}</option>
@@ -412,7 +495,7 @@ export const RequestDetailPage = () => {
           </label>
 
           <label className="text-sm">
-            <span className="mb-1 block text-gray-600">Budget flexibility</span>
+            <span className="mb-1 block text-gray-600">{text.budgetFlexibility}</span>
             <select value={formState.budgetFlexibility} onChange={handleBudgetFlexibilityChange} className="w-full rounded-xl border border-gray-300 px-3 py-2">
               {budgetFlexibilityOptions.map((item) => (
                 <option key={item.value} value={item.value}>{item.label}</option>
@@ -427,11 +510,11 @@ export const RequestDetailPage = () => {
               onChange={handleEnterpriseInquiryChange}
               className="mt-0.5"
             />
-            <span>Enterprise inquiry (prefer direct communication and staged discovery)</span>
+            <span>{text.enterpriseInquiry}</span>
           </label>
 
           <label className="text-sm">
-            <span className="mb-1 block text-gray-600">Communication preference</span>
+            <span className="mb-1 block text-gray-600">{text.communicationPreference}</span>
             <select value={formState.communicationPreference} onChange={handleCommunicationPreferenceChange} className="w-full rounded-xl border border-gray-300 px-3 py-2">
               {communicationPreferenceOptions.map((item) => (
                 <option key={item.value} value={item.value}>{item.label}</option>
@@ -440,7 +523,7 @@ export const RequestDetailPage = () => {
           </label>
 
           <label className="text-sm">
-            <span className="mb-1 block text-gray-600">Data sensitivity</span>
+            <span className="mb-1 block text-gray-600">{text.dataSensitivity}</span>
             <select value={formState.dataSensitivity} onChange={handleDataSensitivityChange} className="w-full rounded-xl border border-gray-300 px-3 py-2">
               {dataSensitivityOptions.map((item) => (
                 <option key={item.value} value={item.value}>{item.label}</option>
@@ -450,7 +533,7 @@ export const RequestDetailPage = () => {
 
           <div className="md:col-span-2">
             <Textarea
-              label="Legal or brand constraints"
+              label={text.legalConstraints}
               value={formState.legalOrBrandConstraints}
               onChange={handleLegalConstraintsChange}
               rows={3}
@@ -459,7 +542,7 @@ export const RequestDetailPage = () => {
           </div>
 
           <label className="text-sm">
-            <span className="mb-1 block text-gray-600">Priority</span>
+            <span className="mb-1 block text-gray-600">{text.priority}</span>
             <select
               value={formState.priority}
               onChange={handlePriorityChange}
@@ -473,25 +556,23 @@ export const RequestDetailPage = () => {
             </select>
           </label>
 
-          <Input label="Requester email (read only)" value={request.requesterEmail} disabled className="rounded-xl px-3 py-2 bg-gray-100 border-gray-200" />
+          <Input label={text.requesterEmailReadonly} value={request.requesterEmail} disabled className="rounded-xl px-3 py-2 bg-gray-100 border-gray-200" />
 
-          <Input label="Requester phone (read only)" value={request.requesterPhone} disabled className="rounded-xl px-3 py-2 bg-gray-100 border-gray-200" />
+          <Input label={text.requesterPhoneReadonly} value={request.requesterPhone} disabled className="rounded-xl px-3 py-2 bg-gray-100 border-gray-200" />
 
-          <div className="md:col-span-2">
-            <button
-              type="submit"
-              disabled={updateMutation.isPending}
-              className="rounded-xl bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800 disabled:opacity-60"
-            >
-              {updateMutation.isPending ? 'Saving...' : 'Save changes'}
-            </button>
-          </div>
-        </form>
-      </section>
-
-      <section>
-        <EntityAuxPanels entityType="REQUEST" entityId={request.id} />
-      </section>
+              <div className="md:col-span-2">
+                <button
+                  type="submit"
+                  disabled={updateMutation.isPending}
+                  className="rounded-xl bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800 disabled:opacity-60"
+                >
+                  {updateMutation.isPending ? text.saving : text.save}
+                </button>
+              </div>
+            </form>
+          </>
+        )}
+      />
 
       <CreateOfferSheet
         isOpen={showCreateOffer}

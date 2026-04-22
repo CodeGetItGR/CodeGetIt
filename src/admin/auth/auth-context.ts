@@ -3,6 +3,7 @@ import type { Role } from '@/admin/types';
 
 export interface AuthState {
   token: string;
+  refreshToken: string;
   username: string;
   role: Role;
 }
@@ -13,6 +14,7 @@ export interface AuthContextValue {
   isAdmin: boolean;
   login: (username: string, password: string) => Promise<void>;
   logout: () => void;
+  refreshAccessToken: () => Promise<boolean>;
 }
 
 export const AuthContext = createContext<AuthContextValue | null>(null);

@@ -11,7 +11,6 @@ export interface ProjectListQuery {
 export interface UpdateProjectPayload {
   name: string;
   description?: string;
-  ownerUserId?: UUID;
 }
 
 interface ProjectStatusPayload {

@@ -33,12 +33,18 @@ export interface ProblemDetail {
   detail?: string;
   timestamp?: string;
   errors?: Record<string, string>;
+  errorCode?: string;
 }
 
 export interface AuthResponse {
   token: string;
+  refreshToken: string;
   username: string;
   role: Role;
+}
+
+export interface ProblemDetailWithErrorCode extends ProblemDetail {
+  errorCode?: 'TOKEN_EXPIRED' | 'TOKEN_INVALID' | 'NO_TOKEN';
 }
 
 export interface RequestResponse {
@@ -153,7 +159,6 @@ export interface ProjectResponse {
   name: string;
   description?: string;
   status: ProjectStatus;
-  ownerUserId?: UUID;
   githubRepoOwner?: string;
   githubRepoName?: string;
   githubRepoUrl?: string;
