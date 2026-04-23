@@ -159,6 +159,10 @@ export interface ProjectResponse {
   name: string;
   description?: string;
   status: ProjectStatus;
+  deadline?: string | null;
+  links: ProjectLinkResponse[];
+  payments: ProjectPaymentResponse[];
+  totalPaid: number;
   githubRepoOwner?: string;
   githubRepoName?: string;
   githubRepoUrl?: string;
@@ -166,6 +170,21 @@ export interface ProjectResponse {
   githubLastError?: string | null;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface ProjectLinkResponse {
+  id: UUID;
+  title: string;
+  url: string;
+  createdAt: string;
+}
+
+export interface ProjectPaymentResponse {
+  id: UUID;
+  amount: number;
+  paidAt: string;
+  notes: string | null;
+  createdAt: string;
 }
 
 export interface NoteResponse {

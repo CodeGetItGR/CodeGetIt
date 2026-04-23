@@ -1,5 +1,5 @@
 import { apiClient } from '@/admin/api/client';
-import type { PagedResponse, ProjectResponse, ProjectStatus, UUID } from '@/admin/types';
+import type { PagedResponse, ProjectLinkResponse, ProjectPaymentResponse, ProjectResponse, ProjectStatus, UUID } from '@/admin/types';
 
 export interface ProjectListQuery {
   page?: number;
@@ -11,6 +11,18 @@ export interface ProjectListQuery {
 export interface UpdateProjectPayload {
   name: string;
   description?: string;
+  deadline?: string | null;
+}
+
+export interface CreateProjectLinkPayload {
+  title: string;
+  url: string;
+}
+
+export interface CreateProjectPaymentPayload {
+  amount: number;
+  paidAt: string;
+  notes?: string | null;
 }
 
 interface ProjectStatusPayload {
@@ -56,5 +68,23 @@ export const projectApi = {
   githubRepoAction: async (id: UUID, payload: GithubRepoActionPayload) => {
     const { data } = await apiClient.post<ProjectResponse>(`/projects/${id}/github-repo`, payload);
     return data;
+  },
+
+  addLink: async (id: UUID, payload: CreateProjectLinkPayload) => {
+    const { data } = await apiClient.post<ProjectLinkResponse>(`/projects/${id}/links`, payload);
+    return data;
+  },
+
+  deleteLink: async (id: UUID, linkId: UUID) => {
+    await apiClient.delete(`/projects/${id}/links/${linkId}`);
+  },
+
+  addPayment: async (id: UUID, payload: CreateProjectPaymentPayload) => {
+    const { data } = await apiClient.post<ProjectPaymentResponse>(`/projects/${id}/payments`, payload);
+    return data;
+  },
+
+  deletePayment: async (id: UUID, paymentId: UUID) => {
+    await apiClient.delete(`/projects/${id}/payments/${paymentId}`);
   },
 };
