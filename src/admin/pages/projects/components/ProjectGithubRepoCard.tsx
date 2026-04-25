@@ -17,14 +17,14 @@ interface ProjectGithubRepoCardProps {
   project: ProjectResponse;
   onCreateRepo: () => void;
   onLinkRepo: () => void;
-  isReadOnly?: boolean;
+  isReadOnly: boolean;
 }
 
 export const ProjectGithubRepoCard = ({
   project,
   onCreateRepo,
   onLinkRepo,
-  isReadOnly = false,
+  isReadOnly
 }: ProjectGithubRepoCardProps) => {
   const { t } = useLocale();
   const text = t.admin.projectGithub.card;
@@ -77,27 +77,25 @@ export const ProjectGithubRepoCard = ({
           </div>
         </div>
 
-        {!isReadOnly && (
-          <div className="flex flex-wrap items-center gap-2">
-            <button
+        {!isReadOnly && <div className="flex flex-wrap items-center gap-2">
+          <button
               type="button"
               onClick={onCreateRepo}
               className={hasRepo
-                ? 'inline-flex h-9 items-center gap-1 rounded-lg border border-gray-300 px-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50'
-                : 'rounded-xl bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800'}
-            >
-              {hasRepo ? '+' : null}
-              <span>{hasRepo ? text.addRepo : text.createRepo}</span>
-            </button>
-            <button
+                  ? 'inline-flex h-9 items-center gap-1 rounded-lg border border-gray-300 px-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50'
+                  : 'rounded-xl bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800'}
+          >
+            {hasRepo ? '+' : null}
+            <span>{hasRepo ? text.addRepo : text.createRepo}</span>
+          </button>
+          <button
               type="button"
               onClick={onLinkRepo}
               className="rounded-xl border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
-            >
-              {text.linkRepo}
-            </button>
-          </div>
-        )}
+          >
+            {text.linkRepo}
+          </button>
+        </div>}
       </div>
 
       <div className="mt-4 grid gap-2 rounded-xl border border-gray-200 bg-gray-50 p-3 text-xs text-gray-600 sm:grid-cols-3">

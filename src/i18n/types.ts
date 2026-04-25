@@ -338,7 +338,6 @@ export interface Translations {
       keep: string;
       confirmCancel: string;
       cancelling: string;
-      cancelledNote: string;
       moveTo: string;
       deadline: string;
       noDeadline: string;

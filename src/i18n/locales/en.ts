@@ -222,12 +222,12 @@ export const en: Translations = {
       {
         title: 'Static: Best for Visibility',
         description: 'Great when you need a polished online presence, clear messaging, and fast delivery.',
-        icon: '🧱',
+        icon: '',
       },
       {
         title: 'Static: Typical Use Cases',
         description: 'Company websites, landing pages, portfolio sites, and marketing pages for campaigns.',
-        icon: '🖥️',
+        icon: '️',
       },
       {
         title: 'Full-Stack: Best for Operations',
@@ -237,12 +237,12 @@ export const en: Translations = {
       {
         title: 'Full-Stack: Typical Use Cases',
         description: 'Booking systems, client portals, internal tools, e-commerce apps, and SaaS products.',
-        icon: '📊',
+        icon: '',
       },
       {
         title: 'Not Sure Which One Fits?',
         description: 'Start with your business goals. The scope can be phased so you launch quickly and expand later.',
-        icon: '🧭',
+        icon: '',
       },
       {
         title: 'Practical Planning First',
@@ -458,7 +458,6 @@ export const en: Translations = {
       keep: 'Keep project',
       confirmCancel: 'Confirm cancel',
       cancelling: 'Cancelling...',
-      cancelledNote: 'This project has been cancelled. The page is read-only.',
       moveTo: 'Move to',
       deadline: 'Deadline',
       noDeadline: 'No deadline',

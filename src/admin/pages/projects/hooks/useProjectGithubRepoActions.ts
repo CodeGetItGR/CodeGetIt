@@ -3,7 +3,6 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { normalizeApiError } from '@/admin/api/client';
 import { projectApi } from '@/admin/api/projects';
 import { queryKeys } from '@/admin/api/queryKeys';
-import { useLocale } from '@/i18n/UseLocale';
 
 interface UseProjectGithubRepoActionsParams {
   projectId: string;
@@ -17,8 +16,6 @@ export function useProjectGithubRepoActions({
   onSuccess,
 }: UseProjectGithubRepoActionsParams) {
   const queryClient = useQueryClient();
-  const { t } = useLocale();
-  const text = t.admin.projectGithub.actions;
   const [showCreateRepoSheet, setShowCreateRepoSheet] = useState(false);
   const [showLinkRepoSheet, setShowLinkRepoSheet] = useState(false);
   const [createRepoName, setCreateRepoName] = useState('');
@@ -39,7 +36,7 @@ export function useProjectGithubRepoActions({
     mutationFn: (payload: Parameters<typeof projectApi.githubRepoAction>[1]) => projectApi.githubRepoAction(projectId, payload),
     onSuccess: async (updatedProject) => {
       setGithubActionError(null);
-      setGithubActionSuccess(text.success);
+      setGithubActionSuccess('GitHub repository settings updated successfully.');
       setShowCreateRepoSheet(false);
       setShowLinkRepoSheet(false);
       resetForms();
@@ -115,7 +112,7 @@ export function useProjectGithubRepoActions({
     const normalizedUrl = linkRepoUrl.trim();
     const githubUrlPattern = /^https?:\/\/(www\.)?github\.com\/[^/]+\/[^/]+\/?$/i;
     if (!githubUrlPattern.test(normalizedUrl)) {
-      setGithubActionError(text.invalidGithubUrl);
+      setGithubActionError('Please provide a valid GitHub URL in the format https://github.com/{owner}/{repo}.');
       return;
     }
 
@@ -124,7 +121,7 @@ export function useProjectGithubRepoActions({
       repoUrl: normalizedUrl,
       repoName: linkRepoName.trim() || undefined,
     });
-  }, [githubRepoMutation, linkRepoName, linkRepoUrl, text.invalidGithubUrl]);
+  }, [githubRepoMutation, linkRepoName, linkRepoUrl]);
 
   return {
     showCreateRepoSheet,

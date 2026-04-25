@@ -21,13 +21,11 @@ import { Textarea } from '@/components/ui/Textarea';
 interface ProjectFormState {
   name: string;
   description: string;
-  deadline: string;
 }
 
 const defaultFormState: ProjectFormState = {
   name: '',
   description: '',
-  deadline: '',
 };
 
 // Color map for project status transitions
@@ -45,13 +43,6 @@ export const ProjectDetailPage = () => {
   const queryClient = useQueryClient();
   const { errorMessage, setApiError, clearError } = useApiErrorState();
   const [showCancelConfirm, setShowCancelConfirm] = useState(false);
-  const [showAddLink, setShowAddLink] = useState(false);
-  const [showAddPayment, setShowAddPayment] = useState(false);
-  const [linkTitle, setLinkTitle] = useState('');
-  const [linkUrl, setLinkUrl] = useState('');
-  const [paymentAmount, setPaymentAmount] = useState('');
-  const [paymentPaidAt, setPaymentPaidAt] = useState('');
-  const [paymentNotes, setPaymentNotes] = useState('');
 
   const text = t.admin.projectDetail;
   const statusActionLabels = text.statusLabels;
@@ -85,7 +76,6 @@ export const ProjectDetailPage = () => {
       ...defaultFormState,
       name: project?.name ?? '',
       description: project?.description || '',
-      deadline: project?.deadline ?? '',
     };
   }, [projectQuery.data]);
 
@@ -107,7 +97,6 @@ export const ProjectDetailPage = () => {
       projectApi.update(id, {
         name: formState.name,
         description: formState.description || undefined,
-        deadline: formState.deadline || null,
       }),
     onSuccess: async () => {
       clearError();
@@ -127,66 +116,12 @@ export const ProjectDetailPage = () => {
     onError: (error) => setApiError(error),
   });
 
-  const addLinkMutation = useMutation({
-    mutationFn: () =>
-      projectApi.addLink(id, {
-        title: linkTitle.trim(),
-        url: linkUrl.trim(),
-      }),
-    onSuccess: async () => {
-      clearError();
-      setLinkTitle('');
-      setLinkUrl('');
-      setShowAddLink(false);
-      await refreshProjectData();
-    },
-    onError: (error) => setApiError(error),
-  });
-
-  const deleteLinkMutation = useMutation({
-    mutationFn: (linkId: string) => projectApi.deleteLink(id, linkId),
-    onSuccess: async () => {
-      clearError();
-      await refreshProjectData();
-    },
-    onError: (error) => setApiError(error),
-  });
-
-  const addPaymentMutation = useMutation({
-    mutationFn: () =>
-      projectApi.addPayment(id, {
-        amount: Number(paymentAmount),
-        paidAt: paymentPaidAt,
-        notes: paymentNotes.trim() || null,
-      }),
-    onSuccess: async () => {
-      clearError();
-      setPaymentAmount('');
-      setPaymentPaidAt('');
-      setPaymentNotes('');
-      setShowAddPayment(false);
-      await refreshProjectData();
-    },
-    onError: (error) => setApiError(error),
-  });
-
-  const deletePaymentMutation = useMutation({
-    mutationFn: (paymentId: string) => projectApi.deletePayment(id, paymentId),
-    onSuccess: async () => {
-      clearError();
-      await refreshProjectData();
-    },
-    onError: (error) => setApiError(error),
-  });
-
   const githubRepoActions = useProjectGithubRepoActions({
     projectId: id,
     projectDetailQueryKey,
     onSuccess: clearError,
   });
 
-  const isReadOnly = projectQuery.data?.status === 'CANCELLED';
-  console.log(isReadOnly)
 
   const availableTransitions = useMemo(() => {
     const current = projectQuery.data?.status;
@@ -199,10 +134,9 @@ export const ProjectDetailPage = () => {
   const handleUpdate = useCallback(
     async (event: FormEvent<HTMLFormElement>) => {
       event.preventDefault();
-      if (isReadOnly) return;
       await updateMutation.mutateAsync();
     },
-    [isReadOnly, updateMutation],
+    [updateMutation],
   );
 
   const handleNameChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
@@ -211,10 +145,6 @@ export const ProjectDetailPage = () => {
 
   const handleDescriptionChange = useCallback((event: ChangeEvent<HTMLTextAreaElement>) => {
     handleFieldChange('description', event.target.value);
-  }, [handleFieldChange]);
-
-  const handleDeadlineChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-    handleFieldChange('deadline', event.target.value);
   }, [handleFieldChange]);
 
   const handleStatusTransition = useCallback((event: MouseEvent<HTMLButtonElement>) => {
@@ -238,49 +168,6 @@ export const ProjectDetailPage = () => {
     setShowCancelConfirm(false);
   }, []);
 
-  const handleLinkTitleChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-    setLinkTitle(event.target.value);
-  }, []);
-
-  const handleLinkUrlChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-    setLinkUrl(event.target.value);
-  }, []);
-
-  const handlePaymentAmountChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-    setPaymentAmount(event.target.value);
-  }, []);
-
-  const handlePaymentPaidAtChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-    setPaymentPaidAt(event.target.value);
-  }, []);
-
-  const handlePaymentNotesChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-    setPaymentNotes(event.target.value);
-  }, []);
-
-  const handleAddLink = useCallback(
-    async (event: FormEvent<HTMLFormElement>) => {
-      event.preventDefault();
-      await addLinkMutation.mutateAsync();
-    },
-    [addLinkMutation],
-  );
-
-  const handleAddPayment = useCallback(
-    async (event: FormEvent<HTMLFormElement>) => {
-      event.preventDefault();
-      await addPaymentMutation.mutateAsync();
-    },
-    [addPaymentMutation],
-  );
-
-  const handleDeleteLink = useCallback((linkId: string) => {
-    deleteLinkMutation.mutate(linkId);
-  }, [deleteLinkMutation]);
-
-  const handleDeletePayment = useCallback((paymentId: string) => {
-    deletePaymentMutation.mutate(paymentId);
-  }, [deletePaymentMutation]);
 
   if (projectQuery.isLoading) {
     return <p className="text-sm text-gray-500">{text.loading}</p>;
@@ -291,40 +178,7 @@ export const ProjectDetailPage = () => {
   }
 
   const project = projectQuery.data;
-  const projectLinks = project.links ?? [];
-  const projectPayments = project.payments ?? [];
-  const deadlineBadge = (() => {
-    if (!project.deadline) {
-      return {
-        label: text.noDeadline,
-        className: 'bg-gray-100 text-gray-700 border-gray-200',
-      };
-    }
-
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const deadlineDate = new Date(`${project.deadline}T00:00:00`);
-    const daysLeft = Math.ceil((deadlineDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
-
-    if (daysLeft < 0) {
-      return {
-        label: `${text.overdue} (${Math.abs(daysLeft)}d)`,
-        className: 'bg-rose-50 text-rose-700 border-rose-200',
-      };
-    }
-
-    if (daysLeft <= 7) {
-      return {
-        label: `${daysLeft} ${text.daysLeft}`,
-        className: 'bg-amber-50 text-amber-700 border-amber-200',
-      };
-    }
-
-    return {
-      label: project.deadline,
-      className: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-    };
-  })();
+  const isReadOnly = project.status === 'CANCELLED';
 
   return (
     <div className="space-y-6">
@@ -335,9 +189,6 @@ export const ProjectDetailPage = () => {
           <h2 className="text-3xl font-bold tracking-tight text-gray-900">{project.name}</h2>
           <div className="mt-2 flex items-center gap-2">
             <StatusBadge value={project.status} />
-            <span className={`inline-flex rounded-full border px-2.5 py-1 text-xs font-medium ${deadlineBadge.className}`}>
-              {text.deadline}: {deadlineBadge.label}
-            </span>
           </div>
         </div>
         <Link to="/admin/projects" className="text-sm font-medium text-gray-700 underline">
@@ -347,9 +198,6 @@ export const ProjectDetailPage = () => {
 
       {errorMessage && <p className="rounded-xl bg-rose-50 px-3 py-2 text-sm text-rose-700">{errorMessage}</p>}
       {githubRepoActions.githubActionSuccess && <p className="rounded-xl bg-emerald-50 px-3 py-2 text-sm text-emerald-700">{githubRepoActions.githubActionSuccess}</p>}
-      {isReadOnly && <p className="rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-600">{text.cancelledNote}</p>}
-
-
       {/* ── Sticky section nav ── */}
       <nav className="sticky top-3 z-10 -mx-1 flex gap-1 overflow-x-auto rounded-2xl border border-gray-200 bg-white/90 px-3 py-2 backdrop-blur">
         {[
@@ -396,157 +244,6 @@ export const ProjectDetailPage = () => {
         onLinkRepo={githubRepoActions.openLinkRepoSheet}
         isReadOnly={isReadOnly}
       />
-
-      <div className="grid gap-4 md:grid-cols-2">
-        <section className="rounded-2xl border border-gray-200 bg-white p-5">
-          <div className="flex items-center justify-between gap-2">
-            <h3 className="text-lg font-semibold text-gray-900">{text.links}</h3>
-            {!isReadOnly && (
-              <button
-                type="button"
-                onClick={() => setShowAddLink(v => !v)}
-                className="text-xs font-medium text-gray-700 hover:text-gray-900"
-              >
-                {showAddLink ? '×' : text.addLink}
-              </button>
-            )}
-          </div>
-
-          {showAddLink && (
-            <form className="mt-4 grid gap-2" onSubmit={handleAddLink}>
-              <Input
-                label={text.linkTitle}
-                value={linkTitle}
-                onChange={handleLinkTitleChange}
-                className="rounded-xl px-3 py-2"
-                required
-              />
-              <Input
-                label={text.linkUrl}
-                value={linkUrl}
-                onChange={handleLinkUrlChange}
-                className="rounded-xl px-3 py-2"
-                required
-              />
-              <button
-                type="submit"
-                disabled={addLinkMutation.isPending}
-                className="mt-1 rounded-lg bg-gray-900 px-3 py-2 text-sm font-medium text-white hover:bg-gray-800 disabled:opacity-60"
-              >
-                {addLinkMutation.isPending ? text.creatingLink : text.createLink}
-              </button>
-            </form>
-          )}
-
-          <div className="mt-3 max-h-64 space-y-2 overflow-y-auto">
-            {projectLinks.length === 0 && <p className="text-sm text-gray-500">{text.noLinks}</p>}
-            {projectLinks.map((link) => (
-              <div key={link.id} className="flex items-center justify-between gap-2 rounded-lg border border-gray-200 px-3 py-2">
-                <div className="min-w-0">
-                  <p className="truncate text-sm font-medium text-gray-900">{link.title}</p>
-                  <a href={link.url} target="_blank" rel="noreferrer" className="block truncate text-xs text-gray-500 hover:underline">
-                    {link.url}
-                  </a>
-                </div>
-                <div className="flex shrink-0 items-center gap-2">
-                  <a href={link.url} target="_blank" rel="noreferrer" className="text-xs font-medium text-gray-700 underline">
-                    {text.open}
-                  </a>
-                  {!isReadOnly && (
-                    <button
-                      type="button"
-                      onClick={() => handleDeleteLink(link.id)}
-                      disabled={deleteLinkMutation.isPending}
-                      className="text-xs font-medium text-rose-600 hover:text-rose-700"
-                    >
-                      {text.remove}
-                    </button>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <section className="rounded-2xl border border-gray-200 bg-white p-5">
-          <div className="flex items-center justify-between gap-2">
-            <h3 className="text-lg font-semibold text-gray-900">{text.payments}</h3>
-            <div className="flex items-center gap-3">
-              <p className="text-sm font-medium text-gray-700">
-                {text.totalPaid}: {(project.totalPaid ?? 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-              </p>
-              {!isReadOnly && (
-                <button
-                  type="button"
-                  onClick={() => setShowAddPayment(v => !v)}
-                  className="text-xs font-medium text-gray-700 hover:text-gray-900"
-                >
-                  {showAddPayment ? '×' : '+'}
-                </button>
-              )}
-            </div>
-          </div>
-
-          {showAddPayment && (
-            <form className="mt-4 grid gap-2 md:grid-cols-2" onSubmit={handleAddPayment}>
-              <Input
-                label={text.amount}
-                type="number"
-                min="0.01"
-                step="0.01"
-                value={paymentAmount}
-                onChange={handlePaymentAmountChange}
-                className="rounded-xl px-3 py-2"
-                required
-              />
-              <Input
-                label={text.paidAt}
-                type="date"
-                value={paymentPaidAt}
-                onChange={handlePaymentPaidAtChange}
-                className="rounded-xl px-3 py-2"
-                required
-              />
-              <Input
-                label={text.notesOptional}
-                value={paymentNotes}
-                onChange={handlePaymentNotesChange}
-                className="rounded-xl px-3 py-2 md:col-span-2"
-              />
-              <button
-                type="submit"
-                disabled={addPaymentMutation.isPending}
-                className="rounded-lg bg-gray-900 px-3 py-2 text-sm font-medium text-white hover:bg-gray-800 disabled:opacity-60 md:col-span-2"
-              >
-                {addPaymentMutation.isPending ? text.registeringPayment : text.registerPayment}
-              </button>
-            </form>
-          )}
-
-          <div className="mt-3 max-h-64 space-y-1.5 overflow-y-auto">
-            {projectPayments.length === 0 && <p className="text-sm text-gray-500">{text.noPayments}</p>}
-            {projectPayments.map((payment) => (
-              <div key={payment.id} className="flex items-center gap-2 rounded-lg border border-gray-200 px-3 py-2">
-                <p className="w-20 shrink-0 text-sm font-medium tabular-nums text-gray-900">
-                  {payment.amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                </p>
-                <p className="w-24 shrink-0 text-xs text-gray-500">{payment.paidAt}</p>
-                <p className="min-w-0 flex-1 truncate text-xs text-gray-400">{payment.notes || text.noNotes}</p>
-                {!isReadOnly && (
-                  <button
-                    type="button"
-                    onClick={() => handleDeletePayment(payment.id)}
-                    disabled={deletePaymentMutation.isPending}
-                    className="shrink-0 text-xs font-medium text-rose-600 hover:text-rose-700"
-                  >
-                    {text.remove}
-                  </button>
-                )}
-              </div>
-            ))}
-          </div>
-        </section>
-      </div>
 
       {/* ── Linked Request & Offer overview ── */}
       <div id="section-linked" className="grid gap-4 md:grid-cols-2">
@@ -627,14 +324,6 @@ export const ProjectDetailPage = () => {
               onChange={handleNameChange}
               className="rounded-xl px-3 py-2"
               required
-            />
-
-            <Input
-              label={text.deadline}
-              type="date"
-              value={formState.deadline}
-              onChange={handleDeadlineChange}
-              className="rounded-xl px-3 py-2"
             />
 
             <div className="md:col-span-2">

@@ -222,12 +222,12 @@ export const el: Translations = {
       {
         title: 'Static: Ιδανικό για Παρουσία',
         description: 'Ιδανικό όταν χρειάζεστε επαγγελματική online εικόνα, καθαρό μήνυμα και γρήγορη παράδοση.',
-        icon: '🧱',
+        icon: '',
       },
       {
         title: 'Static: Συνήθεις Χρήσεις',
         description: 'Εταιρικοί ιστότοποι, landing pages, portfolio sites και σελίδες marketing.',
-        icon: '🖥️',
+        icon: '️',
       },
       {
         title: 'Full-Stack: Ιδανικό για Λειτουργίες',
@@ -237,12 +237,12 @@ export const el: Translations = {
       {
         title: 'Full-Stack: Συνήθεις Χρήσεις',
         description: 'Συστήματα κρατήσεων, portals πελατών, εσωτερικά εργαλεία, e-commerce και SaaS.',
-        icon: '📊',
+        icon: '',
       },
       {
         title: 'Δεν Είστε Σίγουροι Τι Ταιριάζει;',
         description: 'Ξεκινάμε από τους επιχειρηματικούς στόχους. Το scope μπορεί να γίνει σταδιακά για γρήγορο λανσάρισμα.',
-        icon: '🧭',
+        icon: '',
       },
       {
         title: 'Πρώτα Πρακτικός Σχεδιασμός',
@@ -458,7 +458,6 @@ export const el: Translations = {
       keep: 'Διατηρηση project',
       confirmCancel: 'Επιβεβαιωση ακυρωσης',
       cancelling: 'Ακυρωση...',
-      cancelledNote: 'Αυτο το project εχει ακυρωθει. Η σελιδα ειναι μονο αναγνωσης.',
       moveTo: 'Μεταβαση σε',
       deadline: 'Προθεσμια',
       noDeadline: 'Χωρις προθεσμια',

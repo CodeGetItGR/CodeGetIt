@@ -1,6 +1,5 @@
 import type { ChangeEvent, FormEvent } from 'react';
 import { SlideSheet } from '@/admin/components/SlideSheet';
-import { useLocale } from '@/i18n/UseLocale';
 import { Input } from '@/components/ui/Input';
 
 interface ProjectGithubRepoSheetsProps {
@@ -40,23 +39,20 @@ export const ProjectGithubRepoSheets = ({
   onCreateRepoSubmit,
   onLinkRepoSubmit,
 }: ProjectGithubRepoSheetsProps) => {
-  const { t } = useLocale();
-  const text = t.admin.projectGithub.sheets;
-
   return (
     <>
       <SlideSheet
         isOpen={showCreateRepoSheet}
         onClose={onCloseCreateRepoSheet}
-        title={text.createTitle}
-        description={text.createDesc}
+        title="Create GitHub Repository"
+        description="Create a new repository in your configured GitHub owner and attach it to this project."
       >
         <form className="space-y-4" onSubmit={onCreateRepoSubmit}>
           <Input
-            label={text.repoNameOptional}
+            label="Repository name (optional)"
             value={createRepoName}
             onChange={onCreateRepoNameChange}
-            placeholder={text.repoNamePlaceholder}
+            placeholder="e.g. acme-client-portal"
           />
 
           <label className="flex items-center gap-2 text-sm text-gray-700">
@@ -65,7 +61,7 @@ export const ProjectGithubRepoSheets = ({
               checked={createPrivateRepo}
               onChange={onCreatePrivateRepoChange}
             />
-            <span>{text.privateRepo}</span>
+            <span>Private repository</span>
           </label>
 
           {githubActionError && (
@@ -78,14 +74,14 @@ export const ProjectGithubRepoSheets = ({
               disabled={isPending}
               className="flex-1 rounded-xl bg-gray-900 px-4 py-2.5 text-sm font-medium text-white hover:bg-gray-800 disabled:opacity-60"
             >
-              {isPending ? text.creating : text.createRepo}
+              {isPending ? 'Creating...' : 'Create repo'}
             </button>
             <button
               type="button"
               onClick={onCloseCreateRepoSheet}
               className="rounded-xl border border-gray-300 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50"
             >
-              {text.cancel}
+              Cancel
             </button>
           </div>
         </form>
@@ -94,23 +90,23 @@ export const ProjectGithubRepoSheets = ({
       <SlideSheet
         isOpen={showLinkRepoSheet}
         onClose={onCloseLinkRepoSheet}
-        title={text.linkTitle}
-        description={text.linkDesc}
+        title="Link Existing GitHub Repository"
+        description="Attach an existing github.com repository URL to this project."
       >
         <form className="space-y-4" onSubmit={onLinkRepoSubmit}>
           <Input
-            label={text.repoUrl}
+            label="Repository URL"
             value={linkRepoUrl}
             onChange={onLinkRepoUrlChange}
-            placeholder={text.repoUrlPlaceholder}
+            placeholder="https://github.com/org/repo"
             required
           />
 
           <Input
-            label={text.repoNameOverride}
+            label="Repository name override (optional)"
             value={linkRepoName}
             onChange={onLinkRepoNameChange}
-            placeholder={text.repoNameOverridePlaceholder}
+            placeholder="repo-name"
           />
 
           {githubActionError && (
@@ -123,14 +119,14 @@ export const ProjectGithubRepoSheets = ({
               disabled={isPending}
               className="flex-1 rounded-xl bg-gray-900 px-4 py-2.5 text-sm font-medium text-white hover:bg-gray-800 disabled:opacity-60"
             >
-              {isPending ? text.linking : text.linkRepo}
+              {isPending ? 'Linking...' : 'Link repository'}
             </button>
             <button
               type="button"
               onClick={onCloseLinkRepoSheet}
               className="rounded-xl border border-gray-300 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50"
             >
-              {text.cancel}
+              Cancel
             </button>
           </div>
         </form>
