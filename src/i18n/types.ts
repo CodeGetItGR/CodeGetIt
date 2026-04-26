@@ -402,10 +402,38 @@ export interface Translations {
         linking: string;
         linkRepo: string;
       };
-      actions: {
-        success: string;
-        invalidGithubUrl: string;
-      };
-    };
-  };
-}
+       actions: {
+         success: string;
+         invalidGithubUrl: string;
+       };
+     };
+     aiChat: {
+       title: string;
+       newConversation: string;
+       sendMessage: string;
+       placeholder: string;
+       loading: string;
+       error: string;
+       disabled: string;
+       analyzeOffer: string;
+       analyzing: string;
+       analysisComplete: string;
+       risks: string;
+       timeline: string;
+       requirements: string;
+       recommendations: string;
+       complexity: string;
+       effort: string;
+       summary: string;
+       tokensUsed: string;
+       estimatedCost: string;
+       usage: string;
+       messages: string;
+       archived: string;
+       archive: string;
+       retry: string;
+       rateLimited: string;
+       tryAgain: string;
+     };
+   };
+ }

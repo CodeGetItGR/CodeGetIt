@@ -17,6 +17,7 @@ import type { ProjectStatus } from '@/admin/types';
 import { useLocale } from '@/i18n/UseLocale';
 import { Input } from '@/components/ui/Input';
 import { Textarea } from '@/components/ui/Textarea';
+import {AiChatPanel} from "@/admin/components/AiChatPanel.tsx";
 
 interface ProjectFormState {
   name: string;
@@ -311,6 +312,12 @@ export const ProjectDetailPage = () => {
           })()}
         </div>
       </div>
+
+      <AiChatPanel
+          entityId={project.id}
+          entityType="PROJECT"
+          className="h-[300px]"
+      />
 
       <DetailContentTabs
         detailsLabel={text.details}

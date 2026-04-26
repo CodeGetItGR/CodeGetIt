@@ -5,6 +5,7 @@ import { queryKeys } from '@/admin/api/queryKeys';
 import { requestApi } from '@/admin/api/requests';
 import { CreateOfferSheet } from '@/admin/components/CreateOfferSheet';
 import { EntityAuxPanels } from '@/admin/components/EntityAuxPanels';
+import { AiChatPanel } from '@/admin/components/AiChatPanel';
 import { StatusBadge } from '@/admin/components/StatusBadge';
 import { requestTransitions } from '@/admin/config/workflows';
 import { useApiErrorState } from '@/admin/hooks/useApiErrorState';
@@ -487,11 +488,19 @@ export const RequestDetailPage = () => {
             </button>
           </div>
         </form>
-      </section>
+       </section>
 
-      <section>
-        <EntityAuxPanels entityType="REQUEST" entityId={request.id} />
-      </section>
+       <section>
+         <div className="grid gap-4 md:grid-cols-2">
+           <div className="rounded-2xl border border-gray-200 bg-white p-5">
+             <AiChatPanel entityId={request.id} entityType="REQUEST" />
+           </div>
+         </div>
+       </section>
+
+       <section>
+         <EntityAuxPanels entityType="REQUEST" entityId={request.id} />
+       </section>
 
       <CreateOfferSheet
         isOpen={showCreateOffer}

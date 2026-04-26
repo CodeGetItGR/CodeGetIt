@@ -33,6 +33,12 @@ interface QueryKeys {
     options: readonly [string, string];
     optionsPublic: readonly [string, string];
   };
+  ai: {
+    analysis: (offerId: UUID) => readonly [string, string, UUID];
+    thread: (threadId: UUID) => readonly [string, string, UUID];
+    messages: (threadId: UUID, limit: number) => readonly [string, string, UUID, number];
+    stats: (offerId: UUID) => readonly [string, string, UUID];
+  };
 }
 
 export const queryKeys: QueryKeys = {
@@ -74,6 +80,12 @@ export const queryKeys: QueryKeys = {
     public: ['settings', 'public'] as const,
     options: ['settings', 'options'] as const,
     optionsPublic: ['settings', 'options-public'] as const,
+  },
+  ai: {
+    analysis: (offerId) => ['ai', 'analysis', offerId] as const,
+    thread: (threadId) => ['ai', 'thread', threadId] as const,
+    messages: (threadId, limit) => ['ai', 'messages', threadId, limit] as const,
+    stats: (offerId) => ['ai', 'stats', offerId] as const,
   },
 };
 

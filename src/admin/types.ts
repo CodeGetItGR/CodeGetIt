@@ -205,3 +205,50 @@ export interface ContactMessageResponse {
   message: string;
   createdAt: string;
 }
+
+export interface OfferAnalysisResponse {
+  analysisId: UUID;
+  offerId: UUID;
+  analysisData: {
+    risks: string[];
+    timeline: string;
+    requirements: string[];
+    recommendations: string[];
+    estimatedEffort: string;
+    complexity: string;
+  };
+  summary: string;
+  tokensUsed: number;
+  estimatedCost: number;
+  createdAt: string;
+}
+
+export interface AiThreadResponse {
+  id: UUID;
+  requestId?: UUID;
+  offerId?: UUID;
+  projectId?: UUID;
+  title: string;
+  context?: string;
+  isArchived: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface AiMessageResponse {
+  messageId: UUID;
+  role: 'USER' | 'ASSISTANT';
+  content: string;
+  tokensUsed: number;
+  estimatedCost: number;
+  createdAt: string;
+}
+
+export interface AiUsageStatsResponse {
+  offerId: UUID;
+  totalTokens: number;
+  totalCost: number;
+  messageCount: number;
+  modelUsed: string;
+}
+

@@ -1,9 +1,10 @@
-
+import {useState, useMemo, useCallback, type FormEvent, type ChangeEvent} from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { offerApi, type CreateLineItemPayload, type UpdateLineItemPayload } from '@/admin/api/offers';
 import { queryKeys } from '@/admin/api/queryKeys';
 import { EntityAuxPanels } from '@/admin/components/EntityAuxPanels';
+import { AiChatPanel } from '@/admin/components/AiChatPanel';
 import { StatusBadge } from '@/admin/components/StatusBadge';
 import { useApiErrorState } from '@/admin/hooks/useApiErrorState';
 import { useEntityDraftState } from '@/admin/hooks/useEntityDraftState';
@@ -583,10 +584,19 @@ export const OfferDetailPage = () => {
         </section>
       )}
 
-      {/* ── Notes & Audit ── */}
-      <section id="offer-aux">
-        <EntityAuxPanels entityType="OFFER" entityId={offer.id} />
-      </section>
+       {/* ── AI Chat & Analysis ── */}
+       <section id="offer-ai">
+         <div className="grid gap-4 md:grid-cols-2">
+           <div className="rounded-2xl border border-gray-200 bg-white p-5">
+             <AiChatPanel entityId={offer.id} entityType="OFFER" />
+           </div>
+         </div>
+       </section>
+
+       {/* ── Notes & Audit ── */}
+       <section id="offer-aux">
+         <EntityAuxPanels entityType="OFFER" entityId={offer.id} />
+       </section>
     </div>
   );
 };
