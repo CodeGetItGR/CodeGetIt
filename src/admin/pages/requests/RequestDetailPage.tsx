@@ -5,7 +5,6 @@ import { queryKeys } from '@/admin/api/queryKeys';
 import { requestApi } from '@/admin/api/requests';
 import { CreateOfferSheet } from '@/admin/components/CreateOfferSheet';
 import { EntityAuxPanels } from '@/admin/components/EntityAuxPanels';
-import { AiChatPanel } from '@/admin/components/AiChatPanel';
 import { StatusBadge } from '@/admin/components/StatusBadge';
 import { requestTransitions } from '@/admin/config/workflows';
 import { useApiErrorState } from '@/admin/hooks/useApiErrorState';
@@ -23,6 +22,7 @@ import type {
 } from '@/admin/types';
 import { Input } from '@/components/ui/Input';
 import { Textarea } from '@/components/ui/Textarea';
+import {RequestAnalysisReport} from "@/admin/components/request-analysis/RequestAnalysisReport.tsx";
 
 interface RequestFormState {
   title: string;
@@ -340,6 +340,11 @@ export const RequestDetailPage = () => {
           ))}
         </div>
       </section>
+
+      <section>
+        <RequestAnalysisReport requestId={request.id} requestTitle={request.title} />
+      </section>
+
       <section className="rounded-2xl border border-gray-200 bg-white p-6">
         <h3 className="text-lg font-semibold text-gray-900">Editable details</h3>
         <p className="mt-1 text-sm text-gray-600">Contact email and phone are immutable by backend contract.</p>
@@ -488,14 +493,6 @@ export const RequestDetailPage = () => {
             </button>
           </div>
         </form>
-       </section>
-
-       <section>
-         <div className="grid gap-4 md:grid-cols-2">
-           <div className="rounded-2xl border border-gray-200 bg-white p-5">
-             <AiChatPanel entityId={request.id} entityType="REQUEST" />
-           </div>
-         </div>
        </section>
 
        <section>

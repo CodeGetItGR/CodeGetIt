@@ -223,6 +223,39 @@ export interface OfferAnalysisResponse {
   createdAt: string;
 }
 
+export interface RequestAnalysisDataResponse {
+  risks: string[];
+  timeline: string[];
+  requirements: string[];
+  recommendations: string[];
+  estimatedEffortHours: number;
+  complexity: string;
+}
+
+export interface RequestAnalysisResponse {
+  analysisId: UUID;
+  request_id: UUID;
+  analysis_data: RequestAnalysisDataResponse;
+  summary: string;
+  tokens_used: number;
+  estimated_cost: number;
+  created_at: string;
+}
+
+export interface RequestAnalysisStatusResponse {
+  request_id: UUID;
+  job_id: UUID;
+  status: string;
+  job_type: string;
+  target_type: string;
+  retry_count: number;
+  error_message: string | null;
+  next_attempt_at: string | null;
+  created_at: string;
+  updated_at: string;
+  analysis_available: boolean;
+}
+
 export interface AiThreadResponse {
   id: UUID;
   requestId?: UUID;

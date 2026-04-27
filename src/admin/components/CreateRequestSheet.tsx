@@ -1,9 +1,11 @@
 import { useCallback, useState, type ChangeEvent, type FormEvent } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { queryKeys } from '@/admin/api/queryKeys';
 import { requestApi, type SubmitRequestPayload } from '@/admin/api/requests';
 import { SlideSheet } from '@/admin/components/SlideSheet';
 import { useApiErrorState } from '@/admin/hooks/useApiErrorState';
 import { useSettingsOptions } from '@/admin/hooks/useSettingsOptions';
+import { useLocale } from '@/i18n/UseLocale';
 import type {
   BudgetFlexibility,
   BudgetRange,
@@ -48,13 +50,15 @@ export const CreateRequestSheet = ({ isOpen, onClose, onCreated }: CreateRequest
   const [form, setForm] = useState<SubmitRequestPayload>(blankForm);
   const { errorMessage, setApiError, clearError } = useApiErrorState();
   const queryClient = useQueryClient();
+  const { t } = useLocale();
+  const text = t.admin.createRequestSheet;
 
   const createMutation = useMutation({
     mutationFn: () => requestApi.submit(form),
     onSuccess: async () => {
       clearError();
       setForm(blankForm);
-      await queryClient.invalidateQueries({ queryKey: ['requests'] });
+      await queryClient.invalidateQueries({ queryKey: queryKeys.requests.root });
       onCreated?.();
       onClose();
     },
@@ -170,27 +174,27 @@ export const CreateRequestSheet = ({ isOpen, onClose, onCreated }: CreateRequest
     <SlideSheet
       isOpen={isOpen}
       onClose={handleClose}
-      title="New request"
-      description="Submits a new service request via the public endpoint."
+      title={text.title}
+      description={text.description}
     >
       <form className="space-y-4" onSubmit={handleSubmit}>
         <Input
-          label="Title"
+          label={text.labels.title}
           value={form.title}
           onChange={handleTitleChange}
-          placeholder="e.g. Landing page redesign"
+          placeholder={text.placeholders.title}
           required
         />
 
         <Input
-          label="Requester name"
+          label={text.labels.requesterName}
           value={form.requesterName}
           onChange={handleRequesterNameChange}
           required
         />
 
         <Input
-          label="Requester email"
+          label={text.labels.requesterEmail}
           type="email"
           value={form.requesterEmail}
           onChange={handleRequesterEmailChange}
@@ -198,7 +202,7 @@ export const CreateRequestSheet = ({ isOpen, onClose, onCreated }: CreateRequest
         />
 
         <Input
-          label="Requester phone"
+          label={text.labels.requesterPhone}
           type="tel"
           value={form.requesterPhone}
           onChange={handleRequesterPhoneChange}
@@ -206,15 +210,15 @@ export const CreateRequestSheet = ({ isOpen, onClose, onCreated }: CreateRequest
         />
 
         <Textarea
-          label="Description (optional)"
+          label={text.labels.description}
           value={form.description ?? ''}
           onChange={handleDescriptionChange}
           rows={3}
-          placeholder="Brief context about the project..."
+          placeholder={text.placeholders.description}
         />
 
         <div>
-          <label className="mb-1 block text-sm text-gray-600">Project type</label>
+          <label className="mb-1 block text-sm text-gray-600">{text.labels.projectType}</label>
           <select value={form.projectType} onChange={handleProjectTypeChange} className="w-full rounded-xl border border-gray-300 px-3 py-2 text-sm" required>
             {projectTypeOptions.map((item) => (
               <option key={item.value} value={item.value}>{item.label}</option>
@@ -223,36 +227,36 @@ export const CreateRequestSheet = ({ isOpen, onClose, onCreated }: CreateRequest
         </div>
 
         <Textarea
-          label="Business goal"
+          label={text.labels.businessGoal}
           value={form.businessGoal}
           onChange={handleBusinessGoalChange}
           rows={3}
-          placeholder="What outcome should this project deliver?"
+          placeholder={text.placeholders.businessGoal}
           required
         />
 
         <label className="flex items-start gap-2 rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-700">
           <input
-            type="checkbox"
-            checked={Boolean(form.enterpriseInquiry)}
-            onChange={handleEnterpriseInquiryChange}
-            className="mt-0.5"
-          />
-          <span>This is an enterprise inquiry (prefer direct communication)</span>
+          type="checkbox"
+          checked={Boolean(form.enterpriseInquiry)}
+          onChange={handleEnterpriseInquiryChange}
+          className="mt-0.5"
+        />
+          <span>{text.enterpriseHint}</span>
         </label>
 
         {form.enterpriseInquiry && (
           <p className="rounded-xl border border-blue-100 bg-blue-50 px-3 py-2 text-sm text-blue-700">
-            Enterprise inquiry enabled: this request can start with lean details and be refined through direct follow-up.
+            {text.enterpriseEnabled}
           </p>
         )}
 
-        <Input label="Organization name" value={form.organizationName ?? ''} onChange={handleOrganizationNameChange} />
-        <Input label="Industry" value={form.industry ?? ''} onChange={handleIndustryChange} />
-        <Input label="Target audience" value={form.targetAudience ?? ''} onChange={handleTargetAudienceChange} />
+        <Input label={text.labels.organizationName} value={form.organizationName ?? ''} onChange={handleOrganizationNameChange} />
+        <Input label={text.labels.industry} value={form.industry ?? ''} onChange={handleIndustryChange} />
+        <Input label={text.labels.targetAudience} value={form.targetAudience ?? ''} onChange={handleTargetAudienceChange} />
 
         <div>
-          <label className="mb-1 block text-sm text-gray-600">Desired start window</label>
+          <label className="mb-1 block text-sm text-gray-600">{text.labels.desiredStartWindow}</label>
           <select value={form.desiredStartWindow} onChange={handleDesiredStartWindowChange} className="w-full rounded-xl border border-gray-300 px-3 py-2 text-sm" required>
             {desiredStartWindowOptions.map((item) => (
               <option key={item.value} value={item.value}>{item.label}</option>
@@ -260,10 +264,10 @@ export const CreateRequestSheet = ({ isOpen, onClose, onCreated }: CreateRequest
           </select>
         </div>
 
-        <Input label="Target launch window" value={form.targetLaunchWindow ?? ''} onChange={handleTargetLaunchWindowChange} placeholder="e.g. Q4 2026" />
+        <Input label={text.labels.targetLaunchWindow} value={form.targetLaunchWindow ?? ''} onChange={handleTargetLaunchWindowChange} placeholder={text.placeholders.targetLaunchWindow} />
 
         <div>
-          <label className="mb-1 block text-sm text-gray-600">Budget range</label>
+          <label className="mb-1 block text-sm text-gray-600">{text.labels.budgetRange}</label>
           <select value={form.budgetRange} onChange={handleBudgetRangeChange} className="w-full rounded-xl border border-gray-300 px-3 py-2 text-sm" required>
             {budgetRangeOptions.map((item) => (
               <option key={item.value} value={item.value}>{item.label}</option>
@@ -272,7 +276,7 @@ export const CreateRequestSheet = ({ isOpen, onClose, onCreated }: CreateRequest
         </div>
 
         <div>
-          <label className="mb-1 block text-sm text-gray-600">Budget flexibility</label>
+          <label className="mb-1 block text-sm text-gray-600">{text.labels.budgetFlexibility}</label>
           <select value={form.budgetFlexibility} onChange={handleBudgetFlexibilityChange} className="w-full rounded-xl border border-gray-300 px-3 py-2 text-sm">
             {budgetFlexibilityOptions.map((item) => (
               <option key={item.value} value={item.value}>{item.label}</option>
@@ -281,7 +285,7 @@ export const CreateRequestSheet = ({ isOpen, onClose, onCreated }: CreateRequest
         </div>
 
         <div>
-          <label className="mb-1 block text-sm text-gray-600">Communication preference</label>
+          <label className="mb-1 block text-sm text-gray-600">{text.labels.communicationPreference}</label>
           <select value={form.communicationPreference} onChange={handleCommunicationPreferenceChange} className="w-full rounded-xl border border-gray-300 px-3 py-2 text-sm">
             {communicationPreferenceOptions.map((item) => (
               <option key={item.value} value={item.value}>{item.label}</option>
@@ -290,7 +294,7 @@ export const CreateRequestSheet = ({ isOpen, onClose, onCreated }: CreateRequest
         </div>
 
         <div>
-          <label className="mb-1 block text-sm text-gray-600">Data sensitivity</label>
+          <label className="mb-1 block text-sm text-gray-600">{text.labels.dataSensitivity}</label>
           <select value={form.dataSensitivity} onChange={handleDataSensitivityChange} className="w-full rounded-xl border border-gray-300 px-3 py-2 text-sm">
             {dataSensitivityOptions.map((item) => (
               <option key={item.value} value={item.value}>{item.label}</option>
@@ -299,15 +303,15 @@ export const CreateRequestSheet = ({ isOpen, onClose, onCreated }: CreateRequest
         </div>
 
         <Textarea
-          label="Legal or brand constraints"
+          label={text.labels.legalOrBrandConstraints}
           value={form.legalOrBrandConstraints ?? ''}
           onChange={handleLegalConstraintsChange}
           rows={3}
-          placeholder="Compliance, brand, legal, or technical constraints"
+          placeholder={text.placeholders.legalOrBrandConstraints}
         />
 
         <div>
-          <label className="mb-1 block text-sm text-gray-600">Priority</label>
+          <label className="mb-1 block text-sm text-gray-600">{text.labels.priority}</label>
           <select
             value={form.priority}
             onChange={handlePriorityChange}
@@ -331,14 +335,14 @@ export const CreateRequestSheet = ({ isOpen, onClose, onCreated }: CreateRequest
             disabled={createMutation.isPending}
             className="flex-1 rounded-xl bg-gray-900 px-4 py-2.5 text-sm font-medium text-white hover:bg-gray-800 disabled:opacity-60"
           >
-            {createMutation.isPending ? 'Submitting...' : 'Submit request'}
+            {createMutation.isPending ? text.submitting : text.submitButton}
           </button>
           <button
             type="button"
             onClick={handleClose}
             className="rounded-xl border border-gray-300 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50"
           >
-            Cancel
+            {text.cancel}
           </button>
         </div>
       </form>

@@ -1,10 +1,9 @@
-import {useState, useMemo, useCallback, type FormEvent, type ChangeEvent} from 'react';
+﻿import {useState, useMemo, useCallback, type FormEvent, type ChangeEvent} from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { offerApi, type CreateLineItemPayload, type UpdateLineItemPayload } from '@/admin/api/offers';
 import { queryKeys } from '@/admin/api/queryKeys';
 import { EntityAuxPanels } from '@/admin/components/EntityAuxPanels';
-import { AiChatPanel } from '@/admin/components/AiChatPanel';
 import { StatusBadge } from '@/admin/components/StatusBadge';
 import { useApiErrorState } from '@/admin/hooks/useApiErrorState';
 import { useEntityDraftState } from '@/admin/hooks/useEntityDraftState';
@@ -325,6 +324,7 @@ export const OfferDetailPage = () => {
   const isSent = offer.status === 'SENT';
   const isRejected = offer.status === 'REJECTED_BY_CLIENT';
   const isEditable = isDraft;
+  const publicOfferUrl = `/offers/${offer.publicToken}`;
 
   return (
     <div className="space-y-6">
@@ -340,9 +340,19 @@ export const OfferDetailPage = () => {
             )}
           </div>
         </div>
-        <Link to="/admin/offers" className="text-sm font-medium text-gray-700 underline">
-          Back to offers
-        </Link>
+        <div className="flex flex-wrap items-center gap-2">
+          <Link
+            to={publicOfferUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+          >
+            Preview public view
+          </Link>
+          <Link to="/admin/offers" className="text-sm font-medium text-gray-700 underline">
+            Back to offers
+          </Link>
+        </div>
       </div>
 
       {errorMessage && (
@@ -356,7 +366,7 @@ export const OfferDetailPage = () => {
         </div>
       )}
 
-      {/* ── Sticky section nav ── */}
+      {/* Sticky section nav */}
       <nav className="sticky top-0 z-10 -mx-1 flex gap-1 overflow-x-auto rounded-2xl border border-gray-200 bg-white/90 px-3 py-2 backdrop-blur">
         {[
           { label: 'Actions', href: '#offer-actions' },
@@ -371,7 +381,7 @@ export const OfferDetailPage = () => {
         ))}
       </nav>
 
-      {/* ── Actions ── */}
+      {/* Actions */}
       <section id="offer-actions" className="rounded-2xl border border-gray-200 bg-white p-6">
         <h3 className="text-lg font-semibold text-gray-900">Actions</h3>
         <p className="mt-0.5 text-sm text-gray-500">
@@ -386,13 +396,13 @@ export const OfferDetailPage = () => {
                 disabled={sendMutation.isPending}
                 className="rounded-lg bg-emerald-600 text-white px-4 py-2 text-sm font-medium hover:bg-emerald-700 disabled:opacity-60"
               >
-                {sendMutation.isPending ? 'Sending...' : '↑ Send to client'}
+                {sendMutation.isPending ? 'Sending...' : 'Send to client'}
               </button>
               <button
                 onClick={handleCancel}
                 className="rounded-lg bg-rose-600 text-white px-4 py-2 text-sm font-medium hover:bg-rose-700"
               >
-                ✕ Cancel offer
+                Cancel offer
               </button>
               <button
                 onClick={handleRejectStatus}
@@ -407,7 +417,7 @@ export const OfferDetailPage = () => {
               onClick={handleCancel}
               className="rounded-lg bg-rose-600 text-white px-4 py-2 text-sm font-medium hover:bg-rose-700"
             >
-              ✕ Cancel offer
+              Cancel offer
             </button>
           )}
           {isRejected && (
@@ -415,7 +425,7 @@ export const OfferDetailPage = () => {
               onClick={handleRevise}
               className="rounded-lg bg-blue-600 text-white px-4 py-2 text-sm font-medium hover:bg-blue-700"
             >
-              ↻ Revise to draft
+             Revise to draft
             </button>
           )}
         </div>
@@ -443,7 +453,7 @@ export const OfferDetailPage = () => {
         )}
       </section>
 
-      {/* ── Offer details form ── */}
+      {/* ls form  */}
       <section id="offer-details" className="rounded-2xl border border-gray-200 bg-white p-6">
         <h3 className="text-lg font-semibold text-gray-900">Offer details</h3>
         <p className="mt-1 text-sm text-gray-600">
@@ -471,94 +481,104 @@ export const OfferDetailPage = () => {
         </form>
       </section>
 
-      {/* ── Line items ── */}
-      {isEditable && (
-        <section id="offer-lineitems" className="rounded-2xl border border-gray-200 bg-white p-6">
-          <div className="flex justify-between items-center mb-4">
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900">Line Items</h3>
-              <p className="mt-1 text-sm text-gray-600">Add tasks/deliverables to this offer.</p>
-            </div>
-            <button onClick={handleAddLineItem} className="rounded-lg bg-blue-600 text-white px-3 py-1.5 text-sm font-medium hover:bg-blue-700">
+      <section id="offer-lineitems" className="rounded-2xl border border-gray-200 bg-white p-6">
+        <div className="flex flex-wrap items-start justify-between gap-4 mb-4">
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900">Line Items</h3>
+            <p className="mt-1 text-sm text-gray-600">
+              {isEditable
+                ? 'Add tasks and deliverables to this offer.'
+                : 'Deliverables are shown below in read-only mode for non-draft offers.'}
+            </p>
+          </div>
+          {isEditable && (
+            <button
+              onClick={handleAddLineItem}
+              className="rounded-lg bg-blue-600 text-white px-3 py-1.5 text-sm font-medium hover:bg-blue-700"
+            >
               + Add item
             </button>
-          </div>
-
-          {showLineItemForm && (
-            <div className="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
-              <h4 className="font-semibold text-gray-900 mb-3">{editingLineItemId ? 'Edit line item' : 'New line item'}</h4>
-              <div className="grid gap-3 md:grid-cols-2">
-                <Input label="Description *" value={lineItemFormState.description} onChange={(e) => handleLineItemFieldChange('description', e.target.value)} required />
-                <Input label="Quantity" type="number" step="0.01" value={lineItemFormState.quantity} onChange={(e) => handleLineItemFieldChange('quantity', e.target.value)} required />
-                <Input label="Unit Price" type="number" step="0.01" value={lineItemFormState.unitPrice} onChange={(e) => handleLineItemFieldChange('unitPrice', e.target.value)} required />
-                <Input label="Tax Rate (%)" type="number" step="0.01" value={lineItemFormState.taxRate} onChange={(e) => handleLineItemFieldChange('taxRate', e.target.value)} />
-                <Input label="Sort Order" type="number" value={lineItemFormState.sortOrder} onChange={(e) => handleLineItemFieldChange('sortOrder', e.target.value)} />
-              </div>
-              <div className="flex gap-2 mt-4">
-                <button onClick={handleSaveLineItem} disabled={createLineItemMutation.isPending || updateLineItemMutation.isPending} className="rounded-lg bg-emerald-600 text-white px-3 py-2 text-sm font-medium hover:bg-emerald-700 disabled:opacity-60">
-                  {createLineItemMutation.isPending || updateLineItemMutation.isPending ? 'Saving...' : 'Save'}
-                </button>
-                <button onClick={() => { setShowLineItemForm(false); setLineItemFormState(defaultLineItemFormState); }} className="rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
-                  Cancel
-                </button>
-              </div>
-            </div>
           )}
+        </div>
 
-          {offer.lineItems.length === 0 ? (
-            <p className="text-sm text-gray-500">No line items yet.</p>
-          ) : (
-            <div className="overflow-x-auto rounded-lg border border-gray-200">
-              <table className="min-w-full divide-y divide-gray-200 text-sm">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700">Description</th>
-                    <th className="px-4 py-3 text-right text-xs font-semibold text-gray-700">Qty</th>
-                    <th className="px-4 py-3 text-right text-xs font-semibold text-gray-700">Unit Price</th>
-                    <th className="px-4 py-3 text-right text-xs font-semibold text-gray-700">Total</th>
-                    <th className="px-4 py-3 text-center text-xs font-semibold text-gray-700">Action</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-200 bg-white">
-                  {offer.lineItems.map((item) => (
-                    <tr key={item.id} className="hover:bg-gray-50">
-                      <td className="px-4 py-3 text-gray-900">{item.description}</td>
-                      <td className="px-4 py-3 text-right text-gray-600">{item.quantity}</td>
-                      <td className="px-4 py-3 text-right text-gray-600">{item.unitPrice.toFixed(2)} {offer.currency}</td>
-                      <td className="px-4 py-3 text-right font-medium text-gray-900">{item.lineTotal.toFixed(2)} {offer.currency}</td>
+        {isEditable && showLineItemForm && (
+          <div className="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
+            <h4 className="font-semibold text-gray-900 mb-3">
+              {editingLineItemId ? 'Edit line item' : 'New line item'}
+            </h4>
+            <div className="grid gap-3 md:grid-cols-2">
+              <Input label="Description *" value={lineItemFormState.description} onChange={(e) => handleLineItemFieldChange('description', e.target.value)} required />
+              <Input label="Quantity" type="number" step="0.01" value={lineItemFormState.quantity} onChange={(e) => handleLineItemFieldChange('quantity', e.target.value)} required />
+              <Input label="Unit Price" type="number" step="0.01" value={lineItemFormState.unitPrice} onChange={(e) => handleLineItemFieldChange('unitPrice', e.target.value)} required />
+              <Input label="Tax Rate (%)" type="number" step="0.01" value={lineItemFormState.taxRate} onChange={(e) => handleLineItemFieldChange('taxRate', e.target.value)} />
+              <Input label="Sort Order" type="number" value={lineItemFormState.sortOrder} onChange={(e) => handleLineItemFieldChange('sortOrder', e.target.value)} />
+            </div>
+            <div className="flex gap-2 mt-4">
+              <button onClick={handleSaveLineItem} disabled={createLineItemMutation.isPending || updateLineItemMutation.isPending} className="rounded-lg bg-emerald-600 text-white px-3 py-2 text-sm font-medium hover:bg-emerald-700 disabled:opacity-60">
+                {createLineItemMutation.isPending || updateLineItemMutation.isPending ? 'Saving...' : 'Save'}
+              </button>
+              <button onClick={() => { setShowLineItemForm(false); setLineItemFormState(defaultLineItemFormState); }} className="rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
+                Cancel
+              </button>
+            </div>
+          </div>
+        )}
+
+        {offer.lineItems.length === 0 ? (
+          <p className="text-sm text-gray-500">No line items yet.</p>
+        ) : (
+          <div className="overflow-x-auto rounded-lg border border-gray-200">
+            <table className="min-w-full divide-y divide-gray-200 text-sm">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700">Description</th>
+                  <th className="px-4 py-3 text-right text-xs font-semibold text-gray-700">Qty</th>
+                  <th className="px-4 py-3 text-right text-xs font-semibold text-gray-700">Unit Price</th>
+                  <th className="px-4 py-3 text-right text-xs font-semibold text-gray-700">Total</th>
+                  {isEditable && <th className="px-4 py-3 text-center text-xs font-semibold text-gray-700">Action</th>}
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-200 bg-white">
+                {offer.lineItems.map((item) => (
+                  <tr key={item.id} className="hover:bg-gray-50">
+                    <td className="px-4 py-3 text-gray-900">{item.description}</td>
+                    <td className="px-4 py-3 text-right text-gray-600">{item.quantity}</td>
+                    <td className="px-4 py-3 text-right text-gray-600">{item.unitPrice.toFixed(2)} {offer.currency}</td>
+                    <td className="px-4 py-3 text-right font-medium text-gray-900">{item.lineTotal.toFixed(2)} {offer.currency}</td>
+                    {isEditable && (
                       <td className="px-4 py-3 text-center">
                         <button onClick={() => handleEditLineItem(item)} className="text-sm text-blue-600 hover:text-blue-800 mr-2">Edit</button>
                         <button onClick={() => handleDeleteLineItem(item.id)} disabled={deleteLineItemMutation.isPending} className="text-sm text-rose-600 hover:text-rose-800">Delete</button>
                       </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
+                    )}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
 
-          {offer.lineItems.length > 0 && (
-            <div className="mt-4 bg-gray-50 rounded-lg p-4 max-w-xs ml-auto">
+        {offer.lineItems.length > 0 && (
+          <div className="mt-4 bg-gray-50 rounded-lg p-4 max-w-xs ml-auto">
+            <div className="flex justify-between text-sm mb-2">
+              <span className="text-gray-600">Subtotal:</span>
+              <span className="font-medium">{(offer.subtotalAmount || 0).toFixed(2)} {offer.currency}</span>
+            </div>
+            {typeof offer.taxAmount === 'number' && offer.taxAmount > 0 && (
               <div className="flex justify-between text-sm mb-2">
-                <span className="text-gray-600">Subtotal:</span>
-                <span className="font-medium">{(offer.subtotalAmount || 0).toFixed(2)} {offer.currency}</span>
+                <span className="text-gray-600">Tax ({offer.taxRate}%):</span>
+                <span className="font-medium">{offer.taxAmount.toFixed(2)} {offer.currency}</span>
               </div>
-              {typeof offer.taxAmount === 'number' && offer.taxAmount > 0 && (
-                <div className="flex justify-between text-sm mb-2">
-                  <span className="text-gray-600">Tax ({offer.taxRate}%):</span>
-                  <span className="font-medium">{offer.taxAmount.toFixed(2)} {offer.currency}</span>
-                </div>
-              )}
-              <div className="flex justify-between font-semibold pt-2 border-t border-gray-300">
-                <span>Total:</span>
-                <span>{(offer.totalAmount || 0).toFixed(2)} {offer.currency}</span>
-              </div>
+            )}
+            <div className="flex justify-between font-semibold pt-2 border-t border-gray-300">
+              <span>Total:</span>
+              <span>{(offer.totalAmount || 0).toFixed(2)} {offer.currency}</span>
             </div>
-          )}
-        </section>
-      )}
+          </div>
+        )}
+      </section>
 
-      {/* ── Submission history ── */}
+      {/* Submission history */}
       {submissionsQuery.data && submissionsQuery.data.length > 0 && (
         <section id="offer-history" className="rounded-2xl border border-gray-200 bg-white p-6">
           <h3 className="text-lg font-semibold text-gray-900 mb-4">Submission history</h3>
@@ -584,21 +604,15 @@ export const OfferDetailPage = () => {
         </section>
       )}
 
-       {/* ── AI Chat & Analysis ── */}
-       <section id="offer-ai">
-         <div className="grid gap-4 md:grid-cols-2">
-           <div className="rounded-2xl border border-gray-200 bg-white p-5">
-             <AiChatPanel entityId={offer.id} entityType="OFFER" />
-           </div>
-         </div>
-       </section>
-
-       {/* ── Notes & Audit ── */}
+       {/* Notes & Audit */}
        <section id="offer-aux">
          <EntityAuxPanels entityType="OFFER" entityId={offer.id} />
        </section>
     </div>
   );
 };
+
+
+
 
 

@@ -35,6 +35,8 @@ interface QueryKeys {
   };
   ai: {
     analysis: (offerId: UUID) => readonly [string, string, UUID];
+    requestAnalysis: (requestId: UUID) => readonly [string, string, UUID];
+    requestAnalysisStatus: (requestId: UUID) => readonly [string, string, UUID];
     thread: (threadId: UUID) => readonly [string, string, UUID];
     messages: (threadId: UUID, limit: number) => readonly [string, string, UUID, number];
     stats: (offerId: UUID) => readonly [string, string, UUID];
@@ -83,6 +85,8 @@ export const queryKeys: QueryKeys = {
   },
   ai: {
     analysis: (offerId) => ['ai', 'analysis', offerId] as const,
+    requestAnalysis: (requestId) => ['ai', 'request-analysis', requestId] as const,
+    requestAnalysisStatus: (requestId) => ['ai', 'request-analysis-status', requestId] as const,
     thread: (threadId) => ['ai', 'thread', threadId] as const,
     messages: (threadId, limit) => ['ai', 'messages', threadId, limit] as const,
     stats: (offerId) => ['ai', 'stats', offerId] as const,

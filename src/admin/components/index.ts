@@ -1,1 +1,1 @@
-export * from './AiChatPopover'
+export * from './AiChatPanel'

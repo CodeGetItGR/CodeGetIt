@@ -5,6 +5,8 @@ import type {
   AiThreadResponse,
   AiMessageResponse,
   AiUsageStatsResponse,
+  RequestAnalysisResponse,
+  RequestAnalysisStatusResponse,
 } from '@/admin/types';
 
 interface SendMessagePayload {
@@ -30,6 +32,25 @@ export const aiApi = {
   getOfferAnalysis: async (offerId: UUID) => {
     const { data } = await apiClient.get<OfferAnalysisResponse>(
       `/ai/offers/${offerId}/analysis`
+    );
+    return data;
+  },
+
+  // Request Analysis
+  queueRequestAnalysis: async (requestId: UUID) => {
+    await apiClient.post(`/ai/requests/${requestId}/analyze`);
+  },
+
+  getRequestAnalysis: async (requestId: UUID) => {
+    const { data } = await apiClient.get<RequestAnalysisResponse>(
+      `/ai/requests/${requestId}/analysis`
+    );
+    return data;
+  },
+
+  getRequestAnalysisStatus: async (requestId: UUID) => {
+    const { data } = await apiClient.get<RequestAnalysisStatusResponse>(
+      `/ai/requests/${requestId}/analysis/status`
     );
     return data;
   },
