@@ -1,6 +1,7 @@
-import { useState, useCallback, useEffect, useMemo, type FormEvent, type ChangeEvent } from 'react';
+﻿import { useState, useCallback, useEffect, useMemo, type FormEvent, type ChangeEvent } from 'react';
 import { motion } from 'framer-motion';
 import { HiArrowRight } from 'react-icons/hi';
+import { en } from '@/i18n/locales/en';
 import { requestApi } from '@/admin/api/requests';
 import type {
   BudgetFlexibility,
@@ -58,7 +59,7 @@ const blankDetailedRequest: DetailedRequestFormState = {
 };
 
 export const Contact = () => {
-  const { t, locale } = useLocale();
+  const { t } = useLocale();
   const { getBool, getString } = usePublicSettings();
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
   const [detailedRequest, setDetailedRequest] = useState<DetailedRequestFormState>(blankDetailedRequest);
@@ -84,84 +85,7 @@ export const Contact = () => {
     desiredStartWindowOptions.length > 0 &&
     budgetRangeOptions.length > 0;
 
-  const detailedCopy = useMemo(
-    () =>
-      locale === 'el'
-        ? {
-            detailedToggleTitle: 'Γνωριζω το scope του project και θελω να υποβαλω αναλυτικο αιτημα τωρα.',
-            detailedToggleHint: 'Θα χρησιμοποιησουμε αυτα τα στοιχεια για να δημιουργησουμε απευθειας το αιτημα σας στη ροη παραδοσης.',
-            contactInfo: 'Στοιχεια επικοινωνιας',
-            projectEssentials: 'Βασικα στοιχεια project',
-            extraContext: 'Επιπλεον πληροφοριες',
-            projectTitle: 'Τιτλος project',
-            phone: 'Τηλεφωνο',
-            enterpriseInquiry: 'Αυτο ειναι εταιρικο αιτημα - προτιμω απευθειας επικοινωνια.',
-            enterpriseHint: 'Σημειωσατε εταιρικο αιτημα. Μοιραστειτε τα βασικα τωρα και θα επικοινωνησουμε απευθειας για τη λεπτομερη διαμορφωση.',
-            businessGoal: 'Επιχειρηματικος στοχος',
-            projectType: 'Τυπος project',
-            selectProjectType: 'Επιλεξτε τυπο project',
-            desiredStart: 'Εναρξη',
-            selectStartWindow: 'Επιλεξτε παραθυρο εναρξης',
-            budgetRange: 'Ευρος budget',
-            selectBudgetRange: 'Επιλεξτε ευρος budget',
-            budgetFlexibility: 'Ευελιξια budget',
-            selectFlexibility: 'Επιλεξτε ευελιξια',
-            communicationPreference: 'Προτιμηση επικοινωνιας',
-            selectPreference: 'Επιλεξτε προτιμηση',
-            dataSensitivity: 'Ευαισθησια δεδομενων',
-            selectSensitivity: 'Επιλεξτε επιπεδο ευαισθησιας',
-            priority: 'Προτεραιοτητα',
-            organizationNameOptional: 'Ονομα οργανισμου (προαιρετικο)',
-            industryOptional: 'Κλαδος (προαιρετικο)',
-            targetAudienceOptional: 'Κοινο στοχος (προαιρετικο)',
-            targetLaunchWindowOptional: 'Στοχος λανσαρισματος (προαιρετικο)',
-            legalConstraintsOptional: 'Νομικοι η brand περιορισμοι (προαιρετικο)',
-            optionsLoadingHint: 'Οι επιλογες αιτηματος φορτωνουν ακομη. Μπορειτε να στειλετε απλο μηνυμα τωρα.',
-            projectDescriptionOptional: 'Περιγραφη project (προαιρετικο)',
-            back: 'Πισω',
-            nextStep: 'Επομενο βημα',
-            submitProjectRequest: 'Υποβολη αιτηματος project',
-            submittedWithId: '✓ Το αιτημα project υποβληθηκε επιτυχως. Κωδικος αναφορας:',
-          }
-        : {
-            detailedToggleTitle: 'I know the project scope and want to submit a detailed project request now.',
-            detailedToggleHint: 'We will use these details to create your project request directly in our delivery pipeline.',
-            contactInfo: 'Contact info',
-            projectEssentials: 'Project essentials',
-            extraContext: 'Extra context',
-            projectTitle: 'Project title',
-            phone: 'Phone',
-            enterpriseInquiry: 'This is an enterprise inquiry - I prefer direct communication.',
-            enterpriseHint: 'You marked this as an enterprise inquiry. Share the core details now and we will follow up directly to refine the full scope.',
-            businessGoal: 'Business goal',
-            projectType: 'Project type',
-            selectProjectType: 'Select project type',
-            desiredStart: 'Desired start',
-            selectStartWindow: 'Select start window',
-            budgetRange: 'Budget range',
-            selectBudgetRange: 'Select budget range',
-            budgetFlexibility: 'Budget flexibility',
-            selectFlexibility: 'Select flexibility',
-            communicationPreference: 'Communication preference',
-            selectPreference: 'Select preference',
-            dataSensitivity: 'Data sensitivity',
-            selectSensitivity: 'Select sensitivity',
-            priority: 'Priority',
-            organizationNameOptional: 'Organization name (optional)',
-            industryOptional: 'Industry (optional)',
-            targetAudienceOptional: 'Target audience (optional)',
-            targetLaunchWindowOptional: 'Target launch window (optional)',
-            legalConstraintsOptional: 'Legal or brand constraints (optional)',
-            optionsLoadingHint: 'Request options are still loading. You can still send a simple message now.',
-            projectDescriptionOptional: 'Project description (optional)',
-            back: 'Back',
-            nextStep: 'Next step',
-            submitProjectRequest: 'Submit project request',
-            submittedWithId: '✓ Project request submitted successfully. Reference ID:',
-          },
-    [locale],
-  );
-
+  const detailedCopy = t.contact.detailed ?? en.contact.detailed!;
   const resetMessages = useCallback(() => {
     setSubmitState('idle');
     setErrorText('');
@@ -412,9 +336,7 @@ export const Contact = () => {
   const publicContactEmail = getString('marketing.contactEmail', 'hello@codegetit.com');
 
   return (
-    <section id="contact" className="section-depth section-divider relative py-28 lg:py-36">
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-linear-to-b from-slate-100/65 to-transparent" />
-
+    <section id="contact" className="marketing-contact-shell section-depth section-divider relative py-28 lg:py-36">
       <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -821,7 +743,7 @@ export const Contact = () => {
                 >
                   {submittedRequestId
                     ? `${detailedCopy.submittedWithId} ${submittedRequestId}`
-                    : `✓ ${t.contact.success}`}
+                    : `β“ ${t.contact.success}`}
                 </motion.p>
               )}
 
@@ -831,7 +753,7 @@ export const Contact = () => {
                   animate={{ opacity: 1, y: 0 }}
                   className="text-sm font-medium text-red-600"
                 >
-                  ✖ {errorText}
+                  β– {errorText}
                 </motion.p>
               )}
               </form>
@@ -887,4 +809,5 @@ export const Contact = () => {
     </section>
   );
 };
+
 

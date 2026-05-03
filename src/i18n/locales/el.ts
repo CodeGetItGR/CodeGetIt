@@ -1,4 +1,5 @@
 import type { Translations } from '../types';
+import { en } from './en';
 
 export const el: Translations = {
   nav: {
@@ -668,4 +669,5 @@ export const el: Translations = {
     button: 'Ξεκινήστε το Έργο σας',
     buttonAria: 'Ξεκινήστε το έργο σας',
   },
+  landing: en.landing,
 };

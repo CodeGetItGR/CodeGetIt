@@ -215,6 +215,177 @@ export interface Translations {
     errorGeneric: string;
     helpfulTips: string;
     tips: string[];
+    detailed?: {
+      detailedToggleTitle: string;
+      detailedToggleHint: string;
+      contactInfo: string;
+      projectEssentials: string;
+      extraContext: string;
+      projectTitle: string;
+      phone: string;
+      enterpriseInquiry: string;
+      enterpriseHint: string;
+      businessGoal: string;
+      projectType: string;
+      selectProjectType: string;
+      desiredStart: string;
+      selectStartWindow: string;
+      budgetRange: string;
+      selectBudgetRange: string;
+      budgetFlexibility: string;
+      selectFlexibility: string;
+      communicationPreference: string;
+      selectPreference: string;
+      dataSensitivity: string;
+      selectSensitivity: string;
+      priority: string;
+      organizationNameOptional: string;
+      industryOptional: string;
+      targetAudienceOptional: string;
+      targetLaunchWindowOptional: string;
+      legalConstraintsOptional: string;
+      optionsLoadingHint: string;
+      projectDescriptionOptional: string;
+      back: string;
+      nextStep: string;
+      submitProjectRequest: string;
+      submittedWithId: string;
+    };
+  };
+
+  landing: {
+    seo: {
+      title: string;
+      description: string;
+    };
+    hero: {
+      badge: string;
+      availability: string;
+      titleWords: [string, string, string, string];
+      highlight: string;
+      subtitle: string;
+      features: [string, string, string, string];
+      ctas: {
+        primary: string;
+        secondary: string;
+      };
+      browser: {
+        url: string;
+        securityLabel: string;
+        securityValue: string;
+        performanceLabel: string;
+        performanceValue: string;
+        stackLabel: string;
+        stackValue: string;
+        revenueLabel: string;
+        revenueValue: string;
+        usersLabel: string;
+        usersValue: string;
+        growthLabel: string;
+        growthValue: string;
+      };
+      scroll: string;
+    };
+    stats: {
+      labels: [string, string, string, string];
+    };
+    services: {
+      eyebrow: string;
+      title: string;
+      description: string;
+      featured: string;
+      getStarted: string;
+      items: Array<{
+        title: string;
+        description: string;
+        features: [string, string, string, string];
+        price: string;
+      }>;
+    };
+    comparison: {
+      eyebrow: string;
+      title: string;
+      description: string;
+      headers: {
+        feature: string;
+        staticWebsite: string;
+        fullStackApplication: string;
+      };
+      rows: [string, string, string, string, string, string, string, string];
+      stackTitle: string;
+      maintenanceStatic: string;
+      maintenanceFull: string;
+      stack: Array<{
+        name: string;
+        description: string;
+      }>;
+    };
+    process: {
+      eyebrow: string;
+      title: string;
+      description: string;
+      steps: Array<{
+        title: string;
+        description: string;
+      }>;
+    };
+    projects: {
+      eyebrow: string;
+      title: string;
+      description: string;
+      viewProject: string;
+      viewAll: string;
+      items: Array<{
+        title: string;
+        description: string;
+        tags: string[];
+      }>;
+    };
+    testimonials: {
+      eyebrow: string;
+      title: string;
+      description: string;
+      prev: string;
+      next: string;
+      indicatorAria: string;
+      items: Array<{
+        quote: string;
+        author: string;
+        role: string;
+        company: string;
+      }>;
+    };
+    faq: {
+      eyebrow: string;
+      title: string;
+      description: string;
+      items: Array<{
+        question: string;
+        answer: string;
+      }>;
+    };
+    footer: {
+      brandName: string;
+      tagline: string;
+      categories: {
+        services: string;
+        company: string;
+        resources: string;
+      };
+      rights: string;
+      privacy: string;
+      terms: string;
+      social: {
+        github: string;
+        linkedin: string;
+        email: string;
+      };
+      links: {
+        services: string[];
+        company: string[];
+        resources: string[];
+      };
+    };
   };
 
   // Testimonials Section

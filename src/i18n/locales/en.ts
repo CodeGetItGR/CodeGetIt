@@ -342,6 +342,43 @@ export const en: Translations = {
       'Let me know your budget (optional)',
       'Share inspiration or examples (if you have any)',
     ],
+    detailed: {
+      detailedToggleTitle: 'I know the project scope and want to submit a detailed project request now.',
+      detailedToggleHint: 'We will use these details to create your project request directly in our delivery pipeline.',
+      contactInfo: 'Contact info',
+      projectEssentials: 'Project essentials',
+      extraContext: 'Extra context',
+      projectTitle: 'Project title',
+      phone: 'Phone',
+      enterpriseInquiry: 'This is an enterprise inquiry - I prefer direct communication.',
+      enterpriseHint:
+        'You marked this as an enterprise inquiry. Share the core details now and we will follow up directly to refine the full scope.',
+      businessGoal: 'Business goal',
+      projectType: 'Project type',
+      selectProjectType: 'Select project type',
+      desiredStart: 'Desired start',
+      selectStartWindow: 'Select start window',
+      budgetRange: 'Budget range',
+      selectBudgetRange: 'Select budget range',
+      budgetFlexibility: 'Budget flexibility',
+      selectFlexibility: 'Select flexibility',
+      communicationPreference: 'Communication preference',
+      selectPreference: 'Select preference',
+      dataSensitivity: 'Data sensitivity',
+      selectSensitivity: 'Select sensitivity',
+      priority: 'Priority',
+      organizationNameOptional: 'Organization name (optional)',
+      industryOptional: 'Industry (optional)',
+      targetAudienceOptional: 'Target audience (optional)',
+      targetLaunchWindowOptional: 'Target launch window (optional)',
+      legalConstraintsOptional: 'Legal or brand constraints (optional)',
+      optionsLoadingHint: 'Request options are still loading. You can still send a simple message now.',
+      projectDescriptionOptional: 'Project description (optional)',
+      back: 'Back',
+      nextStep: 'Next step',
+      submitProjectRequest: 'Submit project request',
+      submittedWithId: 'Project request submitted successfully. Reference ID:',
+    },
   },
   testimonials: {
     badge: 'Client Stories',
@@ -667,5 +704,265 @@ export const en: Translations = {
     subtitle: 'I take on a limited number of projects each quarter to ensure quality. Let\'s talk about how I can help you create software that works.',
     button: 'Start Your Project',
     buttonAria: 'Start your project',
+  },
+  landing: {
+    seo: {
+      title: 'CodeGetIt - Modern Web Development',
+      description:
+        'A focused marketing site for modern web development services, built around clarity, trust, and momentum.',
+    },
+    hero: {
+      badge: 'Available for new projects',
+      availability: 'Now booking new projects for the upcoming cycle.',
+      titleWords: ['Web', 'Applications', 'That', 'Work,'],
+      highlight: 'Built to Grow',
+      subtitle:
+        'Transform your ideas into powerful, scalable web applications with cutting-edge technology and expert craftsmanship.',
+      features: ['Responsive Design', 'SEO Optimized', 'Fast Performance', 'Secure & Scalable'],
+      ctas: {
+        primary: 'Get a Free Quote',
+        secondary: 'View Our Work',
+      },
+      browser: {
+        url: 'yourproject.com',
+        securityLabel: 'Security',
+        securityValue: 'SSL Secured',
+        performanceLabel: 'Performance',
+        performanceValue: '99/100',
+        stackLabel: 'Stack',
+        stackValue: 'React + TS',
+        revenueLabel: 'Revenue',
+        revenueValue: '$24.5k',
+        usersLabel: 'Users',
+        usersValue: '1,284',
+        growthLabel: 'Growth',
+        growthValue: '+18%',
+      },
+      scroll: 'Scroll',
+    },
+    stats: {
+      labels: ['Projects Delivered', 'Client Satisfaction', 'Happy Clients', 'Years Experience'],
+    },
+    services: {
+      eyebrow: 'Services',
+      title: 'Choose the right build for the job',
+      description:
+        'From streamlined marketing sites to deeper web apps, we shape the work around what will actually move the business forward.',
+      featured: 'Most Popular',
+      getStarted: 'Get Started',
+      items: [
+        {
+          title: 'Static Websites',
+          description:
+            'Fast, elegant websites for brands that need clarity, speed, and a strong first impression.',
+          features: ['Responsive Design', 'SEO Optimization', 'Fast Loading', 'Easy Maintenance'],
+          price: 'From $2,500',
+        },
+        {
+          title: 'Web Applications',
+          description:
+            'Interactive applications with custom workflows, dashboards, and business logic tailored to your needs.',
+          features: ['Custom Features', 'User Authentication', 'Real-time Updates', 'API Integration'],
+          price: 'From $8,000',
+        },
+        {
+          title: 'Full-Stack Solutions',
+          description:
+            'End-to-end systems with backend services, databases, admin tools, and production-ready deployment.',
+          features: ['Database Design', 'Backend API', 'Admin Dashboard', 'Cloud Deployment'],
+          price: 'From $15,000',
+        },
+      ],
+    },
+    comparison: {
+      eyebrow: 'Comparison',
+      title: 'Static brochure site or full-stack application?',
+      description:
+        'Sometimes the best answer is a focused website. Other times, the right move is a platform with backend logic and an admin workflow.',
+      headers: {
+        feature: 'Feature',
+        staticWebsite: 'Static Website',
+        fullStackApplication: 'Full-Stack Application',
+      },
+      rows: [
+        'Design',
+        'Frontend',
+        'Backend',
+        'Database',
+        'User Authentication',
+        'Admin Dashboard',
+        'API Integration',
+        'Maintenance',
+      ],
+      stackTitle: 'Core stack',
+      maintenanceStatic: 'Basic',
+      maintenanceFull: 'Full',
+      stack: [
+        { name: 'React', description: 'Modern UI Framework' },
+        { name: 'TypeScript', description: 'Type-Safe Development' },
+        { name: 'Node.js', description: 'Backend Runtime' },
+        { name: 'PostgreSQL', description: 'Reliable Database' },
+        { name: 'Tailwind CSS', description: 'Utility-First CSS' },
+        { name: 'AWS', description: 'Cloud Infrastructure' },
+      ],
+    },
+    process: {
+      eyebrow: 'Process',
+      title: 'A simple process that keeps momentum high',
+      description: 'We keep the work visible and the decisions clear so the project moves without feeling chaotic.',
+      steps: [
+        {
+          title: 'Planning & Understanding',
+          description:
+            'We get clear on business goals, audiences, requirements, and success criteria before any design work starts.',
+        },
+        {
+          title: 'Design & Architecture',
+          description:
+            'We shape the interface and technical plan together so the experience feels intentional and scalable.',
+        },
+        {
+          title: 'Building & Testing',
+          description:
+            'Development moves in focused iterations with testing, review, and feedback baked into each step.',
+        },
+        {
+          title: 'Launch & Support',
+          description:
+            'We ship, monitor, and support the project after launch so it keeps performing as the business grows.',
+        },
+      ],
+    },
+    projects: {
+      eyebrow: 'Projects',
+      title: 'A few examples of what the work can look like',
+      description:
+        'These are sample case-study style entries that show how the page presents proof of capability without getting noisy.',
+      viewProject: 'View Project',
+      viewAll: 'View All Projects',
+      items: [
+        {
+          title: 'E-Commerce Platform',
+          description: 'Online store with payment processing, inventory management, and business analytics.',
+          tags: ['React', 'Node.js', 'Stripe', 'PostgreSQL'],
+        },
+        {
+          title: 'Restaurant Booking System',
+          description: 'Reservation flow with confirmations, calendar updates, and customer notifications.',
+          tags: ['React', 'Firebase', 'Twilio'],
+        },
+        {
+          title: 'Healthcare Dashboard',
+          description: 'Secure operations dashboard built for sensitive data, reporting, and team workflows.',
+          tags: ['React', 'Node.js', 'MongoDB', 'AWS'],
+        },
+        {
+          title: 'Financial Analytics API',
+          description: 'High-performance API for processing, summarizing, and serving financial data.',
+          tags: ['Node.js', 'PostgreSQL', 'Redis'],
+        },
+        {
+          title: 'Social Media Dashboard',
+          description: 'Unified workspace for managing multiple channels, content, and performance insights.',
+          tags: ['React', 'GraphQL', 'MongoDB'],
+        },
+        {
+          title: 'Learning Management System',
+          description: 'Course management, student tracking, and interactive assessments in one platform.',
+          tags: ['React', 'Node.js', 'PostgreSQL', 'S3'],
+        },
+      ],
+    },
+    testimonials: {
+      eyebrow: 'Testimonials',
+      title: 'A few words from clients',
+      description: 'Social proof sits naturally in the flow so the page builds trust before the contact section.',
+      prev: 'Previous testimonial',
+      next: 'Next testimonial',
+      indicatorAria: 'View testimonial {index}',
+      items: [
+        {
+          quote:
+            'The team delivered a polished product that was easy to use and clearly built with care. The result felt bigger than the brief.',
+          author: 'Sarah Johnson',
+          role: 'CEO, RetailCo',
+          company: 'E-Commerce Platform',
+        },
+        {
+          quote:
+            'Professional, responsive, and highly organized. They turned a complex set of requirements into something elegant.',
+          author: 'Michael Chen',
+          role: 'CTO, HealthTech Inc',
+          company: 'Healthcare Dashboard',
+        },
+        {
+          quote:
+            'Outstanding collaboration from start to finish. The booking system worked smoothly and our customers noticed immediately.',
+          author: 'Emma Rodriguez',
+          role: 'Owner, Bistro Moderne',
+          company: 'Restaurant Booking System',
+        },
+      ],
+    },
+    faq: {
+      eyebrow: 'FAQ',
+      title: 'Questions people usually ask',
+      description: 'The FAQ section handles common uncertainty and helps the page feel complete without feeling crowded.',
+      items: [
+        {
+          question: 'How long does a typical project take?',
+          answer:
+            'Smaller landing pages often take 2 to 4 weeks, while richer applications can take 8 to 16 weeks depending on scope and approvals.',
+        },
+        {
+          question: 'What is included in ongoing support?',
+          answer:
+            'Support can include bug fixes, security updates, deployment help, performance checks, and small iterations after launch.',
+        },
+        {
+          question: 'Do you handle hosting and deployment?',
+          answer:
+            'Yes. We can deploy to modern cloud platforms and help choose the right setup for your traffic, budget, and maintenance needs.',
+        },
+        {
+          question: 'Can you work with an existing brand or design system?',
+          answer:
+            'Absolutely. We can adapt to an existing brand, refine a Figma file, or build a visual direction from scratch if needed.',
+        },
+        {
+          question: 'What happens after launch?',
+          answer:
+            'We can stay involved after launch to monitor, iterate, and make sure the product keeps running smoothly in the real world.',
+        },
+        {
+          question: 'Do you offer payment plans?',
+          answer:
+            'For larger projects, milestone-based payment plans are available so the engagement stays predictable for both sides.',
+        },
+      ],
+    },
+    footer: {
+      brandName: 'CodeGetIt',
+      tagline:
+        'Building thoughtful web experiences that help teams explain, sell, and operate better online.',
+      categories: {
+        services: 'Services',
+        company: 'Company',
+        resources: 'Resources',
+      },
+      rights: 'All rights reserved.',
+      privacy: 'Privacy Policy',
+      terms: 'Terms of Service',
+      social: {
+        github: 'GitHub',
+        linkedin: 'LinkedIn',
+        email: 'Email',
+      },
+      links: {
+        services: ['Static Websites', 'Web Applications', 'Full-Stack Solutions', 'Maintenance'],
+        company: ['About Us', 'Our Process', 'Case Studies', 'Careers'],
+        resources: ['Blog', 'Documentation', 'Support', 'Contact'],
+      },
+    },
   },
 };

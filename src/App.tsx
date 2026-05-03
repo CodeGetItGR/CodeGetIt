@@ -12,53 +12,14 @@ import { RequestDetailPage } from '@/admin/pages/requests/RequestDetailPage';
 import { RequestsListPage } from '@/admin/pages/requests/RequestsListPage';
 import { ContactMessagesPage } from '@/admin/pages/ContactMessagesPage';
 import { SettingsPage } from '@/admin/pages/SettingsPage';
-import { SEO } from '@/components/SEO';
-import { Footer } from './components/layout/Footer';
-import { Header } from './components/layout/Header';
-import { AnnouncementBanner } from './components/sections/AnnouncementBanner';
-import { Contact } from './components/sections/Contact.tsx';
-import { Hero } from './components/sections/Hero.tsx';
-import { Portfolio } from './components/sections/Portfolio.tsx';
-import { Services } from './components/sections/Services.tsx';
-import { ProcessTimeline } from './components/sections/ProcessTimeline.tsx';
-import { ValueProposition } from './components/sections/ValueProposition.tsx';
-import { AnimatedBackground } from './components/ui/AnimatedBackground';
-import { CursorSpotlight } from './components/ui/CursorSpotlight';
-import { ScrollProgress } from './components/ui/ScrollProgress';
-import { PublicSettingsProvider } from '@/settings/PublicSettingsProvider';
-import {AppProviders} from "@/admin/providers/AppProviders";
-
-const MarketingHomePage = () => {
-  return (
-    <PublicSettingsProvider>
-      <>
-        <SEO />
-        <div className="marketing-shell min-h-screen">
-          <ScrollProgress />
-          <AnimatedBackground />
-          <CursorSpotlight />
-          <Header />
-          <main className="relative z-10 overflow-hidden">
-            <AnnouncementBanner />
-            <Hero />
-            <Services />
-            <ValueProposition />
-            <ProcessTimeline />
-            <Portfolio />
-            <Contact />
-          </main>
-          <Footer />
-        </div>
-      </>
-    </PublicSettingsProvider>
-  );
-};
+import { AppProviders } from '@/admin/providers/AppProviders';
+import LandingPage from '@/pages/LandingPage';
 
 function App() {
   return (
     <AppProviders>
       <Routes>
-        <Route path="/" element={<MarketingHomePage />} />
+        <Route path="/" element={<LandingPage />} />
         <Route path="/offers/:token" element={<PublicOfferPage />} />
         <Route path="/admin/login" element={<LoginPage />} />
         <Route element={<RequireAuth requireAdmin />}>
