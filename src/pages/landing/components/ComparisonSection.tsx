@@ -1,8 +1,20 @@
 import { motion, useInView } from 'framer-motion';
-import { useRef } from 'react';
+import {type ReactNode, useRef} from 'react';
 import { CheckCircle2, X } from 'lucide-react';
 import { useLocale } from '@/i18n/UseLocale';
-import { SectionHeading } from './SectionHeading';
+import { SectionHeading } from '@/pages/landing';
+import {BiLogoPostgresql, BiLogoSpringBoot, BiLogoTailwindCss, BiLogoTypescript} from "react-icons/bi";
+import {FaReact} from "react-icons/fa";
+
+const iconClassNames = 'w-8 h-8 md:w-10 md:h-10 lg:w-12 lg:h-12 '
+
+const icons : Record<string, ReactNode>  = {
+  react : <FaReact className={iconClassNames}/>,
+  ts : <BiLogoTypescript className={iconClassNames}/>,
+  spring : <BiLogoSpringBoot className={iconClassNames}/>,
+  postgres : <BiLogoPostgresql className={iconClassNames}/>,
+  tailwind : <BiLogoTailwindCss className={iconClassNames}/>
+}
 
 const sectionFade = {
   hidden: { opacity: 0, y: 24 },
@@ -21,9 +33,7 @@ const comparisonMatrix = [
   { static: false, fullStack: true },
   { static: false, fullStack: true },
   { static: false, fullStack: true },
-] as const;
-
-const stackColors = ['#61DAFB', '#3178C6', '#339933', '#4169E1', '#06B6D4', '#FF9900'];
+];
 
 export function ComparisonSection() {
   const ref = useRef(null);
@@ -33,7 +43,7 @@ export function ComparisonSection() {
   const comparisonMatrixWithLabels = [
     ...comparisonMatrix,
     { static: comparison.maintenanceStatic, fullStack: comparison.maintenanceFull },
-  ] as const;
+  ];
 
   return (
     <section ref={ref} className="bg-[#151b3d] px-6 py-24">
@@ -100,7 +110,7 @@ export function ComparisonSection() {
 
         <div className="mt-12">
           <h3 className="text-center text-2xl font-bold text-white">{comparison.stackTitle}</h3>
-          <div className="mt-6 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6">
+          <div className="mt-6 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5">
             {comparison.stack.map((tech, index) => (
               <motion.div
                 key={tech.name}
@@ -109,14 +119,14 @@ export function ComparisonSection() {
                 variants={sectionFade}
                 custom={0.1 + index * 0.05}
                 whileHover={{ y: -4 }}
-                className="rounded-2xl border border-white/10 bg-white/5 p-5 text-center backdrop-blur-sm"
+                className="rounded-2xl border border-white/10 bg-white/5 p-5 text-center backdrop-blur-sm flex flex-col items-center justify-center gap-y-1"
               >
-                <div
-                  className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-xl text-sm font-bold text-white"
-                  style={{ backgroundColor: stackColors[index] ?? stackColors[0] }}
-                >
-                  {tech.name.charAt(0)}
-                </div>
+                {/*<div*/}
+                {/*  className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl text-sm font-bold text-white"*/}
+                {/*  style={{ backgroundColor: stackColors[index] ?? stackColors[0] }}*/}
+                {/*>*/}
+                  {icons[tech.id]}
+                {/*</div>*/}
                 <div className="font-semibold text-white">{tech.name}</div>
                 <div className="mt-1 text-xs text-slate-400">{tech.description}</div>
               </motion.div>

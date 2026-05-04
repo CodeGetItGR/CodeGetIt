@@ -1,38 +1,34 @@
-import { useCallback, useMemo, useState, type ChangeEvent } from 'react';
+import { useCallback, useDeferredValue, useMemo, useState, type ChangeEvent } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+  ArrowRight,
+  ListFilter,
+  RotateCcw,
+  Save,
+} from 'lucide-react';
 import { queryKeys } from '@/admin/api/queryKeys';
-import { settingsApi, type AppSettingType } from '@/admin/api/settings';
-
-interface SettingDefinition {
-  key: string;
-  label: string;
-  group: 'Availability' | 'Marketing Hero' | 'CTA' | 'Banner' | 'Contact';
-  type: AppSettingType;
-  description?: string;
-  defaultValue: string;
-}
-
-const SETTING_DEFINITIONS: SettingDefinition[] = [
-  { key: 'availability.acceptingProjects', label: 'Accepting new projects', group: 'Availability', type: 'BOOLEAN', defaultValue: 'true' },
-  { key: 'availability.statusMessage', label: 'Availability message', group: 'Availability', type: 'STRING', defaultValue: 'I am currently accepting new projects.' },
-  { key: 'availability.contactFormEnabled', label: 'Contact form enabled', group: 'Availability', type: 'BOOLEAN', defaultValue: 'true' },
-  { key: 'availability.requestSubmissionEnabled', label: 'Request submission CTA enabled', group: 'Availability', type: 'BOOLEAN', defaultValue: 'true' },
-  { key: 'marketing.heroTitle', label: 'Hero title', group: 'Marketing Hero', type: 'STRING', defaultValue: '' },
-  { key: 'marketing.heroSubtitle', label: 'Hero subtitle', group: 'Marketing Hero', type: 'STRING', defaultValue: '' },
-  { key: 'marketing.ctaPrimaryText', label: 'Primary CTA text', group: 'CTA', type: 'STRING', defaultValue: 'Start a project' },
-  { key: 'marketing.ctaPrimaryUrl', label: 'Primary CTA URL', group: 'CTA', type: 'STRING', defaultValue: '#contact' },
-  { key: 'marketing.bannerEnabled', label: 'Banner enabled', group: 'Banner', type: 'BOOLEAN', defaultValue: 'false' },
-  { key: 'marketing.bannerText', label: 'Banner text', group: 'Banner', type: 'STRING', defaultValue: '' },
-  { key: 'marketing.bannerSeverity', label: 'Banner severity', group: 'Banner', type: 'STRING', defaultValue: 'INFO' },
-  { key: 'marketing.contactEmail', label: 'Public contact email', group: 'Contact', type: 'STRING', defaultValue: 'hello@codegetit.com' },
-];
-
-const GROUP_ORDER: SettingDefinition['group'][] = ['Availability', 'Marketing Hero', 'CTA', 'Banner', 'Contact'];
-const DEFAULT_BANNER_SEVERITIES = ['INFO', 'SUCCESS', 'WARNING', 'ERROR'] as const;
+import { settingsApi } from '@/admin/api/settings';
+import { useLocale } from '@/i18n/UseLocale';
+import { cn } from '@/lib/utils.ts';
+import {
+  BASE_DEFINITIONS, DEFAULT_BANNER_SEVERITIES,
+  fieldMatchesQuery,
+  formatFieldValue, GROUP_META, GROUP_ORDER, INPUT_CLASS, optionGroupMatchesQuery, PANEL_CLASS,
+  type SettingDefinition,
+} from "@/admin/pages/Settings/Utils.ts";
+import {SettingsField} from "@/admin/pages/Settings/SettingsField.tsx";
+import {Switch} from "@/admin/pages/Settings/Switch.tsx";
+import {SettingsPageHeader} from "@/admin/pages/Settings/SettingsPageHeader.tsx";
+import {SectionCard} from "@/admin/pages/Settings/SectionCard.tsx";
 
 export const SettingsPage = () => {
+  const { t } = useLocale();
+  const copy = t.admin.settings;
   const queryClient = useQueryClient();
   const [draftValues, setDraftValues] = useState<Record<string, string>>({});
+  const [mode, setMode] = useState<'draft' | 'published'>('draft');
+  const [searchValue, setSearchValue] = useState('');
+  const deferredSearchValue = useDeferredValue(searchValue.trim().toLowerCase());
 
   const settingsQuery = useQuery({
     queryKey: queryKeys.settings.list,
@@ -45,8 +41,8 @@ export const SettingsPage = () => {
   });
 
   const serverValues = useMemo(() => {
-    const merged = SETTING_DEFINITIONS.reduce<Record<string, string>>((acc, definition) => {
-      acc[definition.key] = definition.defaultValue;
+    const merged = BASE_DEFINITIONS.reduce<Record<string, string>>((acc, definition) => {
+      acc[definition.key] = `${definition.defaultValue}`;
       return acc;
     }, {});
 
@@ -57,39 +53,83 @@ export const SettingsPage = () => {
     return merged;
   }, [settingsQuery.data]);
 
-  const values = useMemo(() => ({ ...serverValues, ...draftValues }), [serverValues, draftValues]);
+  const localizedDefinitions = useMemo<SettingDefinition[]>(() => {
+    const labels = copy.fields;
+    const labelMap: Record<string, string> = {
+      'availability.acceptingProjects': labels.availability.acceptingProjects,
+      'availability.statusMessage': labels.availability.statusMessage,
+      'availability.contactFormEnabled': labels.availability.contactFormEnabled,
+      'availability.requestSubmissionEnabled': labels.availability.requestSubmissionEnabled,
+      'marketing.heroTitle': labels.marketingHero.heroTitle,
+      'marketing.heroSubtitle': labels.marketingHero.heroSubtitle,
+      'marketing.ctaPrimaryText': labels.cta.primaryText,
+      'marketing.ctaPrimaryUrl': labels.cta.primaryUrl,
+      'marketing.bannerEnabled': labels.banner.bannerEnabled,
+      'marketing.bannerText': labels.banner.bannerText,
+      'marketing.bannerSeverity': labels.banner.bannerSeverity,
+      'marketing.contactEmail': labels.contact.publicContactEmail,
+      'marketing.staticStartingPrice': labels.pricing.staticStartingPrice,
+      'marketing.webStartingPrice': labels.pricing.webStartingPrice,
+      'marketing.fullStartingPrice': labels.pricing.fullStartingPrice,
+    };
+
+    return BASE_DEFINITIONS.map((definition) => ({
+      ...definition,
+      label: labelMap[definition.key] ?? definition.key,
+    }));
+  }, [copy.fields]);
+
+  const draftMergedValues = useMemo(() => ({ ...serverValues, ...draftValues }), [serverValues, draftValues]);
+  const displayValues = mode === 'published' ? serverValues : draftMergedValues;
+  const dirtyCount = Object.keys(draftValues).length;
+  const isDirty = dirtyCount > 0;
 
   const groupedDefinitions = useMemo(
-    () => GROUP_ORDER.map((group) => ({ group, items: SETTING_DEFINITIONS.filter((definition) => definition.group === group) })),
-    [],
+    () =>
+      GROUP_ORDER.map((group) => ({
+        group,
+        items: localizedDefinitions.filter((definition) => definition.group === group && fieldMatchesQuery(definition, deferredSearchValue)),
+      })).filter((group) => group.items.length > 0),
+    [deferredSearchValue, localizedDefinitions],
+  );
+
+  const pricingDefinitions = useMemo(
+    () => localizedDefinitions.filter((definition) => definition.group === 'Pricing' && fieldMatchesQuery(definition, deferredSearchValue)),
+    [deferredSearchValue, localizedDefinitions],
   );
 
   const configurableOptionGroups = useMemo(
-    () => (optionsQuery.data?.groups ?? []).filter((group) => group.configurable),
-    [optionsQuery.data?.groups],
+    () => (optionsQuery.data?.groups ?? []).filter((group) => group.configurable && optionGroupMatchesQuery(group, deferredSearchValue)),
+    [deferredSearchValue, optionsQuery.data?.groups],
   );
 
   const bannerSeverityOptions = useMemo(() => {
     const group = optionsQuery.data?.groups.find((item) => item.key === 'settings.marketing.bannerSeverity');
-    if (!group || group.items.length === 0) {
-      return DEFAULT_BANNER_SEVERITIES;
-    }
-    return group.items.map((item) => item.value);
+    return group?.items.length ? group.items.map((item) => item.value) : DEFAULT_BANNER_SEVERITIES;
   }, [optionsQuery.data?.groups]);
 
-  const isDirty = useMemo(() => Object.keys(draftValues).length > 0, [draftValues]);
-
   const saveMutation = useMutation({
-    mutationFn: () =>
-      settingsApi.batchUpdate({
-        items: SETTING_DEFINITIONS.map((definition) => ({
+    mutationFn: async () => {
+      const items = localizedDefinitions
+        .filter((definition) => draftValues[definition.key] !== undefined)
+        .map((definition) => ({
           key: definition.key,
           type: definition.type,
-          value: values[definition.key] ?? definition.defaultValue,
-        })),
-      }),
-    onSuccess: async () => {
-      setDraftValues({});
+          value: `${draftValues[definition.key]}`,
+        }));
+
+      await settingsApi.batchUpdate({ items });
+      return items.map((item) => item.key);
+    },
+    onSuccess: async (savedKeys) => {
+      setDraftValues((current) => {
+        const next = { ...current };
+        for (const key of savedKeys) {
+          delete next[key];
+        }
+        return next;
+      });
+
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: queryKeys.settings.list }),
         queryClient.invalidateQueries({ queryKey: queryKeys.settings.public }),
@@ -108,32 +148,39 @@ export const SettingsPage = () => {
     },
   });
 
-  const updateValue = useCallback((key: string, value: string) => {
-    setDraftValues((prev) => {
-      const next = { ...prev };
-      if (serverValues[key] === value) {
-        delete next[key];
-      } else {
-        next[key] = value;
-      }
-      return next;
-    });
-  }, [serverValues]);
+  const updateValue = useCallback(
+    (key: string, value: string) => {
+      setDraftValues((prev) => {
+        const next = { ...prev };
+        if (serverValues[key] === value) {
+          delete next[key];
+        } else {
+          next[key] = value;
+        }
+        return next;
+      });
+    },
+    [serverValues],
+  );
 
-  const handleSettingValueChange = useCallback(
-    (event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-      const key = event.currentTarget.dataset.settingKey;
-      if (!key) {
+  const resetValue = useCallback(
+    (key: string) => {
+      const definition = localizedDefinitions.find((item) => item.key === key);
+      if (!definition) {
         return;
       }
-      updateValue(key, event.currentTarget.value);
+      updateValue(key, `${definition.defaultValue}`);
     },
-    [updateValue],
+    [localizedDefinitions, updateValue],
   );
 
   const handleSave = useCallback(() => {
     saveMutation.mutate();
   }, [saveMutation]);
+
+  const handleDiscardDraft = useCallback(() => {
+    setDraftValues({});
+  }, []);
 
   const handleOptionToggle = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
@@ -163,153 +210,273 @@ export const SettingsPage = () => {
     [configurableOptionGroups, updateDisabledOptionsMutation],
   );
 
+  const loading = settingsQuery.isLoading;
+  const hasError = settingsQuery.isError;
+  const searchHasResults = groupedDefinitions.length > 0 || configurableOptionGroups.length > 0;
+
   return (
-    <div className="space-y-6">
-      <div className="flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <p className="text-sm uppercase tracking-[0.16em] text-gray-500">Settings</p>
-          <h2 className="mt-1 text-3xl font-bold text-gray-900">Site configuration</h2>
-          <p className="mt-1 text-sm text-gray-600">Manage public content and availability flags served by backend settings.</p>
-        </div>
+    <div className="space-y-6 pb-28">
+      <SettingsPageHeader
+        dirtyCount={dirtyCount}
+        mode={mode}
+        onModeChange={setMode}
+        searchValue={searchValue}
+        onSearchChange={setSearchValue}
+        copy={copy.page}
+      />
 
-        <button
-          type="button"
-          onClick={handleSave}
-          disabled={!isDirty || saveMutation.isPending || settingsQuery.isLoading || settingsQuery.isError}
-          className="rounded-xl bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-60"
-        >
-          {saveMutation.isPending ? 'Saving...' : 'Save all settings'}
-        </button>
-      </div>
+      {loading && <div className={PANEL_CLASS}><div className="p-8 text-sm text-gray-500">{copy.page.loading}</div></div>}
 
-      {settingsQuery.isLoading && (
-        <div className="rounded-2xl border border-gray-200 bg-white p-8 text-sm text-gray-500">Loading settings...</div>
-      )}
+      {hasError && <div className="rounded-3xl border border-rose-200 bg-rose-50 p-6 text-sm text-rose-700">{copy.page.loadError}</div>}
 
-      {settingsQuery.isError && (
-        <div className="rounded-2xl border border-rose-200 bg-rose-50 p-6 text-sm text-rose-700">
-          Unable to load settings. Please refresh the page.
+      {!loading && !hasError && !searchHasResults && deferredSearchValue && (
+        <div className="rounded-3xl border border-gray-200 bg-white p-6 text-sm text-gray-600 shadow-sm">
+          {copy.page.noMatches} “{searchValue.trim()}”.
         </div>
       )}
 
-      {!settingsQuery.isLoading && !settingsQuery.isError && (
+      {!loading && !hasError && searchHasResults && (
         <div className="space-y-6">
-          {groupedDefinitions.map(({ group, items }) => (
-            <section key={group} className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-              <h3 className="text-lg font-semibold text-gray-900">{group}</h3>
-              <div className="mt-5 grid gap-4 md:grid-cols-2">
-                {items.map((item) => {
-                  const value = values[item.key] ?? item.defaultValue;
+          {groupedDefinitions.map(({ group, items }) => {
+            const meta = GROUP_META[group];
+            const sectionCopy =
+              group === 'Availability'
+                ? copy.sections.availability
+                : group === 'Pricing'
+                  ? copy.sections.pricing
+                  : group === 'Marketing Hero'
+                    ? copy.sections.marketingHero
+                    : group === 'CTA'
+                      ? copy.sections.cta
+                      : group === 'Banner'
+                        ? copy.sections.banner
+                        : copy.sections.contact;
 
-                  return (
-                    <div key={item.key} className="rounded-xl border border-gray-200 p-4">
-                      <label className="block text-sm font-medium text-gray-800">{item.label}</label>
-                      <p className="mt-1 text-xs text-gray-500">{item.key}</p>
+            return (
+              <SectionCard
+                key={group}
+                title={sectionCopy.title}
+                description={sectionCopy.description}
+                icon={meta.icon}
+                count={items.length}
+                sectionLabel={copy.states.sectionLabel}
+                fieldLabel={copy.states.fieldsLabel}
+                accentClassName={meta.accent}
+              >
+                {group === 'Pricing' ? (
+                  <div className="overflow-hidden rounded-2xl border border-gray-200">
+                    <table className="min-w-full divide-y divide-gray-200">
+                      <thead className="bg-gray-50">
+                        <tr>
+                          <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-[0.14em] text-gray-500">{copy.tables.plan}</th>
+                          <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-[0.14em] text-gray-500">{copy.tables.default}</th>
+                          <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-[0.14em] text-gray-500">{copy.tables.current}</th>
+                          <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-[0.14em] text-gray-500">{copy.tables.action}</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-gray-200 bg-white">
+                        {pricingDefinitions.map((definition) => {
+                          const value = displayValues[definition.key] ?? `${definition.defaultValue}`;
+                          const dirty = draftValues[definition.key] !== undefined;
 
-                      {item.type === 'BOOLEAN' ? (
-                        <select
-                          value={value.toLowerCase() === 'true' ? 'true' : 'false'}
-                          data-setting-key={item.key}
-                          onChange={handleSettingValueChange}
-                          className="mt-3 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900"
-                        >
-                          <option value="true">true</option>
-                          <option value="false">false</option>
-                        </select>
-                      ) : item.key === 'marketing.bannerSeverity' ? (
-                        <select
-                          value={value || 'INFO'}
-                          data-setting-key={item.key}
-                          onChange={handleSettingValueChange}
-                          className="mt-3 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900"
-                        >
-                          {bannerSeverityOptions.map((optionValue) => (
-                            <option key={optionValue} value={optionValue}>{optionValue}</option>
-                          ))}
-                        </select>
-                      ) : (
-                        <input
-                          type="text"
+                          return (
+                            <tr key={definition.key} className={cn('transition', dirty && 'bg-amber-50/40')}>
+                              <td className="px-4 py-4">
+                                <div>
+                                  <p className="text-sm font-semibold text-gray-900">{definition.label}</p>
+                                </div>
+                              </td>
+                              <td className="px-4 py-4 text-sm text-gray-600">{formatFieldValue(definition, definition.defaultValue, copy)}</td>
+                              <td className="px-4 py-4">
+                                <input
+                                  type="number"
+                                  inputMode="numeric"
+                                  step={1}
+                                  value={value}
+                                  disabled={mode === 'published'}
+                                  onChange={(event) => updateValue(definition.key, event.currentTarget.value)}
+                                  className={cn(INPUT_CLASS, 'max-w-40', dirty && 'border-amber-300 bg-amber-50/40')}
+                                />
+                              </td>
+                              <td className="px-4 py-4 text-right">
+                                <button
+                                  type="button"
+                                  onClick={() => resetValue(definition.key)}
+                                  disabled={mode === 'published' || !dirty}
+                                  className="inline-flex items-center gap-1.5 rounded-full border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+                                >
+                                  <RotateCcw className="h-3.5 w-3.5" />
+                                  {copy.states.resetToDefault}
+                                </button>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                ) : (
+                  <div className="grid gap-4 md:grid-cols-2">
+                    {items.map((definition) => {
+                      const value = displayValues[definition.key] ?? `${definition.defaultValue}`;
+                      const dirty = draftValues[definition.key] !== undefined;
+
+                      return (
+                        <SettingsField
+                          key={definition.key}
+                          definition={definition}
                           value={value}
-                          data-setting-key={item.key}
-                          onChange={handleSettingValueChange}
-                          className="mt-3 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900"
+                          defaultValue={`${definition.defaultValue}`}
+                          dirty={dirty}
+                          disabled={mode === 'published'}
+                          onChange={updateValue}
+                          onReset={resetValue}
+                          copy={copy}
+                          selectOptions={definition.key === 'marketing.bannerSeverity' ? bannerSeverityOptions : undefined}
                         />
-                      )}
+                      );
+                    })}
+                  </div>
+                )}
+              </SectionCard>
+            );
+          })}
 
-                      {item.description && <p className="mt-2 text-xs text-gray-500">{item.description}</p>}
-                    </div>
-                  );
-                })}
-              </div>
-            </section>
-          ))}
+          {saveMutation.isError && <div className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">{copy.page.saveError}</div>}
+          {saveMutation.isSuccess && !isDirty && <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">{copy.page.publishSuccess}</div>}
 
-          {saveMutation.isError && (
-            <div className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
-              Failed to save settings. Check values and try again.
-            </div>
-          )}
+          <SectionCard
+            title={copy.sections.requestOptions.title}
+            description={copy.sections.requestOptions.description}
+            icon={ListFilter}
+            count={configurableOptionGroups.length}
+            sectionLabel={copy.states.sectionLabel}
+            fieldLabel={copy.states.fieldsLabel}
+            accentClassName="bg-gray-50 text-gray-700"
+          >
+            {optionsQuery.isLoading && <p className="text-sm text-gray-500">{copy.sections.requestOptions.loading}</p>}
 
-          {saveMutation.isSuccess && (
-            <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
-              Settings saved successfully.
-            </div>
-          )}
+            {optionsQuery.isError && <p className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">{copy.sections.requestOptions.failed}</p>}
 
-          <section className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-            <h3 className="text-lg font-semibold text-gray-900">Request option availability</h3>
-            <p className="mt-1 text-sm text-gray-600">Enable or disable selectable values shown in request forms.</p>
-
-            {optionsQuery.isLoading && <p className="mt-4 text-sm text-gray-500">Loading option groups...</p>}
-
-            {optionsQuery.isError && (
-              <p className="mt-4 rounded-xl border border-rose-200 bg-rose-50 px-3 py-2 text-sm text-rose-700">
-                Failed to load option groups.
+            {!optionsQuery.isLoading && !optionsQuery.isError && configurableOptionGroups.length === 0 && (
+              <p className="text-sm text-gray-500">
+                {deferredSearchValue ? copy.sections.requestOptions.noMatch : copy.sections.requestOptions.noGroups}
               </p>
             )}
 
-            {!optionsQuery.isLoading && !optionsQuery.isError && configurableOptionGroups.length === 0 && (
-              <p className="mt-4 text-sm text-gray-500">No configurable option groups available.</p>
-            )}
-
-            <div className="mt-5 space-y-5">
+            <div className="space-y-4">
               {configurableOptionGroups.map((group) => (
-                <div key={group.key} className="rounded-xl border border-gray-200 p-4">
-                  <p className="text-sm font-medium text-gray-900">{group.label}</p>
-                  <p className="mt-1 text-xs text-gray-500">{group.key}</p>
+                <article key={group.key} className="rounded-2xl border border-gray-200 bg-gray-50/40 p-4">
+                  <div className="flex flex-wrap items-center justify-between gap-3">
+                    <div>
+                      <p className="text-sm font-semibold text-gray-900">{group.label}</p>
+                      <p className="mt-1 text-xs text-gray-500">
+                        {group.items.filter((item) => item.enabled).length} {copy.states.enabled} of {group.items.length}
+                      </p>
+                    </div>
 
-                  <div className="mt-3 grid gap-2 md:grid-cols-2">
+                    <span className="rounded-full border border-gray-200 bg-white px-3 py-1 text-[11px] font-medium text-gray-600">
+                      {copy.states.groupKeyLabel}: {group.key}
+                    </span>
+                  </div>
+
+                  <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
                     {group.items.map((item) => (
-                      <label key={item.value} className="flex items-center gap-2 text-sm text-gray-700">
-                        <input
-                          type="checkbox"
+                      <label
+                        key={item.value}
+                        className={cn(
+                          'flex items-center justify-between gap-4 rounded-2xl border bg-white p-4 transition',
+                          item.enabled ? 'border-gray-200' : 'border-gray-100 bg-gray-50',
+                        )}
+                      >
+                        <div>
+                          <p className={cn('text-sm font-medium', item.enabled ? 'text-gray-900' : 'text-gray-500')}>{item.label}</p>
+                          <p className="mt-1 text-xs text-gray-500">{item.value}</p>
+                        </div>
+
+                        <Switch
                           checked={item.enabled}
-                          data-group-key={group.key}
-                          data-option-value={item.value}
+                          disabled={updateDisabledOptionsMutation.isPending || mode === 'published'}
                           onChange={handleOptionToggle}
-                          disabled={updateDisabledOptionsMutation.isPending}
+                          inputProps={{
+                            'data-group-key': group.key,
+                            'data-option-value': item.value,
+                          }}
                         />
-                        <span>{item.label}</span>
-                        <span className="text-xs text-gray-500">({item.value})</span>
                       </label>
                     ))}
                   </div>
-                </div>
+                </article>
               ))}
-            </div>
 
-            {updateDisabledOptionsMutation.isError && (
-              <p className="mt-4 rounded-xl border border-rose-200 bg-rose-50 px-3 py-2 text-sm text-rose-700">
-                Failed to update option availability. Please try again.
-              </p>
-            )}
-          </section>
+              {updateDisabledOptionsMutation.isError && <p className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">{copy.sections.requestOptions.failed}</p>}
+            </div>
+          </SectionCard>
+        </div>
+      )}
+
+      {(isDirty || saveMutation.isPending || mode === 'published') && !loading && !hasError && (
+        <div className="sticky bottom-4 z-30">
+          <div className="mx-auto max-w-6xl rounded-3xl border border-gray-200 bg-white/95 px-4 py-4 shadow-[0_20px_50px_rgba(15,23,42,0.12)] backdrop-blur">
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              <div className="flex items-start gap-3">
+                <div className="rounded-2xl bg-slate-900 p-2 text-white">
+                  <Save className="h-4 w-4" />
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-gray-900">
+                    {mode === 'published' ? copy.page.publishedPreview : `${dirtyCount} ${copy.page.unsavedChanges}`}
+                  </p>
+                  <p className="mt-1 text-xs text-gray-500">
+                    {mode === 'published' ? copy.page.switchBackHint : copy.page.draftHint}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-2">
+                {mode === 'published' ? (
+                  <button
+                    type="button"
+                    onClick={() => setMode('draft')}
+                    className="inline-flex items-center gap-2 rounded-2xl bg-slate-900 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-slate-800"
+                  >
+                    {copy.page.backToDraft}
+                  </button>
+                ) : (
+                  <>
+                    <button
+                      type="button"
+                      onClick={handleDiscardDraft}
+                      disabled={!isDirty || saveMutation.isPending}
+                      className="inline-flex items-center gap-2 rounded-2xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+                    >
+                      {copy.page.discardDraft}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleSave}
+                      disabled={!isDirty || saveMutation.isPending || settingsQuery.isError}
+                      className="inline-flex items-center gap-2 rounded-2xl bg-slate-900 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-40"
+                    >
+                      {saveMutation.isPending ? (
+                        <>
+                          <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                          {copy.page.publishing}
+                        </>
+                      ) : (
+                        <>
+                          {copy.page.publishChanges}
+                          <ArrowRight className="h-4 w-4" />
+                        </>
+                      )}
+                    </button>
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </div>
   );
 };
-
-
-

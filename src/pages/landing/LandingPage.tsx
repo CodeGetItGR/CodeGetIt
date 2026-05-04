@@ -1,4 +1,4 @@
-import { Contact } from '@/components/sections/Contact';
+import { Contact } from '@/components/sections/Contact/Contact.tsx';
 import { SEO } from '@/components/SEO';
 import { useLocale } from '@/i18n/UseLocale';
 import { PublicSettingsProvider } from '@/settings/PublicSettingsProvider';

@@ -2,7 +2,7 @@ import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
 import { ExternalLink } from 'lucide-react';
 import { useLocale } from '@/i18n/UseLocale';
-import { SectionHeading } from './SectionHeading';
+import { SectionHeading } from '@/pages/landing';
 
 const sectionFade = {
   hidden: { opacity: 0, y: 24 },
@@ -73,14 +73,6 @@ export function ProjectsSection() {
           ))}
         </div>
 
-        <div className="mt-12 text-center">
-          <button
-            type="button"
-            className="rounded-full border border-white/10 bg-white/5 px-6 py-3 font-semibold text-white transition-colors hover:bg-white/10"
-          >
-            {projects.viewAll}
-          </button>
-        </div>
       </div>
     </section>
   );

@@ -2,16 +2,6 @@ import type { Translations } from '../types';
 import { en } from './en';
 
 export const el: Translations = {
-  nav: {
-    home: 'Αρχική',
-    services: 'Υπηρεσίες',
-    portfolio: 'Χαρτοφυλάκιο',
-    testimonials: 'Μαρτυρίες',
-    process: 'Διαδικασία',
-    about: 'Σχετικά',
-    contact: 'Επικοινωνία',
-    toggleMenu: 'Εναλλαγή μενού',
-  },
   hero: {
     title: 'Εφαρμογές Ιστού Επαγγελματικής Ποιότητας',
     subtitle: 'Λογισμικό σχεδιασμένο για απόδοση, επεκτασιμότητα και μακροπρόθεσμη συντηρησιμότητα.',
@@ -424,6 +414,7 @@ export const el: Translations = {
     },
   },
   admin: {
+    settings: en.admin.settings,
     detailTabs: {
       notes: 'Σημειωσεις',
       history: 'Ιστορικο ενεργειων',

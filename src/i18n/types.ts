@@ -1,191 +1,6 @@
 export type Locale = 'en' | 'el';
 
 export interface Translations {
-  // Navigation
-  nav: {
-    home: string;
-    services: string;
-    portfolio: string;
-    testimonials: string;
-    process: string;
-    about: string;
-    contact: string;
-    toggleMenu: string;
-  };
-
-  // Hero Section
-  hero: {
-    title: string;
-    subtitle: string;
-    subheadline: string;
-    cta: string;
-    learnMore: string;
-    badge: string;
-    reimagined: string;
-    startProject: string;
-    viewWork: string;
-    latestProject: string;
-    ecommercePlatform: string;
-    ecommerceDesc: string;
-    scroll: string;
-    socialProof: string;
-    proofBar: {
-      seniorEngineering: string;
-      founderLed: string;
-      builtForScale: string;
-      modernStack: string;
-    };
-    availability: string;
-    bannerFallback: string;
-    hiddenGem: string;
-    visual: {
-      fileName: string;
-      engineeringFocus: string;
-      typeSafe: string;
-      scalableBackend: string;
-      relationalData: string;
-      productionReady: string;
-      principles: string;
-      performance: string;
-      maintainable: string;
-      scalable: string;
-      builtToLast: string;
-      reliable: string;
-    };
-    delivery: {
-      frameworkTitle: string;
-      frameworkSubtitle: string;
-      steps: string[];
-      stats: {
-        typicalLaunch: string;
-        response: string;
-        uptimeTarget: string;
-        codeQuality: string;
-      };
-      timelineNote: string;
-    };
-  };
-
-  // Services Section
-  services: {
-    title: string;
-    subtitle: string;
-    badge: string;
-    fullStack: {
-      title: string;
-      description: string;
-      simpleDescription: string;
-      features: string[];
-      technicalDetails: {
-        title: string;
-        disclaimer?: string;
-        items: string[];
-      };
-    };
-    api: {
-      title: string;
-      description: string;
-      simpleDescription: string;
-      features: string[];
-      technicalDetails: {
-        title: string;
-        disclaimer?: string;
-        items: string[];
-      };
-    };
-    learnMore: string;
-    viewDetails: string;
-    hideDetails: string;
-    serviceLabel: string;
-    customSolutions: string;
-    contactCTA: string;
-    specialized: string;
-  };
-
-  // Portfolio Section
-  portfolio: {
-    badge: string;
-    title: string;
-    subtitle: string;
-    viewAll: string;
-    allProjects: string;
-    viewCaseStudy: string;
-    livePreview: string;
-    hiddenProjectNote: string;
-    hiddenProjectNoteAria: string;
-    highImpactLabel: string;
-    items: Array<{
-      title: string;
-      category: string;
-      description: string;
-    }>;
-    projectCTA: string;
-    projectCTADesc: string;
-    startProject: string;
-  };
-
-  valueProposition: {
-    kicker: string;
-    title: string;
-    subtitle: string;
-    table: {
-      comparison: string;
-      staticProject: string;
-      fullStackProject: string;
-      rows: Array<{
-        feature: string;
-        staticProject: string;
-        fullStackProject: string;
-      }>;
-    };
-    cards: Array<{
-      title: string;
-      description: string;
-      icon: string;
-    }>;
-  };
-
-  // About Section
-  about: {
-    title: string;
-    subtitle: string;
-    description: string;
-    badge: string;
-    features: string[];
-    testimonialQuote: string;
-    testimonialAuthor: string;
-    whyFounderLed: string;
-    founderAdvantage: string;
-    engineeringPrinciples: string;
-    engineeringPrinciplesDesc: string;
-    engineeringPrinciplesSubtext: string;
-    idealProjects: string;
-    idealProjectsList: string[];
-    bestSuitedFor: string;
-    technicalApproach: string;
-    technicalApproachList: string[];
-    philosophy: string;
-    engagementModel: string;
-    engagementModelList: string[];
-    performance: {
-      badge: string;
-      title: string;
-      metrics: Array<{
-        metric: string;
-        label: string;
-        desc: string;
-      }>;
-    };
-  };
-
-  // Stats Section
-  stats: {
-    projects: string;
-    clients: string;
-    experience: string;
-    satisfaction: string;
-  };
-
   // Contact Section
   contact: {
     title: string;
@@ -290,6 +105,7 @@ export interface Translations {
       labels: [string, string, string, string];
     };
     services: {
+      from: string;
       eyebrow: string;
       title: string;
       description: string;
@@ -298,8 +114,9 @@ export interface Translations {
       items: Array<{
         title: string;
         description: string;
-        features: [string, string, string, string];
-        price: string;
+        features: string [];
+        priceKey: string;
+        defaultPrice: string;
       }>;
     };
     comparison: {
@@ -318,6 +135,7 @@ export interface Translations {
       stack: Array<{
         name: string;
         description: string;
+        id:string;
       }>;
     };
     process: {
@@ -410,52 +228,6 @@ export interface Translations {
     }>;
   };
 
-  // Skills Section
-  skills: {
-    badge: string;
-    title: string;
-    subtitle: string;
-    frontend: string;
-    backend: string;
-    database: string;
-    tools: string;
-  };
-
-  // Process Section
-  process: {
-    title: string;
-    subtitle: string;
-    kicker: string;
-    phaseLabel: string;
-    disclaimer: string;
-    steps: {
-      discovery: {
-        title: string;
-        description: string;
-        duration: string;
-        benefits: string[];
-      };
-      design: {
-        title: string;
-        description: string;
-        duration: string;
-        benefits: string[];
-      };
-      development: {
-        title: string;
-        description: string;
-        duration: string;
-        benefits: string[];
-      };
-      deployment: {
-        title: string;
-        description: string;
-        duration: string;
-        benefits: string[];
-      };
-    };
-  };
-
   // Footer
   footer: {
     tagline: string;
@@ -474,6 +246,114 @@ export interface Translations {
 
   // Admin
   admin: {
+    settings: {
+      page: {
+        eyebrow: string;
+        title: string;
+        description: string;
+        draftBuffer: string;
+        unsavedChanges: string;
+        noUnsavedChanges: string;
+        draftEditing: string;
+        publishedPreview: string;
+        searchPlaceholder: string;
+        draft: string;
+        published: string;
+        noMatches: string;
+        loading: string;
+        loadError: string;
+        saveError: string;
+        publishSuccess: string;
+        publishChanges: string;
+        publishing: string;
+        discardDraft: string;
+        backToDraft: string;
+        switchBackHint: string;
+        draftHint: string;
+      };
+      sections: {
+        availability: {
+          title: string;
+          description: string;
+        };
+        pricing: {
+          title: string;
+          description: string;
+        };
+        marketingHero: {
+          title: string;
+          description: string;
+        };
+        cta: {
+          title: string;
+          description: string;
+        };
+        banner: {
+          title: string;
+          description: string;
+        };
+        contact: {
+          title: string;
+          description: string;
+        };
+        requestOptions: {
+          title: string;
+          description: string;
+          loading: string;
+          failed: string;
+          noGroups: string;
+          noMatch: string;
+        };
+      };
+      states: {
+        modified: string;
+        saved: string;
+        enabled: string;
+        disabled: string;
+        defaultLabel: string;
+        resetToDefault: string;
+        changesRemainHint: string;
+        sectionLabel: string;
+        fieldsLabel: string;
+        enabledLabel: string;
+        groupKeyLabel: string;
+      };
+      tables: {
+        plan: string;
+        default: string;
+        current: string;
+        action: string;
+      };
+      fields: {
+        availability: {
+          acceptingProjects: string;
+          statusMessage: string;
+          contactFormEnabled: string;
+          requestSubmissionEnabled: string;
+        };
+        marketingHero: {
+          heroTitle: string;
+          heroSubtitle: string;
+        };
+        cta: {
+          primaryText: string;
+          primaryUrl: string;
+        };
+        banner: {
+          bannerEnabled: string;
+          bannerText: string;
+          bannerSeverity: string;
+        };
+        contact: {
+          publicContactEmail: string;
+        };
+        pricing: {
+          staticStartingPrice: string;
+          webStartingPrice: string;
+          fullStartingPrice: string;
+        };
+      };
+    };
     detailTabs: {
       notes: string;
       history: string;

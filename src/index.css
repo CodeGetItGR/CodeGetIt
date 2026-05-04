@@ -420,15 +420,6 @@
     position: relative;
   }
 
-  .premium-texture::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    background-image: linear-gradient(130deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0) 50%);
-    pointer-events: none;
-  }
-
   .section-depth {
     position: relative;
     isolation: isolate;
@@ -501,21 +492,21 @@
     transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.35s ease, box-shadow 0.35s ease;
   }
 
-  .interactive-card::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    pointer-events: none;
-    opacity: 0;
-    background: radial-gradient(420px circle at var(--spotlight-x, 50%) var(--spotlight-y, 50%), rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0) 62%);
-    transition: opacity 0.28s ease;
-  }
+  /*.interactive-card::before {*/
+  /*  content: '';*/
+  /*  position: absolute;*/
+  /*  inset: 0;*/
+  /*  border-radius: inherit;*/
+  /*  pointer-events: none;*/
+  /*  opacity: 0;*/
+  /*  background: radial-gradient(420px circle at var(--spotlight-x, 50%) var(--spotlight-y, 50%), rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0) 62%);*/
+  /*  transition: opacity 0.28s ease;*/
+  /*}*/
 
-  .interactive-card:hover {
-    border-color: rgba(71, 85, 105, 0.42);
-    box-shadow: 0 34px 78px -38px rgba(15, 23, 42, 0.48);
-  }
+  /*.interactive-card:hover {*/
+  /*  border-color: rgba(71, 85, 105, 0.42);*/
+  /*  box-shadow: 0 34px 78px -38px rgba(15, 23, 42, 0.48);*/
+  /*}*/
 
   .interactive-card:hover::before {
     opacity: 1;

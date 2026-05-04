@@ -1,8 +1,11 @@
 import { motion, useInView } from 'framer-motion';
-import { useRef } from 'react';
+import {useCallback, useRef} from 'react';
 import { Code2, Database, Globe } from 'lucide-react';
 import { useLocale } from '@/i18n/UseLocale';
-import { SectionHeading } from './SectionHeading';
+import { SectionHeading } from '@/pages/landing';
+import {useQuery} from "@tanstack/react-query";
+import {queryKeys} from "@/admin/api/queryKeys.ts";
+import {settingsApi} from "@/admin/api/settings.ts";
 
 const sectionFade = {
   hidden: { opacity: 0, y: 24 },
@@ -19,7 +22,16 @@ export function ServicesSection() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-100px' });
   const { t } = useLocale();
+  const settingsQuery = useQuery({
+    queryKey: queryKeys.settings.list,
+    queryFn: () => settingsApi.listAll(),
+  });
+
   const services = t.landing.services;
+
+  const formatPrice = useCallback((value: string) => {
+    return t.landing.services.from.replace('{price}', new Intl.NumberFormat('el-GR').format(Number.parseInt(value)));
+  }, [t]);
 
   return (
     <section ref={ref} id="services" className="px-6 py-24">
@@ -46,7 +58,7 @@ export function ServicesSection() {
                 className={[
                   'relative rounded-3xl border p-8 shadow-2xl shadow-slate-950/20 backdrop-blur-sm transition-colors',
                   featured
-                    ? 'border-cyan-400/40 bg-gradient-to-br from-cyan-400/10 to-white/5'
+                    ? 'border-cyan-400/40 bg-linear-to-br from-cyan-400/10 to-white/5'
                     : 'border-white/10 bg-white/5 hover:border-cyan-400/30',
                 ].join(' ')}
               >
@@ -72,17 +84,17 @@ export function ServicesSection() {
                   ))}
                 </ul>
 
-                <div className="mt-8 text-2xl font-bold text-cyan-300">{service.price}</div>
+                  <div className="mt-8 text-2xl font-bold text-cyan-300">{formatPrice(settingsQuery.data?.find(i => i.key === service.priceKey)?.value ?? service.defaultPrice)}</div>
 
-                <button
-                  type="button"
-                  className={[
-                    'mt-6 inline-flex w-full items-center justify-center rounded-xl px-4 py-3 font-semibold transition-colors',
-                    featured ? 'bg-cyan-300 text-slate-950 hover:bg-white' : 'bg-white/10 text-white hover:bg-white/15',
-                  ].join(' ')}
-                >
-                  {services.getStarted}
-                </button>
+                  <button
+                    type="button"
+                    className={[
+                      'mt-6 inline-flex w-full items-center justify-center rounded-xl px-4 py-3 font-semibold transition-colors',
+                      featured ? 'bg-cyan-300 text-slate-950 hover:bg-white' : 'bg-white/10 text-white hover:bg-white/15',
+                    ].join(' ')}
+                  >
+                    {services.getStarted}
+                  </button>
               </motion.article>
             );
           })}
