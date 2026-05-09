@@ -74,32 +74,77 @@ export interface Translations {
       description: string;
     };
     hero: {
-      badge: string;
-      availability: string;
-      titleWords: [string, string, string, string];
-      highlight: string;
-      subtitle: string;
-      features: [string, string, string, string];
+      navigation: {
+        brandInitial: string;
+        brandLabel: string;
+        contactButton: string;
+      };
+      mobile: {
+        title: string;
+        highlight: string;
+        subtitle: string;
+      };
+      desktop: {
+        title: string;
+        highlight: string;
+        subtitle: string;
+      };
+      benefits: Array<{
+        title: string;
+        description: string;
+      }>;
       ctas: {
         primary: string;
         secondary: string;
+        mobileSecondary: string;
+        note: string;
       };
-      browser: {
-        url: string;
-        securityLabel: string;
-        securityValue: string;
-        performanceLabel: string;
-        performanceValue: string;
-        stackLabel: string;
-        stackValue: string;
-        revenueLabel: string;
-        revenueValue: string;
-        usersLabel: string;
-        usersValue: string;
-        growthLabel: string;
-        growthValue: string;
+      mockups: {
+        tabs: [string, string, string];
+        descriptions: [string, string, string];
+        ecommerce: {
+          statusTime: string;
+          storeTitle: string;
+          searchPlaceholder: string;
+          featuredLabel: string;
+          featuredProduct: string;
+          price: string;
+          addToCart: string;
+          productCountLabel: string;
+        };
+        analytics: {
+          browserUrl: string;
+          title: string;
+          subtitle: string;
+          revenueLabel: string;
+          revenueValue: string;
+          revenueChange: string;
+          usersLabel: string;
+          usersValue: string;
+          usersChange: string;
+          ordersLabel: string;
+          ordersValue: string;
+          ordersChange: string;
+          growthLabel: string;
+          growthValue: string;
+          growthChange: string;
+          chartTitle: string;
+          chartTrend: string;
+        };
+        booking: {
+          statusTime: string;
+          title: string;
+          subtitle: string;
+          action: string;
+          daysOfWeek: [string, string, string, string, string, string, string];
+          scheduleTitle: string;
+          appointments: Array<{
+            time: string;
+            client: string;
+            type: string;
+          }>;
+        };
       };
-      scroll: string;
     };
     stats: {
       labels: [string, string, string, string];

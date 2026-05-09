@@ -22,7 +22,7 @@ export function HowWeWorkSection() {
   const process = t.landing.process;
 
   return (
-    <section ref={ref} className="px-6 py-24">
+    <section ref={ref} id="process" className="px-6 py-24">
       <div className="mx-auto max-w-6xl">
         <SectionHeading
           eyebrow={process.eyebrow}

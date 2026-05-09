@@ -1,6 +1,7 @@
 export { FAQSection } from './FAQSection';
 export { FooterSection } from './FooterSection';
 export { HeroSection } from './HeroSection';
+export * from './hero';
 export { HowWeWorkSection } from './HowWeWorkSection';
 export { ComparisonSection } from './ComparisonSection';
 export { ProjectsSection } from './ProjectsSection';
