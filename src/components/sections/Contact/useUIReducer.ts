@@ -1,4 +1,3 @@
-
 export type SubmitState = 'idle' | 'success' | 'error';
 
 export interface UIState {

@@ -1,4 +1,3 @@
-export { AnalyticsScreen } from './AnalyticsScreen.tsx';
-export { BookingScreen } from './BookingScreen.tsx';
-export { EcommerceScreen } from './EcommerceScreen.tsx';
-
+export { PadoLivingScreen } from './PadoLivingScreen';
+export { AnalyticsScreen } from './AnalyticsScreen';
+export { BookingScreen } from './BookingScreen';

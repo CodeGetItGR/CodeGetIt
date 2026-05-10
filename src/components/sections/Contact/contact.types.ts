@@ -1,36 +1,36 @@
 import type { DetailedRequestFormState } from './useUIReducer';
 
 export interface ContactFormData {
-  name: string;
-  email: string;
-  message: string;
+    name: string;
+    email: string;
+    message: string;
 }
 
 export interface ContactOption {
-  value: string;
-  label: string;
+    value: string;
+    label: string;
 }
 
 export interface ContactOptions {
-  projectTypeOptions: ContactOption[];
-  desiredStartWindowOptions: ContactOption[];
-  budgetRangeOptions: ContactOption[];
-  budgetFlexibilityOptions: ContactOption[];
-  communicationPreferenceOptions: ContactOption[];
-  dataSensitivityOptions: ContactOption[];
-  priorityOptions: ContactOption[];
+    projectTypeOptions: ContactOption[];
+    desiredStartWindowOptions: ContactOption[];
+    budgetRangeOptions: ContactOption[];
+    budgetFlexibilityOptions: ContactOption[];
+    communicationPreferenceOptions: ContactOption[];
+    dataSensitivityOptions: ContactOption[];
+    priorityOptions: ContactOption[];
 }
 
 export interface ContactFormState {
-  formData: ContactFormData;
-  detailedRequest: DetailedRequestFormState;
-  useDetailedRequest: boolean;
-  currentStep: number;
-  isSubmitting: boolean;
-  submitState: 'idle' | 'success' | 'error';
-  submittedRequestId: string | null;
-  errorText: string;
-  fieldErrors: Record<string, string>;
-  optionNotice: string;
-  hasDetailedRequiredOptions: boolean;
+    formData: ContactFormData;
+    detailedRequest: DetailedRequestFormState;
+    useDetailedRequest: boolean;
+    currentStep: number;
+    isSubmitting: boolean;
+    submitState: 'idle' | 'success' | 'error';
+    submittedRequestId: string | null;
+    errorText: string;
+    fieldErrors: Record<string, string>;
+    optionNotice: string;
+    hasDetailedRequiredOptions: boolean;
 }

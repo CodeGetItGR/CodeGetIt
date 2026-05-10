@@ -1,17 +1,8 @@
-import {
-
-    useMemo,
-    useState,
-    useCallback,
-    type ReactNode,
-} from 'react';
+import { useMemo, useState, useCallback, type ReactNode } from 'react';
 import type { UUID } from '@/admin/types';
-import {AiChatContext, type ChatState} from "@/admin/providers/AiChatProvider/AiChatContext.ts";
-
+import { AiChatContext, type ChatState } from '@/admin/providers/AiChatProvider/AiChatContext.ts';
 
 type EntityType = 'REQUEST' | 'OFFER' | 'PROJECT';
-
-
 
 export const AiChatProvider = ({ children }: { children: ReactNode }) => {
     const [state, setState] = useState<ChatState>({
@@ -41,9 +32,7 @@ export const AiChatProvider = ({ children }: { children: ReactNode }) => {
 
     const toggle = useCallback((id: UUID, type: EntityType) => {
         setState((prev) =>
-            prev.isOpen
-                ? { ...prev, minimized: !prev.minimized }
-                : { isOpen: true, entityId: id, entityType: type, minimized: false }
+            prev.isOpen ? { ...prev, minimized: !prev.minimized } : { isOpen: true, entityId: id, entityType: type, minimized: false }
         );
     }, []);
 
@@ -55,14 +44,7 @@ export const AiChatProvider = ({ children }: { children: ReactNode }) => {
         setState((prev) => ({ ...prev, minimized: false, isOpen: true }));
     }, []);
 
-    const value = useMemo(
-        () => ({ open, close, toggle, minimize, restore, state }),
-        [open, close, toggle, minimize, restore, state]
-    );
+    const value = useMemo(() => ({ open, close, toggle, minimize, restore, state }), [open, close, toggle, minimize, restore, state]);
 
-    return (
-        <AiChatContext.Provider value={value}>
-            {children}
-        </AiChatContext.Provider>
-    );
+    return <AiChatContext.Provider value={value}>{children}</AiChatContext.Provider>;
 };

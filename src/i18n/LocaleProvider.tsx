@@ -4,44 +4,36 @@ import { LocaleContext } from './LocaleContext.ts';
 import { getCurrentLocale, LOCALE_STORAGE_KEY, setStoredLocale } from '@/i18n/locale-storage';
 import type { Locale } from './types.ts';
 
-
 export const LocaleProvider = ({ children }: { children: ReactNode }) => {
-  const [locale, setLocaleState] = useState<Locale>(() => getCurrentLocale());
+    const [locale, setLocaleState] = useState<Locale>(() => getCurrentLocale());
 
-  const setLocale = useCallback((newLocale: Locale) => {
-    setLocaleState(newLocale);
-    setStoredLocale(newLocale);
-  }, []);
+    const setLocale = useCallback((newLocale: Locale) => {
+        setLocaleState(newLocale);
+        setStoredLocale(newLocale);
+    }, []);
 
-  useEffect(() => {
-    document.documentElement.lang = locale;
-  }, [locale]);
+    useEffect(() => {
+        document.documentElement.lang = locale;
+    }, [locale]);
 
-  const t = useMemo(() => translations[locale], [locale]);
+    const t = useMemo(() => translations[locale], [locale]);
 
-  useEffect(() => {
-    const handleStorage = (event: StorageEvent) => {
-      if (event.key !== LOCALE_STORAGE_KEY || !event.newValue) {
-        return;
-      }
+    useEffect(() => {
+        const handleStorage = (event: StorageEvent) => {
+            if (event.key !== LOCALE_STORAGE_KEY || !event.newValue) {
+                return;
+            }
 
-      if (event.newValue === 'en' || event.newValue === 'el') {
-        setLocaleState(event.newValue);
-      }
-    };
+            if (event.newValue === 'en' || event.newValue === 'el') {
+                setLocaleState(event.newValue);
+            }
+        };
 
-    window.addEventListener('storage', handleStorage);
-    return () => window.removeEventListener('storage', handleStorage);
-  }, []);
+        window.addEventListener('storage', handleStorage);
+        return () => window.removeEventListener('storage', handleStorage);
+    }, []);
 
-  const contextValue = useMemo(
-    () => ({ locale, setLocale, t }),
-    [locale, setLocale, t],
-  );
+    const contextValue = useMemo(() => ({ locale, setLocale, t }), [locale, setLocale, t]);
 
-  return (
-    <LocaleContext.Provider value={contextValue}>
-      {children}
-    </LocaleContext.Provider>
-  );
+    return <LocaleContext.Provider value={contextValue}>{children}</LocaleContext.Provider>;
 };

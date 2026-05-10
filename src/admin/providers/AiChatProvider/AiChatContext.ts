@@ -1,5 +1,5 @@
-import {createContext} from "react";
-import type {EntityType, UUID} from "@/admin/types.ts";
+import { createContext } from 'react';
+import type { EntityType, UUID } from '@/admin/types.ts';
 
 export interface ChatState {
     isOpen: boolean;

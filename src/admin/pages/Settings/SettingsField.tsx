@@ -1,22 +1,22 @@
-import {cn} from "@/lib/utils.ts";
-import {RotateCcw} from "lucide-react";
-import type {Translations} from "@/i18n/types.ts";
-import {formatFieldValue, INPUT_CLASS, type SettingDefinition} from "@/admin/pages/Settings/Utils.ts";
-import {Switch} from "@/admin/pages/Settings/Switch.tsx";
+import { cn } from '@/lib/utils.ts';
+import { RotateCcw } from 'lucide-react';
+import type { Translations } from '@/i18n/types.ts';
+import { formatFieldValue, INPUT_CLASS, type SettingDefinition } from '@/admin/pages/Settings/Utils.ts';
+import { Switch } from '@/admin/pages/Settings/Switch.tsx';
 
 const TEXTAREA_CLASS = `${INPUT_CLASS} min-h-[110px] resize-y`;
 
 export const SettingsField = ({
-                                  definition,
-                                  value,
-                                  defaultValue,
-                                  dirty,
-                                  disabled,
-                                  onChange,
-                                  onReset,
-                                  copy,
-                                  selectOptions,
-                              }: {
+    definition,
+    value,
+    defaultValue,
+    dirty,
+    disabled,
+    onChange,
+    onReset,
+    copy,
+    selectOptions,
+}: {
     definition: SettingDefinition;
     value: string;
     defaultValue: string;
@@ -38,12 +38,17 @@ export const SettingsField = ({
                         <p className="text-sm font-semibold text-gray-900">{definition.label}</p>
                         {definition.description ? <p className="mt-1 text-xs leading-5 text-gray-500">{definition.description}</p> : null}
                         <div className="mt-3 flex items-center gap-2">
-              <span className={cn('inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-medium', dirty ? 'bg-amber-100 text-amber-800' : 'bg-emerald-50 text-emerald-700')}>
-                {dirty ? copy.states.modified : copy.states.saved}
-              </span>
+                            <span
+                                className={cn(
+                                    'inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-medium',
+                                    dirty ? 'bg-amber-100 text-amber-800' : 'bg-emerald-50 text-emerald-700'
+                                )}
+                            >
+                                {dirty ? copy.states.modified : copy.states.saved}
+                            </span>
                             <span className="text-xs text-gray-500">
-                {copy.states.defaultLabel}: {formatFieldValue(definition, defaultValue, copy)}
-              </span>
+                                {copy.states.defaultLabel}: {formatFieldValue(definition, defaultValue, copy)}
+                            </span>
                         </div>
                     </div>
 
@@ -92,7 +97,7 @@ export const SettingsField = ({
             </select>
         ) : (
             <input
-                type={definition.control === 'number' ? 'number' : definition.inputType ?? 'text'}
+                type={definition.control === 'number' ? 'number' : (definition.inputType ?? 'text')}
                 inputMode={definition.control === 'number' ? 'numeric' : undefined}
                 step={definition.control === 'number' ? 1 : undefined}
                 value={value}
@@ -113,9 +118,14 @@ export const SettingsField = ({
                     </p>
                 </div>
 
-                <span className={cn('inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-medium', dirty ? 'bg-amber-100 text-amber-800' : 'bg-gray-100 text-gray-600')}>
-          {dirty ? copy.states.modified : copy.states.saved}
-        </span>
+                <span
+                    className={cn(
+                        'inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-medium',
+                        dirty ? 'bg-amber-100 text-amber-800' : 'bg-gray-100 text-gray-600'
+                    )}
+                >
+                    {dirty ? copy.states.modified : copy.states.saved}
+                </span>
             </div>
 
             <div className="mt-4">{controlNode}</div>

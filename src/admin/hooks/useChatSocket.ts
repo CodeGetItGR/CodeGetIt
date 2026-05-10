@@ -1,8 +1,5 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
-import {
-    ChatWebSocketService,
-    type StompMessage,
-} from '@/admin/api/chatWebSocket.ts';
+import { ChatWebSocketService, type StompMessage } from '@/admin/api/chatWebSocket.ts';
 
 interface UseChatSocketOptions {
     threadId: string;
@@ -10,11 +7,7 @@ interface UseChatSocketOptions {
     enabled?: boolean;
 }
 
-export function useChatSocket({
-                                  threadId,
-                                  baseUrl = '',
-                                  enabled = true,
-                              }: UseChatSocketOptions) {
+export function useChatSocket({ threadId, baseUrl = '', enabled = true }: UseChatSocketOptions) {
     const serviceRef = useRef<ChatWebSocketService | null>(null);
     const subscribedRef = useRef(false);
 

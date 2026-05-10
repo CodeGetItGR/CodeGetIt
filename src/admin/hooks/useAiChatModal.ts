@@ -25,13 +25,10 @@ export function useAiChatModal() {
         setTarget({ entityId: null, entityType: null });
     }, []);
 
-    const toggle = useCallback(
-        (entityId: UUID, entityType: EntityType) => {
-            setTarget({ entityId, entityType });
-            setIsOpen((prev) => !prev);
-        },
-        []
-    );
+    const toggle = useCallback((entityId: UUID, entityType: EntityType) => {
+        setTarget({ entityId, entityType });
+        setIsOpen((prev) => !prev);
+    }, []);
 
     return {
         isOpen,

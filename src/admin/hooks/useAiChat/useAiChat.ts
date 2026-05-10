@@ -1,5 +1,5 @@
-import {useContext} from "react";
-import {AiChatContext} from "@/admin/providers/AiChatProvider/AiChatContext.ts";
+import { useContext } from 'react';
+import { AiChatContext } from '@/admin/providers/AiChatProvider/AiChatContext.ts';
 
 export const useAiChat = () => {
     const ctx = useContext(AiChatContext);

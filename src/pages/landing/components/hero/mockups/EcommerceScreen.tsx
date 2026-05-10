@@ -30,9 +30,7 @@ export function EcommerceScreen() {
                         </div>
                         <div className="h-14 w-14 rounded-2xl bg-white/8" />
                     </div>
-                    <button className="w-full rounded-2xl bg-cyan-400 py-2.5 text-sm font-semibold text-[#0f1729]">
-                        Add to Cart
-                    </button>
+                    <button className="w-full rounded-2xl bg-cyan-400 py-2.5 text-sm font-semibold text-[#0f1729]">Add to Cart</button>
                 </div>
             </div>
 

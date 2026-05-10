@@ -1,5 +1,5 @@
-import {createContext} from "react";
-import type {Locale, Translations} from "./types.ts";
+import { createContext } from 'react';
+import type { Locale, Translations } from './types.ts';
 
 interface LocaleContextType {
     locale: Locale;

@@ -31,4 +31,3 @@ Optionally set:
 - `/admin/offers/:id`
 - `/admin/projects`
 - `/admin/projects/:id`
-

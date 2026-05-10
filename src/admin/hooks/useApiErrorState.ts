@@ -2,20 +2,19 @@ import { useCallback, useState } from 'react';
 import { normalizeApiError } from '@/admin/api/client';
 
 export function useApiErrorState() {
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const setApiError = useCallback((error: unknown) => {
-    setErrorMessage(normalizeApiError(error).detail);
-  }, []);
+    const setApiError = useCallback((error: unknown) => {
+        setErrorMessage(normalizeApiError(error).detail);
+    }, []);
 
-  const clearError = useCallback(() => {
-    setErrorMessage(null);
-  }, []);
+    const clearError = useCallback(() => {
+        setErrorMessage(null);
+    }, []);
 
-  return {
-    errorMessage,
-    setApiError,
-    clearError,
-  };
+    return {
+        errorMessage,
+        setApiError,
+        clearError,
+    };
 }
-

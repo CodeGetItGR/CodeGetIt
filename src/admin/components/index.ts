@@ -1,1 +1,1 @@
-export * from './AiChatPanel'
+export * from './AiChatPanel';

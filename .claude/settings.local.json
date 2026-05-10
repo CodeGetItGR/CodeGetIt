@@ -1,7 +1,5 @@
 {
-  "permissions": {
-    "allow": [
-      "Bash(grep -E \"\\\\.\\(tsx|ts\\)$\")"
-    ]
-  }
+    "permissions": {
+        "allow": ["Bash(grep -E \"\\\\.\\(tsx|ts\\)$\")"]
+    }
 }

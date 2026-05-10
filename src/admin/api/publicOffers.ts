@@ -5,33 +5,32 @@ import { getCurrentLocale } from '@/i18n/locale-storage';
 const baseURL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api';
 
 const publicApiClient = axios.create({
-  baseURL,
+    baseURL,
 });
 
 publicApiClient.interceptors.request.use((config) => {
-  config.headers = config.headers ?? {};
-  config.headers['Accept-Language'] = getCurrentLocale();
-  return config;
+    config.headers = config.headers ?? {};
+    config.headers['Accept-Language'] = getCurrentLocale();
+    return config;
 });
 
 export interface RejectOfferPayload {
-  rejectionNote: string;
+    rejectionNote: string;
 }
 
 export const publicOfferApi = {
-  getByToken: async (token: string) => {
-    const { data } = await publicApiClient.get<PublicOfferResponse>(`/public/offers/${token}`);
-    return data;
-  },
+    getByToken: async (token: string) => {
+        const { data } = await publicApiClient.get<PublicOfferResponse>(`/public/offers/${token}`);
+        return data;
+    },
 
-  accept: async (token: string) => {
-    const { data } = await publicApiClient.post<PublicOfferResponse>(`/public/offers/${token}/accept`, {});
-    return data;
-  },
+    accept: async (token: string) => {
+        const { data } = await publicApiClient.post<PublicOfferResponse>(`/public/offers/${token}/accept`, {});
+        return data;
+    },
 
-  reject: async (token: string, payload: RejectOfferPayload) => {
-    const { data } = await publicApiClient.post<PublicOfferResponse>(`/public/offers/${token}/reject`, payload);
-    return data;
-  },
+    reject: async (token: string, payload: RejectOfferPayload) => {
+        const { data } = await publicApiClient.post<PublicOfferResponse>(`/public/offers/${token}/reject`, payload);
+        return data;
+    },
 };
-
