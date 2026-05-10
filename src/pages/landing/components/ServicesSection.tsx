@@ -6,6 +6,8 @@ import { SectionHeading } from '@/pages/landing';
 import { useQuery } from '@tanstack/react-query';
 import { queryKeys } from '@/admin/api/queryKeys.ts';
 import { settingsApi } from '@/admin/api/settings.ts';
+import { useContactRequest } from '@/components/sections/Contact/useContactRequest';
+import { getServiceContactPreset } from './service-contact-presets';
 
 const serviceIcons = [Globe, Code2, Database];
 
@@ -27,6 +29,7 @@ const featureMatrix = [
 
 export function ServicesSection() {
     const { t } = useLocale();
+    const { openContactRequest } = useContactRequest();
 
     const containerRef = useRef<HTMLDivElement | null>(null);
 
@@ -47,9 +50,16 @@ export function ServicesSection() {
         [services.from]
     );
 
-    const toggleLock = (feature: string) => {
+    const toggleLock = useCallback((feature: string) => {
         setLockedFeature((prev) => (prev === feature ? null : feature));
-    };
+    }, []);
+
+    const handleGetStarted = useCallback(
+        (index: number) => {
+            openContactRequest(getServiceContactPreset(index));
+        },
+        [openContactRequest]
+    );
 
     // ✅ close locked feature on outside click
     useEffect(() => {
@@ -153,6 +163,7 @@ export function ServicesSection() {
 
                                     <button
                                         type="button"
+                                        onClick={() => handleGetStarted(index)}
                                         className="mt-6 w-full rounded-xl bg-white/10 px-4 py-3 font-semibold text-white transition-colors duration-300 ease-out hover:bg-cyan-300 hover:text-slate-950"
                                     >
                                         {services.getStarted}

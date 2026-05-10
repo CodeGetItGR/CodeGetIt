@@ -20,12 +20,14 @@ import { usePublicSettings } from '@/settings/usePublicSettings.ts';
 import { ContactForm } from './ContactForm';
 import { ContactSidebar } from './ContactSidebar';
 import type { ContactFormData } from './contact.types';
+import { useContactRequest } from './useContactRequest';
 import { blankDetailedRequest, initialUIState, type DetailedRequestFormState, uiReducer } from './useUIReducer';
 import * as React from 'react';
 
 export const Contact = () => {
     const { t } = useLocale();
     const { getBool, getString } = usePublicSettings();
+    const { clearContactRequest, currentRequest } = useContactRequest();
     const [formData, setFormData] = useState<ContactFormData>({ name: '', email: '', message: '' });
     const [detailedRequest, setDetailedRequest] = useState<DetailedRequestFormState>(blankDetailedRequest);
     const [useDetailedRequest, setUseDetailedRequest] = useState(false);
@@ -96,55 +98,59 @@ export const Contact = () => {
     }, []);
 
     useEffect(() => {
-        setDetailedRequest((prev) => {
-            const next: DetailedRequestFormState = {
-                ...prev,
-                projectType: ensureEnabledOption(
-                    prev.projectType,
-                    projectTypeOptions.map((item) => item.value)
-                ),
-                desiredStartWindow: ensureEnabledOption(
-                    prev.desiredStartWindow,
-                    desiredStartWindowOptions.map((item) => item.value)
-                ),
-                budgetRange: ensureEnabledOption(
-                    prev.budgetRange,
-                    budgetRangeOptions.map((item) => item.value)
-                ),
-                budgetFlexibility: ensureEnabledOption(
-                    prev.budgetFlexibility,
-                    budgetFlexibilityOptions.map((item) => item.value)
-                ),
-                communicationPreference: ensureEnabledOption(
-                    prev.communicationPreference,
-                    communicationPreferenceOptions.map((item) => item.value)
-                ),
-                dataSensitivity: ensureEnabledOption(
-                    prev.dataSensitivity,
-                    dataSensitivityOptions.map((item) => item.value)
-                ),
-                priority:
-                    ensureEnabledOption(
-                        prev.priority,
-                        priorityOptions.map((item) => item.value)
-                    ) || 'MEDIUM',
-            };
+        const timer = window.setTimeout(() => {
+            setDetailedRequest((prev) => {
+                const next: DetailedRequestFormState = {
+                    ...prev,
+                    projectType: ensureEnabledOption(
+                        prev.projectType,
+                        projectTypeOptions.map((item) => item.value)
+                    ),
+                    desiredStartWindow: ensureEnabledOption(
+                        prev.desiredStartWindow,
+                        desiredStartWindowOptions.map((item) => item.value)
+                    ),
+                    budgetRange: ensureEnabledOption(
+                        prev.budgetRange,
+                        budgetRangeOptions.map((item) => item.value)
+                    ),
+                    budgetFlexibility: ensureEnabledOption(
+                        prev.budgetFlexibility,
+                        budgetFlexibilityOptions.map((item) => item.value)
+                    ),
+                    communicationPreference: ensureEnabledOption(
+                        prev.communicationPreference,
+                        communicationPreferenceOptions.map((item) => item.value)
+                    ),
+                    dataSensitivity: ensureEnabledOption(
+                        prev.dataSensitivity,
+                        dataSensitivityOptions.map((item) => item.value)
+                    ),
+                    priority:
+                        ensureEnabledOption(
+                            prev.priority,
+                            priorityOptions.map((item) => item.value)
+                        ) || 'MEDIUM',
+                };
 
-            const changed =
-                next.projectType !== prev.projectType ||
-                next.desiredStartWindow !== prev.desiredStartWindow ||
-                next.budgetRange !== prev.budgetRange ||
-                next.budgetFlexibility !== prev.budgetFlexibility ||
-                next.communicationPreference !== prev.communicationPreference ||
-                next.dataSensitivity !== prev.dataSensitivity ||
-                next.priority !== prev.priority;
+                const changed =
+                    next.projectType !== prev.projectType ||
+                    next.desiredStartWindow !== prev.desiredStartWindow ||
+                    next.budgetRange !== prev.budgetRange ||
+                    next.budgetFlexibility !== prev.budgetFlexibility ||
+                    next.communicationPreference !== prev.communicationPreference ||
+                    next.dataSensitivity !== prev.dataSensitivity ||
+                    next.priority !== prev.priority;
 
-            if (changed) {
-                setOptionNotice('Some options changed recently, so we cleared unavailable selections for you.');
-            }
+                if (changed) {
+                    setOptionNotice('Some options changed recently, so we cleared unavailable selections for you.');
+                }
 
-            return changed ? next : prev;
-        });
+                return changed ? next : prev;
+            });
+        }, 0);
+
+        return () => window.clearTimeout(timer);
     }, [
         budgetFlexibilityOptions,
         budgetRangeOptions,
@@ -155,6 +161,31 @@ export const Contact = () => {
         priorityOptions,
         projectTypeOptions,
     ]);
+
+    useEffect(() => {
+        if (!currentRequest) {
+            return;
+        }
+
+        const timer = window.setTimeout(() => {
+            setFormData({
+                name: currentRequest.formData?.name ?? '',
+                email: currentRequest.formData?.email ?? '',
+                message: currentRequest.formData?.message ?? '',
+            });
+            setDetailedRequest({
+                ...blankDetailedRequest,
+                ...(currentRequest.detailedRequest ?? {}),
+            });
+            setUseDetailedRequest(currentRequest.useDetailedRequest ?? false);
+            dispatch({ type: 'SET_STEP', step: 0 });
+            resetMessages();
+            setOptionNotice('');
+            clearContactRequest();
+        }, 0);
+
+        return () => window.clearTimeout(timer);
+    }, [clearContactRequest, currentRequest, resetMessages]);
 
     const validateDetailedRequest = useCallback(() => {
         const errors: Record<string, string> = {};

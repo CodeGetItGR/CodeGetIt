@@ -1,4 +1,5 @@
 import { Contact } from '@/components/sections/Contact/Contact.tsx';
+import { ContactRequestProvider } from '@/components/sections/Contact/ContactRequestProvider';
 import { SEO } from '@/components/SEO';
 import { useLocale } from '@/i18n/UseLocale';
 import { PublicSettingsProvider } from '@/settings/PublicSettingsProvider';
@@ -9,18 +10,20 @@ export function LandingPage() {
 
     return (
         <PublicSettingsProvider>
-            <div className="min-h-screen overflow-x-hidden bg-[#0a0e27] pt-10 text-slate-100 lg:pt-0">
-                <SEO title={t.landing.seo.title} description={t.landing.seo.description} canonicalUrl="https://codegetit.com" />
-                <Navbar />
-                <HeroSection />
-                <ServicesSection />
-                <ComparisonSection />
-                <HowWeWorkSection />
-                <ProjectsSection />
-                <FAQSection />
-                <Contact />
-                <FooterSection />
-            </div>
+            <ContactRequestProvider>
+                <div className="min-h-screen overflow-x-hidden bg-[#0a0e27] pt-10 text-slate-100 lg:pt-0">
+                    <SEO title={t.landing.seo.title} description={t.landing.seo.description} canonicalUrl="https://codegetit.com" />
+                    <Navbar />
+                    <HeroSection />
+                    <ServicesSection />
+                    <ComparisonSection />
+                    <HowWeWorkSection />
+                    <ProjectsSection />
+                    <FAQSection />
+                    <Contact />
+                    <FooterSection />
+                </div>
+            </ContactRequestProvider>
         </PublicSettingsProvider>
     );
 }
