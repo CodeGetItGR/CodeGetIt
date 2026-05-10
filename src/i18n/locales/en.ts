@@ -634,6 +634,7 @@ export const en: Translations = {
             featured: 'Most Popular',
             getStarted: 'Get Started',
             priceDisclaimer: 'Final price is indicative and may adjust based on selected features and technical requirements.',
+            timeEstimateDisclaimer: 'Final estimate is indicative and will be refined after discovery, scope clarification, current workload and technical assessment.',
             items: [
                 {
                     title: 'Static Websites',
@@ -662,23 +663,26 @@ export const en: Translations = {
             eyebrow: 'Comparison',
             title: 'Static brochure site or full-stack application?',
             description:
-                'Sometimes the best answer is a focused website. Other times, the right move is a platform with backend logic and an admin workflow.',
+                'Sometimes the best answer is a focused website. Other times, the right move is a custom platform with backend logic and operational workflows.',
             headers: {
                 feature: 'Feature',
                 staticWebsite: 'Static Website',
-                fullStackApplication: 'Full-Stack Application',
+                fullStackApplication: 'Full-Stack Application (Custom)',
             },
-            rows: ['Design', 'Frontend', 'Backend', 'Database', 'User Authentication', 'Admin Dashboard', 'API Integration', 'Maintenance'],
-            stackTitle: 'Core stack',
-            maintenanceStatic: 'Basic',
-            maintenanceFull: 'Full',
-            stack: [
-                { name: 'React', description: 'Modern UI Framework', id: 'react' },
-                { name: 'TypeScript', description: 'Type-Safe Development', id: 'ts' },
-                { name: 'Spring Boot', description: 'Backend Runtime', id: 'spring' },
-                { name: 'PostgreSQL', description: 'Reliable Database', id: 'postgres' },
-                { name: 'Tailwind CSS', description: 'Utility-First CSS', id: 'tailwind' },
+            rows: [
+                'Design',
+                'Frontend',
+                'Backend',
+                'Database',
+                'User Authentication',
+                'Admin Dashboard',
+                'API Integration',
+                'Maintenance',
             ],
+            stackTitle: 'Core stack',
+            maintenanceStatic: 'Low (Occasional updates)',
+            maintenanceFull: 'Ongoing (Monitoring, updates, scaling)',
+            disclaimer: 'Feature availability and implementation complexity vary depending on project scope. Full-stack applications are custom systems and may include additional components not listed above.'
         },
         process: {
             eyebrow: 'Process',

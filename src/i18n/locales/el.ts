@@ -145,6 +145,7 @@ export const el: Translations = {
             featured: 'Πιο Δημοφιλές',
             getStarted: 'Ξεκινήστε',
             priceDisclaimer: '',
+            timeEstimateDisclaimer:'',
             items: [
                 {
                     title: 'Στατικά Websites',

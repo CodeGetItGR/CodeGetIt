@@ -8,6 +8,7 @@ import { queryKeys } from '@/admin/api/queryKeys.ts';
 import { settingsApi } from '@/admin/api/settings.ts';
 import { useContactRequest } from '@/components/sections/Contact/useContactRequest';
 import { getServiceContactPreset } from './service-contact-presets';
+import {cn} from "@/lib/utils.ts";
 
 const serviceIcons = [Globe, Code2, Database];
 
@@ -26,6 +27,8 @@ const featureMatrix = [
         'Admin Panel',
     ],
 ];
+
+const serviceTimelines = ['2–4 weeks', '4–8 weeks', '8–16+ weeks'];
 
 export function ServicesSection() {
     const { t } = useLocale();
@@ -46,12 +49,36 @@ export function ServicesSection() {
     const services = t.landing.services;
 
     const formatPrice = useCallback(
-        (value: string) => services.from.replace('{price}', new Intl.NumberFormat('el-GR').format(Number.parseInt(value))),
+        (value: string) =>
+            services.from.replace(
+                '{price}',
+                new Intl.NumberFormat('el-GR').format(Number.parseInt(value))
+            ),
         [services.from]
     );
 
     const toggleLock = useCallback((feature: string) => {
         setLockedFeature((prev) => (prev === feature ? null : feature));
+    }, []);
+
+    const handleFeatureEnter = useCallback(
+        (feature: string) => {
+            if (!lockedFeature) setHoverFeature(feature);
+        },
+        [lockedFeature]
+    );
+
+    const handleFeatureLeave = useCallback(() => {
+        if (!lockedFeature) setHoverFeature(null);
+    }, [lockedFeature]);
+
+    const handleOutsideClick = useCallback((event: MouseEvent) => {
+        if (!containerRef.current) return;
+
+        if (!containerRef.current.contains(event.target as Node)) {
+            setLockedFeature(null);
+            setHoverFeature(null);
+        }
     }, []);
 
     const handleGetStarted = useCallback(
@@ -61,52 +88,55 @@ export function ServicesSection() {
         [openContactRequest]
     );
 
-    // ✅ close locked feature on outside click
     useEffect(() => {
-        const handleClickOutside = (event: MouseEvent) => {
-            if (!containerRef.current) return;
-
-            if (!containerRef.current.contains(event.target as Node)) {
-                setLockedFeature(null);
-                setHoverFeature(null);
-            }
-        };
-
-        document.addEventListener('mousedown', handleClickOutside);
-
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
-    }, []);
+        document.addEventListener('mousedown', handleOutsideClick);
+        return () => document.removeEventListener('mousedown', handleOutsideClick);
+    }, [handleOutsideClick]);
 
     return (
         <section id="services" className="px-6 py-24">
             <div className="mx-auto max-w-6xl">
-                <SectionHeading eyebrow={services.eyebrow} title={services.title} description={services.description} />
+                <SectionHeading
+                    eyebrow={services.eyebrow}
+                    title={services.title}
+                    description={services.description}
+                />
 
                 <div ref={containerRef} className="mt-14 grid gap-6 md:grid-cols-3">
                     {services.items.map((service, index) => {
                         const Icon = serviceIcons[index] ?? serviceIcons[0];
                         const features = featureMatrix[index];
 
-                        const price = settingsQuery.data?.[service.priceKey] ?? service.defaultPrice;
+                        const price =
+                            settingsQuery.data?.[service.priceKey] ??
+                            service.defaultPrice;
 
-                        const isDimmed = activeFeature !== null && !features.includes(activeFeature);
+                        const isDimmed =
+                            activeFeature !== null &&
+                            !features.includes(activeFeature);
+
+                        const handleMouseEnter = (feature: string) =>
+                            handleFeatureEnter(feature);
+
+                        const handleMouseLeave = () => handleFeatureLeave();
+
+                        const handleClickFeature = (feature: string) =>
+                            toggleLock(feature);
+
+                        const handleClickGetStarted = () =>
+                            handleGetStarted(index);
 
                         return (
                             <motion.article
                                 key={service.title}
                                 whileHover={{ y: -6 }}
-                                transition={{
-                                    duration: 0.35,
-                                    ease: 'easeOut',
-                                }}
-                                className={[
+                                transition={{ duration: 0.35, ease: 'easeOut' }}
+                                className={cn(
                                     'relative isolate flex h-full flex-col rounded-3xl border p-8',
                                     'transition-all duration-500 ease-out',
                                     'border-white/10 bg-slate-900/30 backdrop-blur-md',
-                                    isDimmed ? 'opacity-40' : 'opacity-100',
-                                ].join(' ')}
+                                    isDimmed ? 'opacity-40' : 'opacity-100'
+                                )}
                             >
                                 {/* ICON */}
                                 <div className="mb-6 inline-flex w-fit rounded-2xl bg-white/10 p-3">
@@ -114,40 +144,56 @@ export function ServicesSection() {
                                 </div>
 
                                 {/* TITLE */}
-                                <h3 className="text-2xl font-bold text-white">{service.title}</h3>
+                                <h3 className="text-2xl font-bold text-white">
+                                    {service.title}
+                                </h3>
 
                                 {/* DESCRIPTION */}
-                                <p className="mt-3 text-sm leading-7 text-slate-300">{service.description}</p>
+                                <p className="mt-3 text-sm leading-7 text-slate-300">
+                                    {service.description}
+                                </p>
 
                                 {/* FEATURES */}
                                 <ul className="mt-6 flex-1 space-y-3">
                                     {features.map((feature) => {
-                                        const isActive = activeFeature === feature;
+                                        const isActive =
+                                            activeFeature === feature;
 
                                         return (
                                             <li
                                                 key={feature}
-                                                onMouseEnter={() => !lockedFeature && setHoverFeature(feature)}
-                                                onMouseLeave={() => !lockedFeature && setHoverFeature(null)}
-                                                onClick={() => toggleLock(feature)}
-                                                className={[
+                                                onMouseEnter={() =>
+                                                    handleMouseEnter(feature)
+                                                }
+                                                onMouseLeave={handleMouseLeave}
+                                                onClick={() =>
+                                                    handleClickFeature(feature)
+                                                }
+                                                className={cn(
                                                     'flex cursor-pointer items-start gap-2 text-sm select-none',
                                                     'transition-colors duration-500 ease-out',
-                                                    isActive ? 'text-cyan-200' : 'text-slate-300',
-                                                ].join(' ')}
+                                                    isActive
+                                                        ? 'text-cyan-200'
+                                                        : 'text-slate-300'
+                                                )}
                                             >
                                                 <div
-                                                    className={[
+                                                    className={cn(
                                                         'mt-1 h-1.5 w-1.5 rounded-full',
                                                         'transition-all duration-500 ease-out',
-                                                        isActive ? 'scale-125 bg-cyan-300' : 'scale-100 bg-white/40',
-                                                    ].join(' ')}
+                                                        isActive
+                                                            ? 'scale-125 bg-cyan-300'
+                                                            : 'scale-100 bg-white/40'
+                                                    )}
                                                 />
                                                 {feature}
 
                                                 {lockedFeature === feature && (
                                                     <span className="ml-auto text-xs text-cyan-300">
-                                                        <ArrowLeft width={15} height={15} />
+                                                        <ArrowLeft
+                                                            width={15}
+                                                            height={15}
+                                                        />
                                                     </span>
                                                 )}
                                             </li>
@@ -157,13 +203,22 @@ export function ServicesSection() {
 
                                 {/* PRICE */}
                                 <div className="mt-auto">
-                                    <div className="mt-8 text-2xl font-bold text-cyan-300">{formatPrice(price)}</div>
+                                    <div className="mt-8 text-2xl font-bold text-cyan-300">
+                                        {formatPrice(price)}
+                                    </div>
 
-                                    <p className="mt-2 text-xs leading-relaxed text-slate-400"></p>
+                                    <div className="mt-2 text-xs text-slate-400">
+                                        Estimated timeline: {serviceTimelines[index]}
+                                    </div>
+
+                                    {/* DISCLAIMER */}
+                                    <p className="mt-2 text-[11px] leading-relaxed text-slate-500">
+                                        {t.landing.services.timeEstimateDisclaimer}
+                                    </p>
 
                                     <button
                                         type="button"
-                                        onClick={() => handleGetStarted(index)}
+                                        onClick={handleClickGetStarted}
                                         className="mt-6 w-full rounded-xl bg-white/10 px-4 py-3 font-semibold text-white transition-colors duration-300 ease-out hover:bg-cyan-300 hover:text-slate-950"
                                     >
                                         {services.getStarted}

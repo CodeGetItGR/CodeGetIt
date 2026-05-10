@@ -54,7 +54,7 @@ export function FAQSection() {
                                             exit={{ height: 0, opacity: 0 }}
                                             transition={{ duration: 0.25 }}
                                         >
-                                            <div className="px-6 pb-6 text-slate-300">{item.answer}</div>
+                                            <div className="px-6 py-3 text-slate-300">{item.answer}</div>
                                         </motion.div>
                                     )}
                                 </AnimatePresence>

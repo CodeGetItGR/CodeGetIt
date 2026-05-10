@@ -176,6 +176,7 @@ export interface Translations {
             featured: string;
             getStarted: string;
             priceDisclaimer: string;
+            timeEstimateDisclaimer:string;
             items: Array<{
                 title: string;
                 description: string;
@@ -197,11 +198,7 @@ export interface Translations {
             stackTitle: string;
             maintenanceStatic: string;
             maintenanceFull: string;
-            stack: Array<{
-                name: string;
-                description: string;
-                id: string;
-            }>;
+            disclaimer: string;
         };
         process: {
             eyebrow: string;
