@@ -2,7 +2,7 @@ import { AnimatePresence, motion, useInView } from 'framer-motion';
 import { useRef, useState } from 'react';
 import { Minus, Plus } from 'lucide-react';
 import { useLocale } from '@/i18n/UseLocale';
-import { SectionHeading } from './SectionHeading';
+import { SectionHeading } from '@/pages/landing';
 
 const sectionFade = {
   hidden: { opacity: 0, y: 24 },
@@ -21,7 +21,7 @@ export function FAQSection() {
   const faq = t.landing.faq;
 
   return (
-    <section ref={ref} className="bg-[#151b3d] px-6 py-24">
+    <section ref={ref} className="px-6 py-24" id="faq">
       <div className="mx-auto max-w-3xl">
         <SectionHeading
           eyebrow={faq.eyebrow}

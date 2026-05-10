@@ -135,7 +135,7 @@ const SelectField = ({
       className={`w-full ${fieldShellClass}`}
       required={required}
     >
-      {placeholder ? <option value="">{placeholder}</option> : null}
+      {placeholder ? <option value="" hidden>{placeholder}</option> : null}
       {options.map((item) => (
         <option key={item.value} value={item.value}>
           {item.label}

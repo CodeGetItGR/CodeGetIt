@@ -1,5 +1,52 @@
 export type Locale = 'en' | 'el';
 
+export type Mockups = {
+  tabs: [string, string, string];
+  descriptions: [string, string, string];
+  ecommerce: {
+    statusTime: string;
+    storeTitle: string;
+    searchPlaceholder: string;
+    featuredLabel: string;
+    featuredProduct: string;
+    price: string;
+    addToCart: string;
+    productCountLabel: string;
+  };
+  analytics: {
+    browserUrl: string;
+    title: string;
+    subtitle: string;
+    revenueLabel: string;
+    revenueValue: string;
+    revenueChange: string;
+    usersLabel: string;
+    usersValue: string;
+    usersChange: string;
+    ordersLabel: string;
+    ordersValue: string;
+    ordersChange: string;
+    growthLabel: string;
+    growthValue: string;
+    growthChange: string;
+    chartTitle: string;
+    chartTrend: string;
+  };
+  booking: {
+    statusTime: string;
+    title: string;
+    subtitle: string;
+    action: string;
+    daysOfWeek: [string, string, string, string, string, string, string];
+    scheduleTitle: string;
+    appointments: Array<{
+      time: string;
+      client: string;
+      type: string;
+    }>;
+  };
+};
+
 export interface Translations {
   // Contact Section
   contact: {
@@ -74,6 +121,19 @@ export interface Translations {
       description: string;
     };
     hero: {
+      conversation: {
+        intro: string,
+        options:
+          {
+            id: string,
+            label: string,
+            helper: string,
+            headline: string,
+            highlight: string,
+            description: string,
+          }[]
+        ,
+      },
       navigation: {
         brandInitial: string;
         brandLabel: string;
@@ -83,6 +143,12 @@ export interface Translations {
         title: string;
         highlight: string;
         subtitle: string;
+        question: string;
+        prompt: string;
+        chips: Array<{ label: string }>;
+        headlines: [string, string, string];
+        highlights: [string, string, string];
+        subtitles: [string, string, string];
       };
       desktop: {
         title: string;
@@ -99,52 +165,7 @@ export interface Translations {
         mobileSecondary: string;
         note: string;
       };
-      mockups: {
-        tabs: [string, string, string];
-        descriptions: [string, string, string];
-        ecommerce: {
-          statusTime: string;
-          storeTitle: string;
-          searchPlaceholder: string;
-          featuredLabel: string;
-          featuredProduct: string;
-          price: string;
-          addToCart: string;
-          productCountLabel: string;
-        };
-        analytics: {
-          browserUrl: string;
-          title: string;
-          subtitle: string;
-          revenueLabel: string;
-          revenueValue: string;
-          revenueChange: string;
-          usersLabel: string;
-          usersValue: string;
-          usersChange: string;
-          ordersLabel: string;
-          ordersValue: string;
-          ordersChange: string;
-          growthLabel: string;
-          growthValue: string;
-          growthChange: string;
-          chartTitle: string;
-          chartTrend: string;
-        };
-        booking: {
-          statusTime: string;
-          title: string;
-          subtitle: string;
-          action: string;
-          daysOfWeek: [string, string, string, string, string, string, string];
-          scheduleTitle: string;
-          appointments: Array<{
-            time: string;
-            client: string;
-            type: string;
-          }>;
-        };
-      };
+      mockups: Mockups
     };
     stats: {
       labels: [string, string, string, string];
@@ -159,7 +180,7 @@ export interface Translations {
       items: Array<{
         title: string;
         description: string;
-        features: string [];
+        features: string[];
         priceKey: string;
         defaultPrice: string;
       }>;
@@ -180,7 +201,7 @@ export interface Translations {
       stack: Array<{
         name: string;
         description: string;
-        id:string;
+        id: string;
       }>;
     };
     process: {

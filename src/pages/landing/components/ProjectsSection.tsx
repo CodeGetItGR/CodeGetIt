@@ -22,7 +22,7 @@ export function ProjectsSection() {
   const projects = t.landing.projects;
 
   return (
-    <section ref={ref} id="projects" className="bg-[#151b3d] px-6 py-24">
+    <section ref={ref} id="projects" className="bg-[#151b3d] px-6 py-26">
       <div className="mx-auto max-w-6xl">
         <SectionHeading
           eyebrow={projects.eyebrow}

@@ -2,7 +2,7 @@ import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
 import { Code2, Lightbulb, Rocket, Zap } from 'lucide-react';
 import { useLocale } from '@/i18n/UseLocale';
-import { SectionHeading } from './SectionHeading';
+import { SectionHeading } from '@/pages/landing';
 
 const sectionFade = {
   hidden: { opacity: 0, y: 24 },
@@ -45,7 +45,7 @@ export function HowWeWorkSection() {
                 className="rounded-3xl border border-white/10 bg-white/5 p-8 shadow-2xl shadow-slate-950/20"
               >
                 <div className="flex items-start gap-5">
-                  <div className="relative flex-shrink-0">
+                  <div className="relative shrink-0">
                     <div className="flex h-16 w-16 items-center justify-center rounded-2xl border border-cyan-400/30 bg-cyan-400/10">
                       <Icon className="h-8 w-8 text-cyan-300" />
                     </div>

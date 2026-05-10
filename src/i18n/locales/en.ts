@@ -468,9 +468,41 @@ export const en: Translations = {
     seo: {
       title: 'CodeGetIt - Modern Web Development',
       description:
-        'A focused marketing site for modern web development services, built around clarity, trust, and momentum.',
+          'A focused marketing site for modern web development services, built around clarity, trust, and momentum.',
     },
     hero: {
+      conversation: {
+        intro: 'What are you trying to improve?',
+        options: [
+          {
+            id: 'website',
+            label: 'Get more customers',
+            helper: 'Modern business website',
+            headline: 'Websites built to',
+            highlight: 'convert visitors.',
+            description:
+                'Fast, modern websites designed around clarity, trust, and helping your business stand out online.',
+          },
+          {
+            id: 'dashboard',
+            label: 'Automate manual work',
+            helper: 'Dashboards & internal tools',
+            headline: 'Software that saves',
+            highlight: 'hours every week.',
+            description:
+                'Custom dashboards, workflows, and operational tools designed around how your business actually works.',
+          },
+          {
+            id: 'portal',
+            label: 'Build a customer platform',
+            helper: 'Portals & web applications',
+            headline: 'Platforms designed for',
+            highlight: 'real operations.',
+            description:
+                'From customer portals to full web applications, we build systems that scale with your business.',
+          },
+        ],
+      },
       navigation: {
         brandInitial: 'C',
         brandLabel: 'CodeGetIT',
@@ -480,13 +512,35 @@ export const en: Translations = {
         title: 'Turn Your Idea Into a',
         highlight: 'Real Business',
         subtitle:
-          'See what your business could look like. We build websites and apps that bring in customers and make you money.',
+            'See what your business could look like. We build websites and apps that bring in customers and make you money.',
+        question: 'What do you want to build?',
+        prompt: 'Tap one to see\nwhat we can build.',
+        chips: [
+          { label: 'Sell online' },
+          { label: 'Get more clients' },
+          { label: 'Automate bookings' },
+        ],
+        headlines: [
+          'A store that sells',
+          'More leads,',
+          'Your calendar,',
+        ],
+        highlights: [
+          'while you sleep.',
+          'more revenue.',
+          'filled on autopilot.',
+        ],
+        subtitles: [
+          'A beautiful shop your customers will love — built and launched fast.',
+          'We build and market your site so the right people actually find you.',
+          'Let clients book themselves. No calls, no back-and-forth, no stress.',
+        ],
       },
       desktop: {
         title: 'Turn Your Idea Into a',
         highlight: 'Real Business',
         subtitle:
-          'Whether you want to sell online, take bookings, or manage customers - we build websites and apps that bring in real customers and make you money.',
+            'Whether you want to sell online, take bookings, or manage customers - we build websites and apps that bring in real customers and make you money.',
       },
       benefits: [
         {
@@ -575,37 +629,37 @@ export const en: Translations = {
       labels: ['Projects Delivered', 'Client Satisfaction', 'Happy Clients', 'Years Experience'],
     },
     services: {
-      from : 'From {price} €',
+      from: 'From {price} €',
       eyebrow: 'Services',
       title: 'Choose the right build for the job',
       description:
-        'From streamlined marketing sites to deeper web apps, we shape the work around what will actually move the business forward.',
+          'From streamlined marketing sites to deeper web apps, we shape the work around what will actually move the business forward.',
       featured: 'Most Popular',
       getStarted: 'Get Started',
       items: [
         {
           title: 'Static Websites',
           description:
-            'Fast, elegant websites for brands that need clarity, speed, and a strong first impression.',
+              'Fast, elegant websites for brands that need clarity, speed, and a strong first impression.',
           features: ['Responsive Design', 'SEO Optimization', 'Fast Loading', 'Easy Maintenance'],
           priceKey: 'marketing.staticStartingPrice',
-          defaultPrice: '2500'
+          defaultPrice: '2500',
         },
         {
           title: 'Web Applications',
           description:
-            'Interactive applications with business logic tailored to your needs.',
+              'Interactive applications with business logic tailored to your needs.',
           features: ['All in Static Websites', 'Custom Features', 'User Authentication', 'API Integration (Optional)'],
           priceKey: 'marketing.webStartingPrice',
-          defaultPrice: '3500'
+          defaultPrice: '3500',
         },
         {
           title: 'Full-Stack Solutions',
           description:
-            'End-to-end systems with backend services, databases, admin tools, custom integrations.',
-          features: ['All in Web Applications','Database Design', 'Backend API', 'Admin Dashboard'],
+              'End-to-end systems with backend services, databases, admin tools, custom integrations.',
+          features: ['All in Web Applications', 'Database Design', 'Backend API', 'Admin Dashboard'],
           priceKey: 'marketing.fullStartingPrice',
-          defaultPrice: '12500'
+          defaultPrice: '12500',
         },
       ],
     },
@@ -613,7 +667,7 @@ export const en: Translations = {
       eyebrow: 'Comparison',
       title: 'Static brochure site or full-stack application?',
       description:
-        'Sometimes the best answer is a focused website. Other times, the right move is a platform with backend logic and an admin workflow.',
+          'Sometimes the best answer is a focused website. Other times, the right move is a platform with backend logic and an admin workflow.',
       headers: {
         feature: 'Feature',
         staticWebsite: 'Static Website',
@@ -634,7 +688,7 @@ export const en: Translations = {
       maintenanceFull: 'Full',
       stack: [
         { name: 'React', description: 'Modern UI Framework', id: 'react' },
-        { name: 'TypeScript', description: 'Type-Safe Development', id:'ts' },
+        { name: 'TypeScript', description: 'Type-Safe Development', id: 'ts' },
         { name: 'Spring Boot', description: 'Backend Runtime', id: 'spring' },
         { name: 'PostgreSQL', description: 'Reliable Database', id: 'postgres' },
         { name: 'Tailwind CSS', description: 'Utility-First CSS', id: 'tailwind' },
@@ -648,22 +702,22 @@ export const en: Translations = {
         {
           title: 'Planning & Understanding',
           description:
-            'We get clear on business goals, audiences, requirements, and success criteria before any design work starts.',
+              'We get clear on business goals, audiences, requirements, and success criteria before any design work starts.',
         },
         {
           title: 'Design & Architecture',
           description:
-            'We shape the interface and technical plan together so the experience feels intentional and scalable.',
+              'We shape the interface and technical plan together so the experience feels intentional and scalable.',
         },
         {
           title: 'Building & Testing',
           description:
-            'Development moves in focused iterations with testing, review, and feedback baked into each step.',
+              'Development moves in focused iterations with testing, review, and feedback baked into each step.',
         },
         {
           title: 'Launch & Support',
           description:
-            'We ship, monitor, and support the project after launch so it keeps performing as the business grows.',
+              'We ship, monitor, and support the project after launch so it keeps performing as the business grows.',
         },
       ],
     },
@@ -671,7 +725,7 @@ export const en: Translations = {
       eyebrow: 'Projects',
       title: 'A few examples of what the work can look like',
       description:
-        'These are sample case-study style entries that show how the page presents proof of capability without getting noisy.',
+          'These are sample case-study style entries that show how the page presents proof of capability without getting noisy.',
       viewProject: 'View Project',
       viewAll: 'View All Projects',
       items: [
@@ -702,21 +756,21 @@ export const en: Translations = {
       items: [
         {
           quote:
-            'The team delivered a polished product that was easy to use and clearly built with care. The result felt bigger than the brief.',
+              'The team delivered a polished product that was easy to use and clearly built with care. The result felt bigger than the brief.',
           author: 'Sarah Johnson',
           role: 'CEO, RetailCo',
           company: 'E-Commerce Platform',
         },
         {
           quote:
-            'Professional, responsive, and highly organized. They turned a complex set of requirements into something elegant.',
+              'Professional, responsive, and highly organized. They turned a complex set of requirements into something elegant.',
           author: 'Michael Chen',
           role: 'CTO, HealthTech Inc',
           company: 'Healthcare Dashboard',
         },
         {
           quote:
-            'Outstanding collaboration from start to finish. The booking system worked smoothly and our customers noticed immediately.',
+              'Outstanding collaboration from start to finish. The booking system worked smoothly and our customers noticed immediately.',
           author: 'Emma Rodriguez',
           role: 'Owner, Bistro Moderne',
           company: 'Restaurant Booking System',
@@ -731,39 +785,39 @@ export const en: Translations = {
         {
           question: 'How long does a typical project take?',
           answer:
-            'Smaller landing pages often take 2 to 4 weeks, while richer applications can take 8 to 16 weeks depending on scope and approvals.',
+              'Smaller landing pages often take 2 to 4 weeks, while richer applications can take 8 to 16 weeks depending on scope and approvals.',
         },
         {
           question: 'What is included in ongoing support?',
           answer:
-            'Support can include bug fixes, security updates, deployment help, performance checks, and small iterations after launch.',
+              'Support can include bug fixes, security updates, deployment help, performance checks, and small iterations after launch.',
         },
         {
           question: 'Do you handle hosting and deployment?',
           answer:
-            'Yes. We can deploy to modern cloud platforms and help choose the right setup for your traffic, budget, and maintenance needs.',
+              'Yes. We can deploy to modern cloud platforms and help choose the right setup for your traffic, budget, and maintenance needs.',
         },
         {
           question: 'Can you work with an existing brand or design system?',
           answer:
-            'Absolutely. We can adapt to an existing brand, refine a Figma file, or build a visual direction from scratch if needed.',
+              'Absolutely. We can adapt to an existing brand, refine a Figma file, or build a visual direction from scratch if needed.',
         },
         {
           question: 'What happens after launch?',
           answer:
-            'We can stay involved after launch to monitor, iterate, and make sure the product keeps running smoothly in the real world.',
+              'We can stay involved after launch to monitor, iterate, and make sure the product keeps running smoothly in the real world.',
         },
         {
           question: 'Do you offer payment plans?',
           answer:
-            'For larger projects, milestone-based payment plans are available so the engagement stays predictable for both sides.',
+              'For larger projects, milestone-based payment plans are available so the engagement stays predictable for both sides.',
         },
       ],
     },
     footer: {
       brandName: 'CodeGetIt',
       tagline:
-        'Building thoughtful web experiences that help teams explain, sell, and operate better online.',
+          'Building thoughtful web experiences that help teams explain, sell, and operate better online.',
       categories: {
         services: 'Services',
         company: 'Company',

@@ -1,33 +1,28 @@
 import { AnimatePresence, motion } from 'framer-motion';
+import {HeroMockupFrame} from "@/pages/landing/components/hero/mockups/HeroMockupFrame.tsx";
+import {AnalyticsScreen, BookingScreen, EcommerceScreen} from "./mockups";
 
-import type { HeroCopy } from './hero.types';
-import { AnalyticsMockup, BookingMockup, EcommerceMockup } from './mockups';
 
 interface HeroMockupStageProps {
-  activeIndex: number;
-  copy: HeroCopy['mockups'];
+    activeIndex: number;
 }
 
-export function HeroMockupStage({ activeIndex, copy }: HeroMockupStageProps) {
-  return (
-    <AnimatePresence mode="wait">
-      <motion.div
-        key={activeIndex}
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -20 }}
-        transition={{ duration: 0.5 }}
-        className="relative"
-      >
-        {activeIndex === 0 ? (
-          <EcommerceMockup {...copy.ecommerce} />
-        ) : activeIndex === 1 ? (
-          <AnalyticsMockup {...copy.analytics} />
-        ) : (
-          <BookingMockup {...copy.booking} />
-        )}
-      </motion.div>
-    </AnimatePresence>
-  );
+export function HeroMockupStage({activeIndex}: HeroMockupStageProps) {
+    return (
+        <HeroMockupFrame>
+            <AnimatePresence mode="wait">
+                <motion.div
+                    key={activeIndex}
+                    initial={{ opacity: 0, y: 18 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -18 }}
+                    transition={{ duration: 0.4 }}
+                >
+                    {activeIndex === 0 && <EcommerceScreen />}
+                    {activeIndex === 1 && <BookingScreen />}
+                    {activeIndex === 2 && <AnalyticsScreen />}
+                </motion.div>
+            </AnimatePresence>
+        </HeroMockupFrame>
+    );
 }
-

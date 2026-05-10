@@ -46,7 +46,7 @@ export function ComparisonSection() {
   ];
 
   return (
-    <section ref={ref} className="bg-[#151b3d] px-6 py-24">
+    <section ref={ref} className="bg-[#151b3d] px-6 py-24" id="compare">
       <div className="mx-auto max-w-6xl">
         <SectionHeading
           eyebrow={comparison.eyebrow}

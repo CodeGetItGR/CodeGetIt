@@ -10,7 +10,7 @@ import {
   HowWeWorkSection,
   ProjectsSection,
   ServicesSection,
-  TestimonialsSection,
+  Navbar
 } from './components';
 
 export function LandingPage() {
@@ -18,18 +18,18 @@ export function LandingPage() {
 
   return (
     <PublicSettingsProvider>
-      <div className="min-h-screen overflow-x-hidden bg-[#0a0e27] text-slate-100">
+      <div className="min-h-screen overflow-x-hidden bg-[#0a0e27] text-slate-100 pt-10 lg:pt-0">
         <SEO
           title={t.landing.seo.title}
           description={t.landing.seo.description}
           canonicalUrl="https://codegetit.com"
         />
+        <Navbar/>
         <HeroSection />
         <ServicesSection />
         <ComparisonSection />
         <HowWeWorkSection />
         <ProjectsSection />
-        <TestimonialsSection />
         <FAQSection />
         <Contact />
         <FooterSection />

@@ -268,7 +268,7 @@ export const ContactForm = ({
             <MagneticButton
               type="submit"
               disabled={isSubmitting}
-              className="cta-polish group inline-flex cursor-pointer items-center gap-3 rounded-full border border-gray-900 bg-gray-900 px-8 py-4 text-base font-semibold text-white shadow-lg shadow-gray-900/20 transition-colors duration-300 hover:bg-black hover:opacity-75 disabled:cursor-not-allowed disabled:opacity-50"
+              className="cta-polish group inline-flex cursor-pointer items-center gap-3 rounded-full border border-gray-900 bg-gray-800 px-8 py-4 text-base font-semibold text-white shadow-lg shadow-gray-900/20 transition-colors duration-300 hover:bg-black hover:opacity-75 disabled:cursor-not-allowed disabled:opacity-50"
             >
               {isSubmitting ? (
                 <>

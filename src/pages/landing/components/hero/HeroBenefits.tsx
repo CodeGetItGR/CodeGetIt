@@ -1,31 +1,34 @@
 import { motion } from 'framer-motion';
+import {useLocale} from "@/i18n/UseLocale.tsx";
 
-import type { HeroCopy } from './hero.types';
+export function HeroBenefits() {
+    const {t} = useLocale()
 
-interface HeroBenefitsProps {
-  copy: HeroCopy['benefits'];
+    return (
+      <motion.div
+          initial={{ opacity: 0, y: 18 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.08 }}
+          className="grid gap-4 sm:grid-cols-2"
+      >
+        {t.landing.hero.benefits.map((benefit) => (
+            <div
+                key={benefit.title}
+                className="group rounded-2xl border border-slate-800 bg-slate-900/40 p-5 backdrop-blur-sm transition-all hover:border-cyan-400/30 hover:bg-slate-900/70"
+            >
+              <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-cyan-400/10">
+                <div className="h-2.5 w-2.5 rounded-full bg-cyan-400" />
+              </div>
+
+              <h3 className="mb-2 font-semibold text-white">
+                {benefit.title}
+              </h3>
+
+              <p className="text-sm leading-relaxed text-slate-400">
+                {benefit.description}
+              </p>
+            </div>
+        ))}
+      </motion.div>
+    );
 }
-
-export function HeroBenefits({ copy }: HeroBenefitsProps) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 18 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, delay: 0.08 }}
-      className="space-y-3 pt-2"
-    >
-      {copy.map((benefit) => (
-        <div key={benefit.title} className="flex items-start gap-3">
-          <div className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-cyan-400/20">
-            <div className="h-2 w-2 rounded-full bg-cyan-400" />
-          </div>
-          <div>
-            <div className="mb-1 font-medium text-white">{benefit.title}</div>
-            <div className="text-sm text-slate-500">{benefit.description}</div>
-          </div>
-        </div>
-      ))}
-    </motion.div>
-  );
-}
-

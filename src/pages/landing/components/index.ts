@@ -9,3 +9,4 @@ export { SectionHeading } from './SectionHeading';
 export { ServicesSection } from './ServicesSection';
 export { StatsBar } from './StatsBar';
 export { TestimonialsSection } from './TestimonialsSection';
+export {Navbar} from './Navbar';
